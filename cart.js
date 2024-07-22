@@ -77,7 +77,7 @@ buttonTag.appendChild(buttonText);
 function initializeRazorpay(amount) {
     var options = {
         "key": "rzp_test_4sMuXigiNls8Jr", // Your Razorpay API key
-        "amount": amount * 100, // Amount in paise
+        "amount": amount * 100, // Convert rupees to paise
         "currency": "INR",
         "name": "E-Commerce Website",
         "description": "Payment for cart items",
@@ -98,7 +98,7 @@ function initializeRazorpay(amount) {
 // Modify button click event to call initializeRazorpay
 buttonTag.onclick = function() {
     console.log("clicked");
-    initializeRazorpay(totalAmount);
+    initializeRazorpay(totalAmount); // Ensure totalAmount is in rupees
 }
 
 // BACKEND CALL
