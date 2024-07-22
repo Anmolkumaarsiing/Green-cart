@@ -1,22 +1,17 @@
-# E-CommerceWebsite
- A mobile responsive sample of E-Commerce Website using HTML, CSS, JavaScript and API's
- 
- 
+# CARTER
+Carter is an e-commerce platform that allows you to order groceries and vegetables from local vendors, as well as sell scrap items.
+We aim to provide convenience and support local businesses and communities.
  
 ### Home page
-![1](https://cart-er.vercel.app/index.html)
-
-
+![image](https://github.com/user-attachments/assets/6f21838a-1217-43de-9d9e-498af1744415)
 
 ### Content Description page
-![2](https://user-images.githubusercontent.com/17312616/65086777-b1beb080-d9d0-11e9-9e2b-af3b7210bdf3.png)
-
-
+![image](https://github.com/user-attachments/assets/d0dac30a-8766-4775-844d-ce576a8b81b8)
 
 ### Ordered List page
-![3](https://user-images.githubusercontent.com/17312616/65086778-b2574700-d9d0-11e9-9377-8e4886f582a8.png)
+![image](https://github.com/user-attachments/assets/9aff69dd-8c51-4f6b-b585-48c7a87497ca)
 
-
+### Payment Page
 
 ### Order confirm page
-![4](https://user-images.githubusercontent.com/17312616/65086779-b2efdd80-d9d0-11e9-95d5-4b1a48eafe04.png)
+![image](https://github.com/user-attachments/assets/e76e6ff8-ec49-4fe3-a0dd-fe85e95d4ae4)
