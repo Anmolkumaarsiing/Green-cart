@@ -132,9 +132,11 @@ function updateQuantity(index, newQuantity) {
         refreshCart();
         return;
     }
+
     let items = document.cookie.split(',')[0].split('=')[1].split(" ");
     let item = items[index];
 
+    // Create a new array with updated quantities
     let newItems = [];
     for (let i = 0; i < items.length; i++) {
         if (i !== index) {
@@ -192,8 +194,10 @@ httpRequest.onreadystatechange = function() {
             });
 
             for (let [itemId, itemCounter] of Object.entries(itemCounts)) {
-                totalAmount += Number(contentTitle[itemId - 1].price) * itemCounter;
-                dynamicCartSection(contentTitle[itemId - 1], itemCounter, items.indexOf(itemId));
+                if (itemId > 0 && itemId <= contentTitle.length) {
+                    totalAmount += Number(contentTitle[itemId - 1].price) * itemCounter;
+                    dynamicCartSection(contentTitle[itemId - 1], itemCounter, items.indexOf(itemId));
+                }
             }
 
             amountUpdate(totalAmount);
