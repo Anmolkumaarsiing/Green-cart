@@ -4,10 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FAQs</title>
-    <link rel="icon" href="https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png" type="image/gif" sizes="16x16">
     <link rel="stylesheet" href="css/faqs.css">
+    <!-- header links -->
+    <script src="https://kit.fontawesome.com/4a3b1f73a2.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
+    <style>
+        /* Ensure header is on top */
+        #header-container {
+            background-color: #f8f8f8;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Ensure FAQ container is below header */
+        .parent-container {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
 </head>
 <body>
+    <!-- HEADER -->
+    <div id="header-container"></div>
+    <script>
+        function loadHeader(url, elementId, callback) {
+            var req = new XMLHttpRequest();
+            req.open("GET", url, true);
+            req.onreadystatechange = function () {
+                if (req.readyState === 4 && req.status === 200) {
+                    document.getElementById(elementId).innerHTML = req.responseText;
+                    if (callback) callback();
+                }
+            };
+            req.send(null);
+        }
+
+        function adjustContentPosition() {
+            var headerHeight = document.getElementById('header-container').offsetHeight;
+            document.querySelector('.parent-container').style.paddingTop = headerHeight + 'px';
+        }
+
+        loadHeader("header.html", "header-container", adjustContentPosition);
+        window.addEventListener('resize', adjustContentPosition);
+    </script>
+
     <!-- FAQ -->
     <div class="parent-container">
         <ul class="faq">
@@ -81,5 +122,11 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="faqs.js"></script>
+
+    <!-- FOOTER -->
+    <div id="footer-container"></div>
+    <script>
+        loadHeader("footer.html", "footer-container");
+    </script>
 </body>
 </html>
