@@ -12,6 +12,8 @@ We aim to provide convenience and support local businesses and communities.
 ![image](https://github.com/user-attachments/assets/9aff69dd-8c51-4f6b-b585-48c7a87497ca)
 
 ### Payment Page
+![image](https://github.com/user-attachments/assets/ec52f7f6-9d44-4e87-8409-ac11f797d531)
+
 
 ### Order confirm page
 ![image](https://github.com/user-attachments/assets/e76e6ff8-ec49-4fe3-a0dd-fe85e95d4ae4)
