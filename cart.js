@@ -80,8 +80,8 @@ function initializeRazorpay(amount) {
         "amount": Math.round(amount * 100), // Convert rupees to paise and ensure it's an integer
         "currency": "INR",
         "name": "CARTER",
-        "description": "Payment for cart items",
-        "image": "https://yourwebsite.com/logo.png", // Optional logo URL
+        "description": "Payment for Selected items",
+        "image": "https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png", // Optional logo URL
         "handler": function (response) {
             alert("Payment successful: " + response.razorpay_payment_id);
             window.location.href = "/orderPlaced.html";
