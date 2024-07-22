@@ -57,7 +57,7 @@ img
 button
 {
     padding: 8px 12px;
-    background-color: rgb(3, 122, 122);
+    background-color: rgb(9, 153, 243);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -70,7 +70,7 @@ button a
 }
 button:hover
 {
-    background-color: rgb(3, 94, 94);
+    background-color: rgb(3, 122, 122);
 }
 button a:focus
 {
