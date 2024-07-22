@@ -11,7 +11,7 @@ let boxContainerDiv = document.createElement('div');
 boxContainerDiv.id = 'boxContainer';
 
 // DYNAMIC CODE TO SHOW THE SELECTED ITEMS IN YOUR CART
-function dynamicCartSection(ob, itemCounter, index) {
+function dynamicCartSection(ob, itemCounter) {
     let boxDiv = document.createElement('div');
     boxDiv.id = 'box';
     boxContainerDiv.appendChild(boxDiv);
@@ -29,14 +29,6 @@ function dynamicCartSection(ob, itemCounter, index) {
     let h4Text = document.createTextNode('Amount: Rs ' + ob.price);
     boxh4.appendChild(h4Text);
     boxDiv.appendChild(boxh4);
-
-    // Create and append Remove button
-    let removeButton = document.createElement('button');
-    removeButton.textContent = 'Remove';
-    removeButton.onclick = function() {
-        removeItem(index, itemCounter, ob.price);
-    };
-    boxDiv.appendChild(removeButton);
 
     cartContainer.appendChild(boxContainerDiv);
     cartContainer.appendChild(totalContainerDiv);
@@ -58,16 +50,11 @@ totalDiv.appendChild(totalh2);
 
 // TO UPDATE THE TOTAL AMOUNT
 function amountUpdate(amount) {
-    let existingAmount = document.getElementById('toth4');
-    if (existingAmount) {
-        existingAmount.textContent = 'Amount: Rs ' + amount;
-    } else {
-        let totalh4 = document.createElement('h4');
-        totalh4.id = 'toth4';
-        let totalh4Text = document.createTextNode('Amount: Rs ' + amount);
-        totalh4.appendChild(totalh4Text);
-        totalDiv.appendChild(totalh4);
-    }
+    let totalh4 = document.createElement('h4');
+    let totalh4Text = document.createTextNode('Amount: Rs ' + amount);
+    totalh4Text.id = 'toth4';
+    totalh4.appendChild(totalh4Text);
+    totalDiv.appendChild(totalh4);
     totalDiv.appendChild(buttonDiv);
     console.log(totalh4);
 }
@@ -114,24 +101,6 @@ buttonTag.onclick = function() {
     initializeRazorpay(totalAmount); // Ensure totalAmount is in rupees
 }
 
-// Function to remove an item from the cart
-function removeItem(index, itemCounter, price) {
-    // Update the cookie and the cart items
-    let item = document.cookie.split(',')[0].split('=')[1].split(" ");
-    item.splice(index, itemCounter); // Remove the item from the array
-    document.cookie = 'items=' + item.join(' '); // Update cookie with the new items
-
-    // Remove the item from the displayed cart
-    let boxDivs = document.querySelectorAll('#boxContainer #box');
-    if (boxDivs[index]) {
-        boxDivs[index].remove();
-    }
-
-    // Update total amount
-    totalAmount -= price * itemCounter;
-    amountUpdate(totalAmount);
-}
-
 // BACKEND CALL
 let httpRequest = new XMLHttpRequest();
 let totalAmount = 0;
@@ -157,7 +126,7 @@ httpRequest.onreadystatechange = function() {
                     }
                 }
                 totalAmount += Number(contentTitle[item[i] - 1].price) * itemCounter;
-                dynamicCartSection(contentTitle[item[i] - 1], itemCounter, i);
+                dynamicCartSection(contentTitle[item[i] - 1], itemCounter);
                 i += (itemCounter - 1);
             }
             amountUpdate(totalAmount);
