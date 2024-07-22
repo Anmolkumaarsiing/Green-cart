@@ -79,7 +79,7 @@ function initializeRazorpay(amount) {
         "key": "rzp_test_4sMuXigiNls8Jr", // Your Razorpay API key
         "amount": Math.round(amount * 100), // Convert rupees to paise and ensure it's an integer
         "currency": "INR",
-        "name": "E-Commerce Website",
+        "name": "CARTER",
         "description": "Payment for cart items",
         "image": "https://yourwebsite.com/logo.png", // Optional logo URL
         "handler": function (response) {
@@ -87,7 +87,7 @@ function initializeRazorpay(amount) {
             window.location.href = "/orderPlaced.html";
         },
         "theme": {
-            "color": "#3399cc"
+            "color": "#0d94fb"
         }
     };
 
