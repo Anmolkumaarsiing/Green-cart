@@ -10,7 +10,7 @@ let cartContainer = document.getElementById('cartContainer');
 let boxContainerDiv = document.createElement('div');
 boxContainerDiv.id = 'boxContainer';
 
-// Function to create cart item box with quantity controls and remove button
+// Function to create cart item box with remove button
 function dynamicCartSection(ob, itemCounter, itemIndex) {
     let boxDiv = document.createElement('div');
     boxDiv.id = 'box';
@@ -22,20 +22,9 @@ function dynamicCartSection(ob, itemCounter, itemIndex) {
     boxDiv.appendChild(boxImg);
 
     let boxh3 = document.createElement('h3');
-    let h3Text = document.createTextNode(ob.name + ' × ');
+    let h3Text = document.createTextNode(ob.name + ' × ' + itemCounter);
     boxh3.appendChild(h3Text);
     boxDiv.appendChild(boxh3);
-
-    // Quantity input
-    let quantityInput = document.createElement('input');
-    quantityInput.type = 'number';
-    quantityInput.value = itemCounter;
-    quantityInput.min = 1;
-    quantityInput.style.width = '50px';
-    quantityInput.onchange = function() {
-        updateQuantity(itemIndex, quantityInput.value);
-    };
-    boxh3.appendChild(quantityInput);
 
     let boxh4 = document.createElement('h4');
     let h4Text = document.createTextNode('Amount: Rs ' + (ob.price * itemCounter));
@@ -122,34 +111,6 @@ function initializeRazorpay(amount) {
 buttonTag.onclick = function() {
     console.log("clicked");
     initializeRazorpay(totalAmount); // Ensure totalAmount is in rupees
-}
-
-// Update quantity and total amount
-function updateQuantity(index, newQuantity) {
-    newQuantity = parseInt(newQuantity);
-    if (isNaN(newQuantity) || newQuantity < 1) {
-        alert("Quantity must be at least 1");
-        refreshCart();
-        return;
-    }
-
-    let items = document.cookie.split(',')[0].split('=')[1].split(" ");
-    let item = items[index];
-
-    // Create a new array with updated quantities
-    let newItems = [];
-    for (let i = 0; i < items.length; i++) {
-        if (i !== index) {
-            newItems.push(items[i]);
-        }
-    }
-    for (let i = 0; i < newQuantity; i++) {
-        newItems.push(item);
-    }
-
-    let counter = newItems.length;
-    document.cookie = `items=${newItems.join(' ')},counter=${counter}`;
-    refreshCart();
 }
 
 // Remove item from cart
