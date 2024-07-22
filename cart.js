@@ -126,16 +126,27 @@ buttonTag.onclick = function() {
 
 // Update quantity and total amount
 function updateQuantity(index, newQuantity) {
+    newQuantity = parseInt(newQuantity);
+    if (isNaN(newQuantity) || newQuantity < 1) {
+        alert("Quantity must be at least 1");
+        refreshCart();
+        return;
+    }
     let items = document.cookie.split(',')[0].split('=')[1].split(" ");
-    let counter = 0;
+    let item = items[index];
+
+    let newItems = [];
     for (let i = 0; i < items.length; i++) {
-        if (i == index) {
-            counter += Number(newQuantity);
-        } else {
-            counter += 1;
+        if (i !== index) {
+            newItems.push(items[i]);
         }
     }
-    document.cookie = `items=${items.join(' ')},counter=${counter}`;
+    for (let i = 0; i < newQuantity; i++) {
+        newItems.push(item);
+    }
+
+    let counter = newItems.length;
+    document.cookie = `items=${newItems.join(' ')},counter=${counter}`;
     refreshCart();
 }
 
