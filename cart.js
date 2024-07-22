@@ -180,23 +180,22 @@ httpRequest.onreadystatechange = function() {
             contentTitle = JSON.parse(this.responseText);
 
             let counter = Number(document.cookie.split(',')[1].split('=')[1]);
-            document.getElementById("totalItem").innerHTML = ('Total Items: ' + counter);
+            document.getElementById("totalItem").innerHTML = 'Total Items: ' + (isNaN(counter) ? 0 : counter);
 
             let items = document.cookie.split(',')[0].split('=')[1].split(" ");
             console.log(counter);
             console.log(items);
 
-            for (let i = 0; i < counter; i++) {
-                let itemCounter = 1;
-                for (let j = i + 1; j < counter; j++) {
-                    if (Number(items[j]) == Number(items[i])) {
-                        itemCounter += 1;
-                    }
-                }
-                totalAmount += Number(contentTitle[items[i] - 1].price) * itemCounter;
-                dynamicCartSection(contentTitle[items[i] - 1], itemCounter, i);
-                i += (itemCounter - 1);
+            let itemCounts = {}; // To keep track of item quantities
+            items.forEach(item => {
+                itemCounts[item] = (itemCounts[item] || 0) + 1;
+            });
+
+            for (let [itemId, itemCounter] of Object.entries(itemCounts)) {
+                totalAmount += Number(contentTitle[itemId - 1].price) * itemCounter;
+                dynamicCartSection(contentTitle[itemId - 1], itemCounter, items.indexOf(itemId));
             }
+
             amountUpdate(totalAmount);
         } else {
             console.log('call failed!');
