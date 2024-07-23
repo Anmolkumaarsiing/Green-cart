@@ -5,15 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>CARTER</title>
-    <link rel="icon" href="https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png" type="image/gif" sizes="16x16">
+    <link rel="icon" href="https://yt3.ggpht.com/a/AGF-l78km1YyNXmF0r3-0CycCA0HLA_i6zYn_8NZEg=s900-c-k-c0xffffffff-no-rj-mo" type="image/gif" sizes="16x16">
     <!-- header links -->
     <script src="https://kit.fontawesome.com/4a3b1f73a2.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
     <!-- slider links -->
-    <!-- <script src="http://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script> -->
     <script src="js/jQuery3.4.1.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css">
+    <style>
+        /* Location Finder Styles */
+        #location-finder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px auto;
+            position: relative;
+            max-width: 300px;
+            z-index: 1000;
+        }
+
+        #pincode-input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #submit-pincode {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007BFF;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        #pincode-suggestions {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            position: absolute;
+            top: 55px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            max-height: 150px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        #pincode-suggestions li {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        #pincode-suggestions li:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Slider and other styles */
+    </style>
 </head>
 
 <body>
@@ -21,20 +77,26 @@
     <div id="1"></div>
     <script>
         load("header.html");
-        function load(url)
-        {
+        function load(url) {
             req = new XMLHttpRequest();
             req.open("GET", url, false);
             req.send(null);
             document.getElementById(1).innerHTML = req.responseText;
         }
     </script>
+
+    <!-- LOCATION FINDER -->
+    <div id="location-finder">
+        <input type="text" id="pincode-input" placeholder="Enter your pincode" />
+        <button id="submit-pincode">Enter</button>
+        <ul id="pincode-suggestions"></ul>
+    </div>
+
     <!-- SLIDER -->
     <div id="2"></div>
     <script>
         load("slider.html");
-        function load(url)
-        {
+        function load(url) {
             req = new XMLHttpRequest();
             req.open("GET", url, false);
             req.send(null);
@@ -46,8 +108,7 @@
     <div id="3"></div>
     <script>
         load("content.html");
-        function load(url)
-        {
+        function load(url) {
             req = new XMLHttpRequest();
             req.open("GET", url, false);
             req.send(null);
@@ -59,8 +120,7 @@
     <div id="4"></div>
     <script>
         load("footer.html");
-        function load(url)
-        {
+        function load(url) {
             req = new XMLHttpRequest();
             req.open("GET", url, false);
             req.send(null);
@@ -68,26 +128,128 @@
         }
     </script>
 
-</body>
-
-<!-- slider JS START -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
-<script>
-    $(document).ready(function()
-    {
-    $('#containerSlider').slick({
-        dots: true,
-        infinite: true,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        autoplay: true,
-        autoplaySpeed: 1500,
+    <!-- slider JS START -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#containerSlider').slick({
+                dots: true,
+                infinite: true,
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                autoplay: true,
+                autoplaySpeed: 1500,
+            });
         });
-    });
-</script>
-<!-- slider JS ENDS -->
+    </script>
+    <!-- slider JS ENDS -->
 
-<!-- content JS -->
-<script src="content.js"></script>
+    <!-- content JS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const pincodeInput = document.getElementById('pincode-input');
+            const submitButton = document.getElementById('submit-pincode');
+            const suggestionsList = document.getElementById('pincode-suggestions');
 
+            async function fetchLocations() {
+                const response = await fetch('https://669e2f559a1bda368005b99b.mockapi.io/Product/Location');
+                const locations = await response.json();
+                return locations;
+            }
+
+            async function fetchProducts() {
+                const response = await fetch('https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData');
+                const products = await response.json();
+                return products;
+            }
+
+            pincodeInput.addEventListener('input', async () => {
+                const input = pincodeInput.value.trim();
+
+                if (input.length < 2) {
+                    suggestionsList.innerHTML = '';
+                    suggestionsList.style.display = 'none';
+                    return;
+                }
+
+                try {
+                    const locations = await fetchLocations();
+
+                    const suggestions = locations
+                        .filter(loc => loc.Pincode.toString().startsWith(input))
+                        .slice(0, 5)
+                        .map(loc => loc.Pincode);
+
+                    suggestionsList.innerHTML = suggestions.map(pincode => 
+                        `<li data-pincode="${pincode}">${pincode}</li>`
+                    ).join('');
+
+                    suggestionsList.style.display = suggestions.length > 0 ? 'block' : 'none';
+
+                    document.querySelectorAll('#pincode-suggestions li').forEach(li => {
+                        li.addEventListener('click', () => {
+                            pincodeInput.value = li.getAttribute('data-pincode');
+                            suggestionsList.innerHTML = '';
+                            suggestionsList.style.display = 'none';
+                            fetchProductsForPincode(li.getAttribute('data-pincode'));
+                        });
+                    });
+                } catch (error) {
+                    console.error('Error fetching pincode suggestions:', error);
+                }
+            });
+
+            submitButton.addEventListener('click', () => {
+                const pincode = pincodeInput.value.trim();
+                if (pincode) {
+                    fetchProductsForPincode(pincode);
+                } else {
+                    alert('Please enter a pincode.');
+                }
+            });
+
+            async function fetchProductsForPincode(pincode) {
+                try {
+                    const locations = await fetchLocations();
+                    const location = locations.find(loc => loc.Pincode.toString() === pincode);
+
+                    if (!location) {
+                        alert('Currently, we are not available in this area.');
+                        return;
+                    }
+
+                    const products = await fetchProducts();
+                    const filteredProducts = products.filter(product => product.Pincode.toString() === pincode);
+
+                    if (filteredProducts.length > 0) {
+                        displayProducts(filteredProducts);
+                    } else {
+                        alert('No vendor available for the selected pincode.');
+                    }
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                }
+            }
+
+            function displayProducts(products) {
+                const productDisplay = document.getElementById('product-display');
+                if (!productDisplay) return; // Check if product-display exists
+
+                productDisplay.innerHTML = '';
+
+                products.forEach(product => {
+                    const productDiv = document.createElement('div');
+                    productDiv.className = 'product-item';
+                    productDiv.innerHTML = `
+                        <h3>${product.name}</h3>
+                        <img src="${product.preview}" alt="${product.name}" />
+                        <p>${product.description}</p>
+                        <p>Price: ₹${product.price}</p>
+                    `;
+                    productDisplay.appendChild(productDiv);
+                });
+            }
+        });
+    </script>
+</body>
 </html>
