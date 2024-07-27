@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Page</title>
+    <link rel="stylesheet" href="shippingAddress.css">
+</head>
+<body>
+    <div class="checkout-container">
+        <h1>Shipping Address</h1>
+        <button id="location-selector">Use My Location</button>
+        <form id="checkout-form">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" required>
+            
+            <label for="number">Phone Number</label>
+            <input type="text" id="number" name="number" placeholder="+91" required>
+            
+            <label for="flat">Flat/House No./Building</label>
+            <input type="text" id="flat" name="flat" required>
+            
+            <label for="landmark">Nearby Landmark (Optional)</label>
+            <input type="text" id="landmark" name="landmark">
+            
+            <label for="area">Area/Sector/Locality</label>
+            <input type="text" id="area" name="area" required>
+            
+            <label for="pincode">Pincode</label>
+            <input type="text" id="pincode" name="pincode" oninput="fetchLocationData()" required>
+            
+            <label for="state">State</label>
+            <select id="state" name="state" required>
+                <!-- Options will be populated dynamically -->
+            </select>
+            
+            <h2>Payment Mode</h2>
+            <div class="payment-options">
+                <label>
+                    <input type="radio" name="payment" value="credit-card" required>
+                    Credit Card
+                </label>
+                <label>
+                    <input type="radio" name="payment" value="paypal" required>
+                    PayPal
+                </label>
+                <label>
+                    <input type="radio" name="payment" value="bank-transfer" required>
+                    Bank Transfer
+                </label>
+            </div>
+            
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <script src="shippingAddress.js"></script>
+</body>
+</html>
