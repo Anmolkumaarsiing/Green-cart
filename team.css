@@ -1,40 +1,36 @@
-body {
-  font-family: Arial, sans-serif;
-}
-
-.team-section {
+#team {
   text-align: center;
-  padding: 50px 0;
-  background-color: #f4f4f4;
+  padding: 128px 16px;
+  background-color: #fff;
 }
 
-.team-section h1 {
+#team h3 {
   font-size: 36px;
   color: #333;
   margin-bottom: 10px;
 }
 
-.team-section p {
+#team p.w3-center.w3-large {
   font-size: 18px;
   color: #777;
   margin-bottom: 40px;
 }
 
-.row {
+.w3-row-padding {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
   gap: 20px;
 }
 
-.column {
-  flex: 1 1 calc(33.333% - 40px);
+.w3-col {
+  flex: 1 1 calc(25% - 40px);
+  max-width: calc(25% - 40px);
   box-sizing: border-box;
-  max-width: calc(33.333% - 40px);
   margin: 20px;
 }
 
-.card {
+.w3-card {
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 10px;
@@ -42,39 +38,39 @@ body {
   transition: transform 0.2s;
 }
 
-.card:hover {
+.w3-card:hover {
   transform: scale(1.05);
 }
 
-.team-img {
+.w3-card img {
   width: 100%;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
 
-.container {
+.w3-container {
   padding: 20px;
 }
 
-.container h2 {
+.w3-container h3 {
   font-size: 22px;
   color: #333;
   margin: 10px 0;
 }
 
-.container .title {
+.w3-opacity {
   font-size: 16px;
   color: #777;
   margin-bottom: 20px;
 }
 
-.container p {
+.w3-container p {
   font-size: 14px;
   color: #555;
   margin-bottom: 10px;
 }
 
-.button {
+.w3-button {
   border: none;
   padding: 10px 20px;
   color: white;
@@ -87,20 +83,20 @@ body {
   transition: background-color 0.3s;
 }
 
-.button:hover {
+.w3-button:hover {
   background-color: #555;
 }
 
 /* Responsive styling */
 @media screen and (max-width: 768px) {
-  .column {
+  .w3-col {
     flex: 1 1 calc(50% - 40px);
     max-width: calc(50% - 40px);
   }
 }
 
 @media screen and (max-width: 480px) {
-  .column {
+  .w3-col {
     flex: 1 1 100%;
     max-width: 100%;
   }
