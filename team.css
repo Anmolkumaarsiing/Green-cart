@@ -1,4 +1,23 @@
-/* General styles for the team section */
+body,h1,h2,h3,h4,h5,h6 {
+  font-family: "Segoe UI",Arial,sans-serif
+}
+
+body, html {
+  height: 100%;
+  line-height: 1.8;
+}
+
+.w3-bar .w3-button {
+  padding: 16px;
+}
+
+.w3-wide {
+  letter-spacing: 4px;
+}
+
+.w3-hover-opacity:hover {
+  opacity: 0.75;
+}
 .w3-container {
   padding: 128px 16px;
 }
