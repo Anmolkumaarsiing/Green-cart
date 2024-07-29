@@ -73,12 +73,14 @@ body
 {
     font-size: 1.5em;
     margin-right: 25px;
+    color: #FFFFFF;
 }
 #user
 {
     display: flex;
     /* float: right; */
     align-items: center;
+    color: #FFFFFF;
 }
 
 .userIcon
