@@ -7,64 +7,11 @@
     <link rel="stylesheet" href="/css/terms-and-conditions.css">
 </head>
 <body>
-     <style>
-        #header-container {
-            background-color: #f8f8f8;
-            width: 100%;
-            position: fixed; /* Fixed positioning for header */
-            top: 0;
-            left: 0;
-            z-index: 1000; /* Ensure it stays above other content */
-        }
-        .parent-container {
-            padding-top: 80px; /* Adjust based on header height */
-        }
-        main {
-            margin: 0 auto;
-            padding: 20px;
-            max-width: 1200px;
-            background-color: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            position: relative; /* Ensure main content is on top of the footer */
-        }
-        #footer-container {
-            background-color: #f8f8f8;
-            width: 100%;
-            position: relative;
-            z-index: 1000; /* Ensure footer is below the main content */
-            margin-top: 40px; /* Space above the footer */
-            padding: 20px 0; /* Add padding to the footer */
-        }
-    </style>
-</head>
-<body>
-    <!-- HEADER -->
-    <div id="header-container"></div>
-    <script>
-        function loadHeader(url, elementId, callback) {
-            var req = new XMLHttpRequest();
-            req.open("GET", url, true);
-            req.onreadystatechange = function () {
-                if (req.readyState === 4 && req.status === 200) {
-                    document.getElementById(elementId).innerHTML = req.responseText;
-                    if (callback) callback();
-                }
-            };
-            req.send(null);
-        }
-
-        function adjustContentPosition() {
-            var headerHeight = document.getElementById('header-container').offsetHeight;
-            document.querySelector('.parent-container').style.paddingTop = headerHeight + 'px';
-        }
-
-        loadHeader("header.html", "header-container", adjustContentPosition);
-        window.addEventListener('resize', adjustContentPosition);
-    </script>
-        <header>
-            <h1>Terms and Conditions</h1>
-            <p>Last updated: July 01, 2024</p>
-        </header>
+    <header>
+        <h1>Terms and Conditions</h1>
+        <p>Last updated: July 01, 2024</p>
+    </header>
+    <main>
         <section class="introduction">
           <!DOCTYPE html>
 <html lang="en">
@@ -276,10 +223,5 @@
             <p>anmolkumaarsiingh@gmail.com</p>
         </section>
     </main>
-       <!-- FOOTER -->
-    <div id="footer-container"></div>
-    <script>
-        loadHeader("footer.html", "footer-container");
-    </script>
 </body>
 </html>
