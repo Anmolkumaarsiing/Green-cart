@@ -7,6 +7,29 @@
     <link rel="stylesheet" href="/css/terms-and-conditions.css">
 </head>
 <body>
+     <!-- HEADER -->
+    <div id="header-container"></div>
+    <script>
+        function loadHeader(url, elementId, callback) {
+            var req = new XMLHttpRequest();
+            req.open("GET", url, true);
+            req.onreadystatechange = function () {
+                if (req.readyState === 4 && req.status === 200) {
+                    document.getElementById(elementId).innerHTML = req.responseText;
+                    if (callback) callback();
+                }
+            };
+            req.send(null);
+        }
+
+        function adjustContentPosition() {
+            var headerHeight = document.getElementById('header-container').offsetHeight;
+            document.querySelector('.parent-container').style.paddingTop = headerHeight + 'px';
+        }
+
+        loadHeader("header.html", "header-container", adjustContentPosition);
+        window.addEventListener('resize', adjustContentPosition);
+    </script>
     <header>
         <h1>Terms and Conditions</h1>
         <p>Last updated: July 01, 2024</p>
@@ -223,5 +246,10 @@
             <p>anmolkumaarsiingh@gmail.com</p>
         </section>
     </main>
+    <!-- FOOTER -->
+    <div id="footer-container"></div>
+    <script>
+        loadHeader("footer.html", "footer-container");
+    </script>
 </body>
 </html>
