@@ -1,27 +1,12 @@
-#header-container {
-            background-color: #f8f8f8;
-            width: 100%;
-            position: relative;
-            z-index: 10;
-        }
-        .parent-container {
-            padding-top: 60px; /* Adjust based on header height */
-        }
-        main {
-            margin: 0 auto;
-            padding: 20px;
-            max-width: 1200px; /* Adjust based on your design */
-        }
-        #footer-container {
-            background-color: #f8f8f8;
-            width: 100%;
-            position: relative;
-            z-index: 10;
-        }
-body {
-    font-family: Arial, sans-serif;
+/* Reset default margin and padding */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
     background-color: #f9f9f9;
     color: #333;
     line-height: 1.6;
@@ -33,17 +18,24 @@ header {
     padding: 1rem;
     font-family: 'Lato', sans-serif;
     text-align: center;
+    width: 100%;
+    position: fixed; /* Make header fixed */
+    top: 0; /* Fix it to the top */
+    left: 0;
+    z-index: 1000; /* Ensure it's above other content */
 }
 
-h1 {
-    margin: 0;
-    font-family: 'Lato', sans-serif;
+#header-container {
+    background-color: #f8f8f8;
+    width: 100%;
+    z-index: 1000; /* Match z-index for consistency */
 }
 
 main {
-    max-width: 800px;
-    margin: 2rem auto;
-    padding: 1rem;
+    margin: 0 auto;
+    padding: 20px;
+    max-width: 1200px;
+    margin-top: 80px; /* Adjust this based on header height */
     background-color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -66,7 +58,6 @@ a {
 
 a:hover {
     text-decoration: underline;
-    font-family: 'Lato', sans-serif;
 }
 
 p {
@@ -78,15 +69,21 @@ p {
     main {
         margin: 1rem;
         padding: 0.5rem;
+        margin-top: 60px; /* Adjust for smaller screens if needed */
     }
 
     section h2 {
         font-size: 1.2rem;
-        font-family: 'Lato', sans-serif;
     }
 
     p {
         font-size: 0.9rem;
-        font-family: 'Lato', sans-serif;
     }
+}
+
+#footer-container {
+    background-color: #f8f8f8;
+    width: 100%;
+    position: relative;
+    z-index: 10;
 }
