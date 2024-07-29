@@ -5,22 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Terms and Conditions</title>
     <link rel="stylesheet" href="/css/terms-and-conditions.css">
-    <style>
-        #header-container 
-        {
-            background-color: #f8f8f8;
-            width: 100%;
-            position: relative;
-            z-index: 10;
-        }
-        .parent-container {
-            position: relative;
-            z-index: 1;
-        }
-    </style>
 </head>
 <body>
-     <!-- HEADER -->
+ <!-- HEADER -->
     <div id="header-container"></div>
     <script>
         function loadHeader(url, elementId, callback) {
@@ -37,17 +24,17 @@
 
         function adjustContentPosition() {
             var headerHeight = document.getElementById('header-container').offsetHeight;
-            document.querySelector('.parent-container').style.paddingTop = headerHeight + 'px';
+            document.querySelector('main').style.paddingTop = headerHeight + 'px';
         }
 
         loadHeader("header.html", "header-container", adjustContentPosition);
         window.addEventListener('resize', adjustContentPosition);
     </script>
-    <header>
-        <h1>Terms and Conditions</h1>
-        <p>Last updated: July 01, 2024</p>
-    </header>
-    <main>
+     <main>
+        <header>
+            <h1>Terms and Conditions</h1>
+            <p>Last updated: July 01, 2024</p>
+        </header>
         <section class="introduction">
           <!DOCTYPE html>
 <html lang="en">
@@ -259,7 +246,7 @@
             <p>anmolkumaarsiingh@gmail.com</p>
         </section>
     </main>
-    <!-- FOOTER -->
+       <!-- FOOTER -->
     <div id="footer-container"></div>
     <script>
         loadHeader("footer.html", "footer-container");
