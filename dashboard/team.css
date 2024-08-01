@@ -124,9 +124,15 @@ button,select {
     text-transform: none
 }
 
-button,[type=button],[type=reset],[type=submit] {
-    -webkit-appearance: button
+button,
+[type=button],
+[type=reset],
+[type=submit] {
+  -webkit-appearance: button; /* For Chrome, Safari, and newer versions of Opera */
+  -moz-appearance: button;    /* For Firefox */
+  appearance: button;         /* Standard property */
 }
+
 
 button::-moz-focus-inner,[type=button]::-moz-focus-inner,[type=reset]::-moz-focus-inner,[type=submit]::-moz-focus-inner {
     border-style: none;
@@ -164,9 +170,12 @@ textarea {
 }
 
 [type=search] {
-    -webkit-appearance: textfield;
-    outline-offset: -2px
+    -webkit-appearance: textfield; /* WebKit browsers */
+    -moz-appearance: textfield;    /* Firefox */
+    appearance: textfield;         /* Standard property */
+    outline-offset: -2px;          /* Adjust the outline position */
 }
+
 
 [type=search]::-webkit-search-decoration {
     -webkit-appearance: none
