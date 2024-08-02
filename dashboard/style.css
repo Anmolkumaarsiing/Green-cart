@@ -326,13 +326,21 @@ section{
 
 .home .content{
     width: 55rem;
-    text-align: center;
+}
+.heading-container {
+    display: flex;
+}
+
+.home .content h4{
+    font-size: 6rem;
+    color: #16ca7e;
+    font-family: 'Righteous';
 }
 
 .home .content h3{
     font-size: 6rem;
-    color: #000;
-    font-family: 'Merienda One', cursive;
+    color: #fff;
+    font-family: 'Righteous';
 }
 
 .home .content p{
