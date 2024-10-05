@@ -15,7 +15,7 @@ h1 {
 
 #containerGrocery, #containerScrap {
     display: grid;
-    grid-gap: 70px 20px; /* Adjusted for column and row gaps */
+    grid-gap: 40px 20px; /* Adjusted for column and row gaps */
     grid-template-columns: repeat(5, 1fr);
     width: 90%;
     margin: auto;
@@ -45,11 +45,11 @@ h1 {
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     object-fit: cover; /* Ensure images cover the set dimensions */
-    margin-bottom: 10px; /* Add space below each image */
+    margin-bottom: 15px; /* Add space below each image */
 }
 
 #details {
-    padding: 15px; /* Added padding for better spacing */
+    padding: 0 15px; /* Adjusted padding */
     text-align: center; /* Center the text in details */
     text-transform: capitalize;
 }
@@ -66,6 +66,7 @@ h3 {
 
 h4 {
     font-weight: 100;
+    margin: 5px 0; /* Added margin for better spacing */
 }
 
 h2 {
@@ -80,7 +81,7 @@ h2 {
     }
     #containerGrocery, #containerScrap {
         width: 95%;
-        grid-gap: 10px;
+        grid-gap: 20px; /* Reduced grid gap for smaller screens */
     }
 }
 
@@ -90,7 +91,7 @@ h2 {
     }
     #containerGrocery, #containerScrap {
         display: grid;
-        grid-gap: 70px 20px;
+        grid-gap: 40px 20px; /* Adjusted for column and row gaps */
         grid-template-columns: repeat(3, 1fr);
         width: 80%;
     }    
