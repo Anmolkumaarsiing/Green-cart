@@ -15,7 +15,7 @@ h1 {
 
 #containerGrocery, #containerScrap {
     display: grid;
-    grid-gap: 60px 20px; /* Adjusted for column and row gaps */
+    grid-gap: 20px 20px; /* Adjusted for column and row gaps */
     grid-template-columns: repeat(5, 1fr);
     width: 90%;
     margin: auto;
@@ -31,7 +31,7 @@ h1 {
     flex-direction: column; /* Arrange items vertically */
     align-items: center; /* Center items horizontally */
     justify-content: center; /* Center items vertically */
-    padding: 30px; /* Add padding for spacing */
+    padding: 50px; /* Add padding for spacing */
     margin-bottom: 50px; /* Add margin below each box for gap */
 }
 
