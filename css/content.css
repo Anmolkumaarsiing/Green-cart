@@ -10,12 +10,11 @@ h1 {
     letter-spacing: 2px;
     font-weight: 700;
     text-transform: capitalize;
-    text-align: center; /* Center the heading */
 }
 
 #containerGrocery, #containerScrap {
     display: grid;
-    grid-gap: 70px 20px;
+    grid-gap: 20px; /* Space between boxes */
     grid-template-columns: repeat(5, 1fr);
     width: 90%;
     margin: auto;
@@ -27,11 +26,11 @@ h1 {
     background-color: white;
     border-radius: 10px;
     box-shadow: 1px 2px 6px 2px rgb(219, 219, 219);
-    display: flex; /* Use flexbox for alignment */
-    flex-direction: column; /* Arrange items vertically */
-    align-items: center; /* Center items horizontally */
-    justify-content: center; /* Center items vertically */
-    padding: 20px; /* Add padding for spacing */
+    padding: 10px; /* Add padding inside the box */
+    display: flex;
+    flex-direction: column; /* Align children vertically */
+    align-items: center; /* Center align text and images */
+    text-align: center; /* Center align text */
 }
 
 #box:hover {
@@ -39,16 +38,15 @@ h1 {
 }
 
 #containerGrocery img, #containerScrap img {
-    width: 100%; /* Ensure images take full width */
-    height: 150px; /* Set a fixed height */
+    width: 100%; /* Maintain the width of images */
+    height: auto; /* Maintain aspect ratio */
+    max-height: 150px; /* Set max height to ensure uniformity */
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    object-fit: cover; /* Ensure images cover the set dimensions */
 }
 
 #details {
-    padding: 15px; /* Added padding for better spacing */
-    text-align: center; /* Center the text in details */
+    padding: 0 15px;
     text-transform: capitalize;
 }
 
@@ -59,7 +57,6 @@ h1 {
 
 h3 {
     font-size: 16px;
-    margin: 5px 0; /* Space between headings */
 }
 
 h4 {
@@ -76,6 +73,7 @@ h2 {
     h1 {
         font-size: 25px;
     }
+
     #containerGrocery, #containerScrap {
         width: 95%;
         grid-gap: 10px;
@@ -86,9 +84,8 @@ h2 {
     h1 {
         width: 80%;
     }
+
     #containerGrocery, #containerScrap {
-        display: grid;
-        grid-gap: 70px 20px;
         grid-template-columns: repeat(3, 1fr);
         width: 80%;
     }    
@@ -97,10 +94,9 @@ h2 {
 @media(max-width: 650px) {
     h1 {
         font-size: 20px;
-    }
-    h1 {
         width: 90%;
     }
+
     #containerGrocery, #containerScrap {
         width: 90%;
     }
@@ -110,6 +106,7 @@ h2 {
     h1 {
         width: 70%;
     }
+
     #containerGrocery, #containerScrap {
         width: 70%;
     }
@@ -119,8 +116,8 @@ h2 {
     h1 {
         width: 80%;
     }
+
     #containerGrocery, #containerScrap {
-        width: 80%;
         grid-template-columns: repeat(2, 1fr);
     }
 }
