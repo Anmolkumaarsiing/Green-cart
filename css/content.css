@@ -2,6 +2,7 @@ body {
     margin: 0;
     font-family: 'Lato', sans-serif;
 }
+
 h1 {
     width: 90%;
     margin: auto;
@@ -9,7 +10,9 @@ h1 {
     letter-spacing: 2px;
     font-weight: 700;
     text-transform: capitalize;
+    text-align: center; /* Center the heading */
 }
+
 #containerGrocery, #containerScrap {
     display: grid;
     grid-gap: 70px 20px;
@@ -18,35 +21,50 @@ h1 {
     margin: auto;
     padding-bottom: 40px;
 }
+
 #box {
     width: 100%;
     background-color: white;
     align-content: center;
     border-radius: 10px;
     box-shadow: 1px 2px 6px 2px rgb(219, 219, 219);
+    display: flex; /* Use flexbox for alignment */
+    flex-direction: column; /* Arrange items vertically */
+    align-items: center; /* Center items horizontally */
+    justify-content: flex-start; /* Align items to the top */
 }
+
 #box:hover {
     box-shadow: 1px 6px 3px 0 rgb(185, 185, 185);
 }
+
 #containerGrocery img, #containerScrap img {
     width: 100%;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+    object-fit: cover; /* Ensure the image covers the box proportionally */
 }
+
 #details {
-    padding: 0 15px;
+    padding: 15px; /* Added padding for better spacing */
+    text-align: center; /* Center the text in details */
     text-transform: capitalize;
 }
+
 #box a {
     text-decoration: none;
     color: rgb(29, 29, 29);
 }
+
 h3 {
     font-size: 16px;
+    margin: 5px 0; /* Space between headings */
 }
+
 h4 {
     font-weight: 100;
 }
+
 h2 {
     color: rgb(3, 94, 94);
 }
@@ -62,6 +80,7 @@ h2 {
         grid-gap: 10px;
     }
 }
+
 @media(max-width: 850px) {
     h1 {
         width: 80%;
@@ -73,6 +92,7 @@ h2 {
         width: 80%;
     }    
 }
+
 @media(max-width: 650px) {
     h1 {
         font-size: 20px;
@@ -84,6 +104,7 @@ h2 {
         width: 90%;
     }
 }
+
 @media(max-width: 600px) {
     h1 {
         width: 70%;
@@ -92,6 +113,7 @@ h2 {
         width: 70%;
     }
 }
+
 @media(max-width: 505px) {
     h1 {
         width: 80%;
