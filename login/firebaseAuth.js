@@ -262,7 +262,7 @@ if (signInButton) {
 
             showMessage('Sign In Successful', 'sinInMessage');
             // Redirect to home or another page after successful sign-in
-            window.location.href = 'https://green-cart.vercel.app/'; // Change this to your target page
+            window.location.href = '../home.html'; // Change this to your target page
         } catch (error) {
             if (error.code === 'auth/user-not-found') {
                 showMessage('User Not Found!', 'sinInMessage');
