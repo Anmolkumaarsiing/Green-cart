@@ -15,7 +15,7 @@ h1 {
 
 #containerGrocery, #containerScrap {
     display: grid;
-    grid-gap: 70px 20px; /* Adjusted for column and row gaps */
+    grid-gap: 70px 20px;
     grid-template-columns: repeat(5, 1fr);
     width: 90%;
     margin: auto;
@@ -32,7 +32,6 @@ h1 {
     align-items: center; /* Center items horizontally */
     justify-content: center; /* Center items vertically */
     padding: 20px; /* Add padding for spacing */
-    margin-bottom: 20px; /* Add margin below each box for gap */
 }
 
 #box:hover {
@@ -45,7 +44,6 @@ h1 {
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     object-fit: cover; /* Ensure images cover the set dimensions */
-    margin-bottom: 10px; /* Add space below each image */
 }
 
 #details {
