@@ -6,6 +6,7 @@ function dynamicSection(ob) {
   let boxLink = document.createElement("a");
   boxLink.href = "/contentDetails.html?" + ob.id;
 
+  
   let imgTag = document.createElement("img");
   imgTag.src = ob.preview;
 
