@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel login form</title>
+    <link rel="stylesheet" href="./login/style.css">
+    <!-- Firebase scripts -->
+    <script type="module" src="firebaseAuth.js"></script>
+</head>
+<body>
+    <!-- FORM SECTION -->
+    <div id="container" class="container">
+        <div class="row">
+            <!-- SIGN UP -->
+            <div class="col align-items-center flex-col sign-up">
+                <div class="form-wrapper align-items-center">
+                    <form action="" method="post">
+                        <div id="sinUpMessage" class="messageDiv" style="display:none;"></div>
+                        <div class="form sign-up">
+                            <div class="input-group">
+                                <i class='bx bxs-user'></i>
+                                <input type="text" id="Uname" placeholder="Username">
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bx-mail-send'></i>
+                                <input type="email" id="email" placeholder="Email">
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bxs-lock-alt'></i>
+                                <input type="password" id="rPassword" placeholder="Password">
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bxs-lock-alt'></i>
+                                <input type="password" id="cPassword" placeholder="Confirm password">
+                            </div>
+                            <button class="btn" id="submitSignUp" type="button">
+                                Sign up
+                            </button>
+                            <p>
+                                <span>Already have an account?</span>
+                                <b onclick="toggle()" class="pointer">Sign in here</b>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- SIGN IN -->
+            <div class="col align-items-center flex-col sign-in">
+                <div class="form-wrapper align-items-center">
+                    <form action="" method="post">
+                        <div id="sinInMessage" class="messageDiv" style="display:none;"></div>
+                        <div class="form sign-in">
+                            <div class="input-group">
+                                <i class='bx bxs-user'></i>
+                                <input type="email" id="signInEmail" placeholder="Email">
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bxs-lock-alt'></i>
+                                <input type="password" id="signInPassword" placeholder="Password">
+                            </div>
+                            <button id="submitSignIn" type="button">
+                                Sign in
+                            </button>
+                            <p>
+                                <b><a href="../forgotpassword/forgotpassword.html">Forgot password?</a></b>
+                            </p>
+                            <p>
+                                <span>Don't have an account?</span>
+                                <b onclick="toggle()" class="pointer">Sign up here</b>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Script -->
+    <script src="./login/script.js"></script>
+</body>
+</html>
