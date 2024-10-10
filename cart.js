@@ -1,71 +1,17 @@
 console.clear();
 
-// Initialize cart from localStorage if it exists, otherwise from cookies
-function initializeCart() {
-    let storedCart = JSON.parse(localStorage.getItem('cartItems')) || null;
-    if (storedCart) {
-        let totalAmount = 0;
-        let counter = storedCart.length;
-        document.getElementById("totalItem").innerHTML = ('Total Items: ' + counter);
-        
-        // Load items from localStorage and render them
-        storedCart.forEach(item => {
-            dynamicCartSection(item.product, item.quantity);
-            totalAmount += item.product.price * item.quantity;
-        });
-
-        amountUpdate(totalAmount); // Update the total amount
-    } else {
-        // Fallback to loading from cookies (current logic)
-        if (document.cookie.indexOf(',counter=') >= 0) {
-            let counter = document.cookie.split(',')[1].split('=')[1];
-            document.getElementById("badge").innerHTML = counter;
-
-            // Fetch products from API and dynamically build the cart UI
-            loadItemsFromApi(counter);
-        }
-    }
+if (document.cookie.indexOf(',counter=') >= 0) {
+    let counter = document.cookie.split(',')[1].split('=')[1];
+    document.getElementById("badge").innerHTML = counter;
 }
 
-// Function to load items from API (if using cookies for initial load)
-function loadItemsFromApi(counter) {
-    let httpRequest = new XMLHttpRequest();
-    let totalAmount = 0;
-    httpRequest.onreadystatechange = function() {
-        if (this.readyState === 4 && this.status == 200) {
-            let contentTitle = JSON.parse(this.responseText);
-            let item = document.cookie.split(',')[0].split('=')[1].split(" ");
+let cartContainer = document.getElementById('cartContainer');
 
-            totalAmount = 0; // Reset totalAmount before calculating
-            for (let i = 0; i < counter; i++) {
-                let itemCounter = 1;
-                for (let j = i + 1; j < counter; j++) {   
-                    if (Number(item[j]) == Number(item[i])) {
-                        itemCounter += 1;
-                    }
-                }
-                let product = contentTitle[item[i] - 1];
-                totalAmount += product.price * itemCounter;
+let boxContainerDiv = document.createElement('div');
+boxContainerDiv.id = 'boxContainer';
 
-                dynamicCartSection(product, itemCounter);
-                i += (itemCounter - 1);
-            }
-            amountUpdate(totalAmount);
-        } else {
-            console.log('API call failed!');
-        }
-    };
-
-    httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
-    httpRequest.send();
-}
-
-// Function to dynamically render cart items
+// DYNAMIC CODE TO SHOW THE SELECTED ITEMS IN YOUR CART
 function dynamicCartSection(ob, itemCounter) {
-    let cartContainer = document.getElementById('cartContainer');
-    let boxContainerDiv = document.createElement('div');
-    boxContainerDiv.id = 'boxContainer';
-    
     let boxDiv = document.createElement('div');
     boxDiv.id = 'box';
     boxContainerDiv.appendChild(boxDiv);
@@ -85,53 +31,58 @@ function dynamicCartSection(ob, itemCounter) {
     boxDiv.appendChild(boxh4);
 
     cartContainer.appendChild(boxContainerDiv);
+    cartContainer.appendChild(totalContainerDiv);
+
+    return cartContainer;
 }
 
-// Function to update the total amount
+let totalContainerDiv = document.createElement('div');
+totalContainerDiv.id = 'totalContainer';
+
+let totalDiv = document.createElement('div');
+totalDiv.id = 'total';
+totalContainerDiv.appendChild(totalDiv);
+
+let totalh2 = document.createElement('h2');
+let h2Text = document.createTextNode('Total Amount');
+totalh2.appendChild(h2Text);
+totalDiv.appendChild(totalh2);
+
+// TO UPDATE THE TOTAL AMOUNT
 function amountUpdate(amount) {
-    let totalContainerDiv = document.getElementById('totalContainer') || document.createElement('div');
-    totalContainerDiv.id = 'totalContainer';
-    
-    let totalDiv = document.createElement('div');
-    totalDiv.id = 'total';
-    totalContainerDiv.appendChild(totalDiv);
-
-    let totalh2 = document.createElement('h2');
-    let h2Text = document.createTextNode('Total Amount');
-    totalh2.appendChild(h2Text);
-    totalDiv.appendChild(totalh2);
-
     let totalh4 = document.createElement('h4');
-    totalh4.id = 'toth4';
     let totalh4Text = document.createTextNode('Amount: Rs ' + amount);
+    totalh4Text.id = 'toth4';
     totalh4.appendChild(totalh4Text);
     totalDiv.appendChild(totalh4);
-
-    // Add the place order button
-    let buttonDiv = document.createElement('div');
-    buttonDiv.id = 'button';
     totalDiv.appendChild(buttonDiv);
-
-    let buttonTag = document.createElement('button');
-    buttonTag.innerText = 'Place Order';
-    buttonTag.onclick = function() {
-        initializeRazorpay(amount); // Call Razorpay
-    };
-
-    totalDiv.appendChild(buttonTag);
-    document.getElementById('cartMainContainer').appendChild(totalContainerDiv);
+    console.log(totalh4);
 }
 
-// Function to initialize Razorpay payment
+let buttonDiv = document.createElement('div');
+buttonDiv.id = 'button';
+totalDiv.appendChild(buttonDiv);
+
+let buttonTag = document.createElement('button');
+buttonDiv.appendChild(buttonTag);
+
+let buttonLink = document.createElement('a');
+buttonLink.href = '#'; // This will be handled by JavaScript
+buttonTag.appendChild(buttonLink);
+
+buttonText = document.createTextNode('Place Order');
+buttonTag.appendChild(buttonText);
+
+// Function to initialize Razorpay
 function initializeRazorpay(amount) {
     var options = {
-        "key": "rzp_test_4sMuXigiNls8Jr",
-        "amount": Math.round(amount * 100), // Amount in paise
+        "key": "rzp_test_4sMuXigiNls8Jr", // Your Razorpay API key
+        "amount": Math.round(amount * 100), // Convert rupees to paise and ensure it's an integer
         "currency": "INR",
         "name": "CARTER",
         "description": "Payment for Selected items",
-        "image": "https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png",
-        "handler": function(response) {
+        "image": "https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png", // Optional logo URL
+        "handler": function (response) {
             alert("Payment successful: " + response.razorpay_payment_id);
             window.location.href = "/orderPlaced.html";
         },
@@ -144,6 +95,46 @@ function initializeRazorpay(amount) {
     paymentObject.open();
 }
 
-// Initialize the cart on page load
-window.onload = initializeCart;
+// Modify button click event to call initializeRazorpay
+buttonTag.onclick = function() {
+    console.log("clicked");
+    initializeRazorpay(totalAmount); // Ensure totalAmount is in rupees
+}
 
+// BACKEND CALL
+let httpRequest = new XMLHttpRequest();
+let totalAmount = 0;
+httpRequest.onreadystatechange = function() {
+    if (this.readyState === 4) {
+        if (this.status == 200) {
+            contentTitle = JSON.parse(this.responseText);
+
+            let counter = Number(document.cookie.split(',')[1].split('=')[1]);
+            document.getElementById("totalItem").innerHTML = ('Total Items: ' + counter);
+
+            let item = document.cookie.split(',')[0].split('=')[1].split(" ");
+            console.log(counter);
+            console.log(item);
+
+            let i;
+            totalAmount = 0; // Reset totalAmount before calculating
+            for (i = 0; i < counter; i++) {
+                let itemCounter = 1;
+                for (let j = i + 1; j < counter; j++) {   
+                    if (Number(item[j]) == Number(item[i])) {
+                        itemCounter += 1;
+                    }
+                }
+                totalAmount += Number(contentTitle[item[i] - 1].price) * itemCounter;
+                dynamicCartSection(contentTitle[item[i] - 1], itemCounter);
+                i += (itemCounter - 1);
+            }
+            amountUpdate(totalAmount);
+        } else {
+            console.log('call failed!');
+        }
+    }
+}
+
+httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
+httpRequest.send();
