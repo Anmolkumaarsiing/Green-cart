@@ -104,6 +104,25 @@ color: white;
         padding: 90px 20px;
     }
 }
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.cart-item span {
+    margin-right: 20px;
+}
+
+.cart-item button {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
 @media(max-width: 555px)
 {
     #cartContainer
