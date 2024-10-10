@@ -68,24 +68,35 @@ function dynamicContentDetails(ob) {
         productPreviewDiv.appendChild(imgTagProductPreviewDiv);
     }
 
+    // Check if the item is a scrap item or a grocery item
     let buttonDiv = document.createElement('div');
     buttonDiv.id = 'button';
 
     let buttonTag = document.createElement('button');
     buttonDiv.appendChild(buttonTag);
 
-    let buttonText = document.createTextNode('Add to Cart');
-    buttonTag.onclick = function () {
-        let order = id + " ";
-        let counter = 1;
-        if (document.cookie.indexOf(',counter=') >= 0) {
-            order = id + " " + document.cookie.split(',')[0].split('=')[1];
-            counter = Number(document.cookie.split(',')[1].split('=')[1]) + 1;
-        }
-        document.cookie = "orderId=" + order + ",counter=" + counter;
-        document.getElementById("badge").innerHTML = counter;
-        console.log(document.cookie);
-    };
+    let buttonText;
+
+    if (ob.isScrap) {
+        buttonText = document.createTextNode('Request Pickup');
+        buttonTag.onclick = function () {
+            window.location.href = '/pickupRequestForm.html?id=' + id;
+        };
+    } else {
+        buttonText = document.createTextNode('Add to Cart');
+        buttonTag.onclick = function () {
+            let order = id + " ";
+            let counter = 1;
+            if (document.cookie.indexOf(',counter=') >= 0) {
+                order = id + " " + document.cookie.split(',')[0].split('=')[1];
+                counter = Number(document.cookie.split(',')[1].split('=')[1]) + 1;
+            }
+            document.cookie = "orderId=" + order + ",counter=" + counter;
+            document.getElementById("badge").innerHTML = counter;
+            console.log(document.cookie);
+        };
+    }
+
     buttonTag.appendChild(buttonText);
 
     // Append all sections to the main container
