@@ -62,9 +62,10 @@ let buttonTag = document.createElement('button');
 buttonTag.innerText = 'Place Order';
 buttonDiv.appendChild(buttonTag);
 
-buttonTag.onclick = function () {
+// Add event listener for the button
+buttonTag.addEventListener('click', function () {
     createOrder(); // Function to create Razorpay order
-};
+});
 
 // Append the totalContainerDiv to the cartContainer to ensure it's visible
 cartContainer.appendChild(totalContainerDiv);
@@ -80,7 +81,8 @@ httpRequest.onreadystatechange = function () {
             document.getElementById("totalItem").innerHTML = ('Total Items: ' + counter);
 
             let item = document.cookie.split(',')[0].split('=')[1].split(" ");
-            let totalAmount = 0;
+            totalAmount = 0; // Declare totalAmount here to be accessible in createOrder
+
             for (let i = 0; i < counter; i++) {
                 let itemCounter = 1;
                 for (let j = i + 1; j < counter; j++) {
@@ -121,6 +123,12 @@ function createOrder() {
     })
     .then(response => response.json())
     .then(data => {
+        if (data.error) {
+            console.error("Error creating order:", data.error);
+            alert("Failed to create order. Please try again.");
+            return;
+        }
+
         // Open Razorpay payment modal
         const options = {
             key: "rzp_test_4sMuXigiNls8Jr", // Your Razorpay key ID
@@ -151,5 +159,6 @@ function createOrder() {
     })
     .catch(error => {
         console.error("Error:", error);
+        alert("An error occurred while creating the order. Please try again.");
     });
 }
