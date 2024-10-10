@@ -1,4 +1,3 @@
-
 console.clear();
 
 if (document.cookie.indexOf(',counter=') >= 0) {
@@ -27,13 +26,11 @@ function dynamicCartSection(ob, itemCounter) {
     boxDiv.appendChild(boxh3);
 
     let boxh4 = document.createElement('h4');
-    let h4Text = document.createTextNode('Amount: Rs ' + ob.price);
+    let h4Text = document.createTextNode('Amount: Rs ' + (ob.price * itemCounter));
     boxh4.appendChild(h4Text);
     boxDiv.appendChild(boxh4);
 
     cartContainer.appendChild(boxContainerDiv);
-    cartContainer.appendChild(totalContainerDiv);
-
     return cartContainer;
 }
 
@@ -53,7 +50,6 @@ totalDiv.appendChild(totalh2);
 function amountUpdate(amount) {
     let totalh4 = document.createElement('h4');
     let totalh4Text = document.createTextNode('Amount: Rs ' + amount);
-    totalh4Text.id = 'toth4';
     totalh4.appendChild(totalh4Text);
     totalDiv.appendChild(totalh4);
     totalDiv.appendChild(buttonDiv);
@@ -67,11 +63,7 @@ totalDiv.appendChild(buttonDiv);
 let buttonTag = document.createElement('button');
 buttonDiv.appendChild(buttonTag);
 
-let buttonLink = document.createElement('a');
-buttonLink.href = '#'; // This will be handled by JavaScript
-buttonTag.appendChild(buttonLink);
-
-buttonText = document.createTextNode('Place Order');
+let buttonText = document.createTextNode('Place Order');
 buttonTag.appendChild(buttonText);
 
 // Function to initialize Razorpay
@@ -117,25 +109,30 @@ httpRequest.onreadystatechange = function() {
             console.log(counter);
             console.log(item);
 
-            let i;
             totalAmount = 0; // Reset totalAmount before calculating
-            for (i = 0; i < counter; i++) {
+            for (let i = 0; i < counter; i++) {
                 let itemCounter = 1;
+
+                // Count how many times each item appears in the order
                 for (let j = i + 1; j < counter; j++) {   
                     if (Number(item[j]) == Number(item[i])) {
                         itemCounter += 1;
                     }
                 }
+
+                // Update the total amount and add the item to the cart
                 totalAmount += Number(contentTitle[item[i] - 1].price) * itemCounter;
                 dynamicCartSection(contentTitle[item[i] - 1], itemCounter);
-                i += (itemCounter - 1);
+                i += (itemCounter - 1); // Skip counted items
             }
+
+            // Update the displayed total amount
             amountUpdate(totalAmount);
         } else {
             console.log('call failed!');
         }
     }
-}
+};
 
 httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
 httpRequest.send();
