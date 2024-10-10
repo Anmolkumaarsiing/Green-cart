@@ -59,13 +59,10 @@ buttonDiv.id = 'button';
 totalDiv.appendChild(buttonDiv);
 
 let buttonTag = document.createElement('button');
+buttonTag.innerText = 'Place Order';
 buttonDiv.appendChild(buttonTag);
 
-let buttonText = document.createTextNode('Place Order');
-buttonTag.appendChild(buttonText);
-
 buttonTag.onclick = function () {
-    // Call Razorpay payment integration here
     createOrder(); // Function to create Razorpay order
 };
 
