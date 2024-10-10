@@ -1,4 +1,3 @@
-@@ -0,0 +1,120 @@
 console.clear();
 
 let id = location.search.split('?')[1];
