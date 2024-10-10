@@ -1,4 +1,4 @@
-@@ -0,0 +1,69 @@
+
 // Function to create a dynamic section for grocery or scrap items
 function dynamicSection(ob) {
 let boxDiv = document.createElement("div");
