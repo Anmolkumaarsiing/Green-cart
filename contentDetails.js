@@ -115,6 +115,21 @@ httpRequest.onreadystatechange = function () {
         console.log('not connected!');
     }
 };
+<button onclick="addProductToCart()">Add to Cart</button>
+
+<script>
+    function addProductToCart() {
+        let product = {
+            id: 1,
+            name: "Sample Product",
+            price: 50,
+            quantity: 1
+        };
+        
+        addToCart(product);  // Calls the addToCart function from cart.js
+    }
+</script>
+
 
 httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData/' + id, true);
 httpRequest.send();
