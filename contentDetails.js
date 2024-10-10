@@ -61,43 +61,44 @@ function dynamicContentDetails(ob) {
         imgTagProductPreviewDiv.id = 'previewImg';
         imgTagProductPreviewDiv.src = ob.photos[i];
         imgTagProductPreviewDiv.onclick = function () {
-            console.log("clicked " + this.src);
             imgTag.src = this.src;
-            document.getElementById("imgDetails").src = this.src;
         };
         productPreviewDiv.appendChild(imgTagProductPreviewDiv);
     }
 
-    // Check if the item is a scrap item or a grocery item
+    // Create button section
     let buttonDiv = document.createElement('div');
     buttonDiv.id = 'button';
 
     let buttonTag = document.createElement('button');
     buttonDiv.appendChild(buttonTag);
 
-    let buttonText;
-
+    // Check if the item is a scrap item or a grocery item
     if (ob.isScrap) {
-        buttonText = document.createTextNode('Request Pickup');
+        let buttonText = document.createTextNode('Request Pickup');
         buttonTag.onclick = function () {
             window.location.href = '/pickupRequestForm.html?id=' + id;
         };
+        buttonTag.appendChild(buttonText);
     } else {
-        buttonText = document.createTextNode('Add to Cart');
+        let buttonText = document.createTextNode('Add to Cart');
         buttonTag.onclick = function () {
             let order = id + " ";
             let counter = 1;
+
+            // Check if the cookie exists
             if (document.cookie.indexOf(',counter=') >= 0) {
                 order = id + " " + document.cookie.split(',')[0].split('=')[1];
                 counter = Number(document.cookie.split(',')[1].split('=')[1]) + 1;
             }
+
+            // Set the cookie
             document.cookie = "orderId=" + order + ",counter=" + counter;
             document.getElementById("badge").innerHTML = counter;
             console.log(document.cookie);
         };
+        buttonTag.appendChild(buttonText);
     }
-
-    buttonTag.appendChild(buttonText);
 
     // Append all sections to the main container
     mainContainer.appendChild(imageSectionDiv);
