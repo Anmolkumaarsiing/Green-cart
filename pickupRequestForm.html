@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title> GREEN CART </title>
+    <!-- favicon -->
+    <link rel="icon" href="https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png" type="image/gif" sizes="16x16">
+    <!-- <link rel="stylesheet" href="/box1.css"> -->
+    <link rel="stylesheet" href="css/pickupRequest.css">
+    <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
+    <!-- header links -->
+    <script src="js/jQuery3.4.1.js"></script>
+    <script src="https://kit.fontawesome.com/4a3b1f73a2.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    
+
+    <div class="form-container">
+        <h1>Request Pickup for Scrap Items</h1>
+        <form action="/submitPickupRequest" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" placeholder="Enter your name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" pattern="[0-9]{10}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="pincode">Pincode:</label>
+                <input type="text" id="pincode" name="pincode" value="390025" disabled>
+            </div>
+
+            <div class="form-group">
+                <label for="weight">Average Weight (kg):</label>
+                <input type="number" id="weight" name="weight" placeholder="Enter average weight of items" min="1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="photos">Upload Photos of Scrap Items:</label>
+                <input type="file" id="photos" name="photos" multiple accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <label for="upi">UPI ID (For receiving payment):</label>
+                <input type="text" id="upi" name="upi" placeholder="Enter your UPI ID" required>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <textarea id="address" name="address" placeholder="Enter your house number, street, etc." rows="4" required></textarea>
+            </div>
+
+            <button type="submit" id="submitBtn">Submit Pickup Request</button>
+        </form>
+    </div>
+
+<!-- FOOTER -->
+<div id="4"></div>
+<script>
+    load("footer.html");
+    function load(url)
+    {
+        req = new XMLHttpRequest();
+        req.open("GET", url, false);
+        req.send(null);
+        document.getElementById(4).innerHTML = req.responseText;
+    }
+</script>
+</body>
+</html>
