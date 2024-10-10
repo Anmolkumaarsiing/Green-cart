@@ -69,53 +69,72 @@ function dynamicContentDetails(ob) {
         productPreviewDiv.appendChild(imgTagProductPreviewDiv);
     }
 
-    let buttonDiv = document.createElement('div');
-    buttonDiv.id = 'button';
+    
+    let buttonDiv = document.createElement('div')
+    buttonDiv.id = 'button'
 
-    let buttonTag = document.createElement('button');
-    buttonDiv.appendChild(buttonTag);
+    let buttonTag = document.createElement('button')
+    buttonDiv.appendChild(buttonTag)
 
-    let buttonText = document.createTextNode('Add to Cart');
-    buttonTag.onclick = function () {
-        let order = id + " ";
-        let counter = 1;
-        if (document.cookie.indexOf(',counter=') >= 0) {
-            order = id + " " + document.cookie.split(',')[0].split('=')[1];
-            counter = Number(document.cookie.split(',')[1].split('=')[1]) + 1;
+
+    buttonText = document.createTextNode('Add to Cart')
+    buttonTag.onclick  =   function()
+    {
+        let order = id+" "
+        let counter = 1
+        if(document.cookie.indexOf(',counter=')>=0)
+        {
+            order = id + " " + document.cookie.split(',')[0].split('=')[1]
+            counter = Number(document.cookie.split(',')[1].split('=')[1]) + 1
         }
-        document.cookie = "orderId=" + order + ",counter=" + counter;
-        document.getElementById("badge").innerHTML = counter;
-        console.log(document.cookie);
-    };
-    buttonTag.appendChild(buttonText);
+        document.cookie = "orderId=" + order + ",counter=" + counter
+        document.getElementById("badge").innerHTML = counter
+        console.log(document.cookie)
+    }
+    buttonTag.appendChild(buttonText)
 
-    // Append all sections to the main container
-    mainContainer.appendChild(imageSectionDiv);
-    mainContainer.appendChild(productDetailsDiv);
-    productDetailsDiv.appendChild(h1);
-    productDetailsDiv.appendChild(h4);
-    productDetailsDiv.appendChild(detailsDiv);
-    detailsDiv.appendChild(h3DetailsDiv);
-    detailsDiv.appendChild(h3);
-    detailsDiv.appendChild(para);
-    productDetailsDiv.appendChild(productPreviewDiv);
-    productDetailsDiv.appendChild(buttonDiv);
 
-    return mainContainer;
+    console.log(mainContainer.appendChild(imageSectionDiv));
+    mainContainer.appendChild(imageSectionDiv)
+    mainContainer.appendChild(productDetailsDiv)
+    productDetailsDiv.appendChild(h1)
+    productDetailsDiv.appendChild(h4)
+    productDetailsDiv.appendChild(detailsDiv)
+    detailsDiv.appendChild(h3DetailsDiv)
+    detailsDiv.appendChild(h3)
+    detailsDiv.appendChild(para)
+    productDetailsDiv.appendChild(productPreviewDiv)
+    
+    
+    productDetailsDiv.appendChild(buttonDiv)
+
+
+    return mainContainer
 }
 
+
+
 // BACKEND CALLING
-let httpRequest = new XMLHttpRequest();
-httpRequest.onreadystatechange = function () {
-    if (this.readyState === 4 && this.status === 200) {
-        console.log('connected!!');
-        let contentDetails = JSON.parse(this.responseText);
-        console.log(contentDetails);
-        dynamicContentDetails(contentDetails);
-    } else {
-        console.log('not connected!');
+
+let httpRequest = new XMLHttpRequest()
+{
+    httpRequest.onreadystatechange = function()
+    {
+        if(this.readyState === 4 && this.status == 200)
+        {
+            console.log('connected!!');
+            let contentDetails = JSON.parse(this.responseText)
+            {
+                console.log(contentDetails);
+                dynamicContentDetails(contentDetails)
+            }
+        }
+        else
+        {
+            console.log('not connected!');
+        }
     }
-};
+}
 
 httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData/' + id, true);
 httpRequest.send();
