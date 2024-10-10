@@ -1,3 +1,4 @@
+@@ -0,0 +1,120 @@
 console.clear();
 
 let id = location.search.split('?')[1];
@@ -115,8 +116,6 @@ httpRequest.onreadystatechange = function () {
         console.log('not connected!');
     }
 };
-<button onclick="addProductToCart()">Add to Cart</button>
-
 
 httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData/' + id, true);
 httpRequest.send();
