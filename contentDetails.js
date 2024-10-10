@@ -3,10 +3,30 @@ console.clear();
 let id = location.search.split('?')[1];
 console.log(id);
 
-// Update badge count if cookies are present
 if (document.cookie.indexOf(',counter=') >= 0) {
     let counter = document.cookie.split(',')[1].split('=')[1];
     document.getElementById("badge").innerHTML = counter;
+}
+
+function initializeRazorpay(amount) {
+    var options = {
+        "key": "rzp_test_4sMuXigiNls8Jr", // Your Razorpay API key
+        "amount": Math.round(amount * 100), // Convert rupees to paise and ensure it's an integer
+        "currency": "INR",
+        "name": "CARTER",
+        "description": "Payment for Selected items",
+        "image": "https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png", // Optional logo URL
+        "handler": function (response) {
+            alert("Payment successful: " + response.razorpay_payment_id);
+            window.location.href = "/orderPlaced.html"; // Redirect to order placed page
+        },
+        "theme": {
+            "color": "#0d94fb"
+        }
+    };
+
+    var paymentObject = new Razorpay(options);
+    paymentObject.open();
 }
 
 function dynamicContentDetails(ob) {
@@ -68,36 +88,24 @@ function dynamicContentDetails(ob) {
         productPreviewDiv.appendChild(imgTagProductPreviewDiv);
     }
 
-    // Button Div
+    // Check if the item is a scrap item or a grocery item
     let buttonDiv = document.createElement('div');
     buttonDiv.id = 'button';
 
     let buttonTag = document.createElement('button');
     buttonDiv.appendChild(buttonTag);
-    
-    // Check if the item is a scrap item or a grocery item
-    if (ob.isScrap) {
-        buttonTag.textContent = 'Request Pickup'; // Set button text for scrap items
 
+    if (ob.isScrap) {
+        let buttonText = document.createTextNode('Request Pickup');
+        buttonTag.appendChild(buttonText);
         buttonTag.onclick = function () {
-            // Redirect to pickup request form with the item ID
             window.location.href = '/pickupRequestForm.html?id=' + id;
-            console.log("Request for pickup sent for ID: " + id);
         };
     } else {
-        buttonTag.textContent = 'Add to Cart'; // Set button text for grocery items
-
+        let buttonText = document.createTextNode('Buy Now');
+        buttonTag.appendChild(buttonText);
         buttonTag.onclick = function () {
-            let order = id + " ";
-            let counter = 1;
-            if (document.cookie.indexOf(',counter=') >= 0) {
-                order = id + " " + document.cookie.split(',')[0].split('=')[1];
-                counter = Number(document.cookie.split(',')[1].split('=')[1]) + 1;
-            }
-            // Set the cookies
-            document.cookie = "orderId=" + order.trim() + ",counter=" + counter; // Make sure to trim spaces
-            document.getElementById("badge").innerHTML = counter; // Update the badge
-            console.log("Cookies after adding to cart: ", document.cookie);
+            initializeRazorpay(ob.price); // Pass the price of the product to Razorpay
         };
     }
 
