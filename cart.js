@@ -1,12 +1,8 @@
 console.clear();
 
-// Check if the 'counter' cookie exists
 if (document.cookie.indexOf(',counter=') >= 0) {
-    let counterCookie = document.cookie.split(',').find(c => c.trim().startsWith('counter='));
-    if (counterCookie) {
-        let counter = Number(counterCookie.split('=')[1]);
-        document.getElementById("badge").innerHTML = counter;
-    }
+    let counter = document.cookie.split(',')[1].split('=')[1];
+    document.getElementById("badge").innerHTML = counter;
 }
 
 let cartContainer = document.getElementById('cartContainer');
@@ -30,12 +26,12 @@ function dynamicCartSection(ob, itemCounter) {
     boxDiv.appendChild(boxh3);
 
     let boxh4 = document.createElement('h4');
-    let h4Text = document.createTextNode('Amount: Rs ' + (ob.price * itemCounter));
+    let h4Text = document.createTextNode('Amount: Rs ' + ob.price);
     boxh4.appendChild(h4Text);
     boxDiv.appendChild(boxh4);
 
     cartContainer.appendChild(boxContainerDiv);
-    return cartContainer;
+    cartContainer.appendChild(totalContainerDiv);
 }
 
 let totalContainerDiv = document.createElement('div');
@@ -57,7 +53,6 @@ function amountUpdate(amount) {
     totalh4.appendChild(totalh4Text);
     totalDiv.appendChild(totalh4);
     totalDiv.appendChild(buttonDiv);
-    console.log(totalh4);
 }
 
 let buttonDiv = document.createElement('div');
@@ -66,6 +61,10 @@ totalDiv.appendChild(buttonDiv);
 
 let buttonTag = document.createElement('button');
 buttonDiv.appendChild(buttonTag);
+
+let buttonLink = document.createElement('a');
+buttonLink.href = '#'; // This will be handled by JavaScript
+buttonTag.appendChild(buttonLink);
 
 let buttonText = document.createTextNode('Place Order');
 buttonTag.appendChild(buttonText);
@@ -101,50 +100,48 @@ buttonTag.onclick = function() {
 // BACKEND CALL
 let httpRequest = new XMLHttpRequest();
 let totalAmount = 0;
+
 httpRequest.onreadystatechange = function() {
     if (this.readyState === 4) {
         if (this.status == 200) {
             contentTitle = JSON.parse(this.responseText);
+            console.log("Current cookies:", document.cookie); // Log current cookies
 
-            // Check if the 'counter' cookie exists and read it
-            let counter = 0;
+            // Check for cookies
             if (document.cookie.indexOf(',counter=') >= 0) {
-                let counterCookie = document.cookie.split(',').find(c => c.trim().startsWith('counter='));
-                if (counterCookie) {
-                    counter = Number(counterCookie.split('=')[1]);
-                }
-            }
+                let counter = Number(document.cookie.split(',')[1].split('=')[1]);
+                document.getElementById("totalItem").innerHTML = ('Total Items: ' + counter);
+                
+                // Split cookies safely
+                let itemParts = document.cookie.split(',')[0].split('=');
+                if (itemParts.length > 1) {
+                    let item = itemParts[1].trim().split(" ");
+                    console.log("Items from cookie:", item);
 
-            document.getElementById("totalItem").innerHTML = ('Total Items: ' + counter);
-
-            let item = document.cookie.split(',')[0].split('=')[1].split(" ");
-            console.log(counter);
-            console.log(item);
-
-            totalAmount = 0; // Reset totalAmount before calculating
-            for (let i = 0; i < counter; i++) {
-                let itemCounter = 1;
-
-                // Count how many times each item appears in the order
-                for (let j = i + 1; j < counter; j++) {   
-                    if (Number(item[j]) == Number(item[i])) {
-                        itemCounter += 1;
+                    // Calculate totalAmount and dynamically show items
+                    let i;
+                    totalAmount = 0; // Reset totalAmount before calculating
+                    for (i = 0; i < counter; i++) {
+                        let itemCounter = 1;
+                        for (let j = i + 1; j < counter; j++) {   
+                            if (Number(item[j]) == Number(item[i])) {
+                                itemCounter += 1;
+                            }
+                        }
+                        totalAmount += Number(contentTitle[item[i] - 1].price) * itemCounter;
+                        dynamicCartSection(contentTitle[item[i] - 1], itemCounter);
+                        i += (itemCounter - 1);
                     }
+                    amountUpdate(totalAmount);
+                } else {
+                    console.error("Expected cookie format not found!");
                 }
-
-                // Update the total amount and add the item to the cart
-                totalAmount += Number(contentTitle[item[i] - 1].price) * itemCounter;
-                dynamicCartSection(contentTitle[item[i] - 1], itemCounter);
-                i += (itemCounter - 1); // Skip counted items
             }
-
-            // Update the displayed total amount
-            amountUpdate(totalAmount);
         } else {
             console.log('call failed!');
         }
     }
-};
+}
 
 httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
 httpRequest.send();
