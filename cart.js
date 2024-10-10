@@ -56,7 +56,7 @@ function amountUpdate(amount) {
 // Place Order Button
 let buttonDiv = document.createElement('div');
 buttonDiv.id = 'button';
-totalDiv.appendChild(buttonDiv);
+totalContainerDiv.appendChild(buttonDiv);
 
 let buttonTag = document.createElement('button');
 buttonTag.innerText = 'Place Order';
@@ -65,6 +65,9 @@ buttonDiv.appendChild(buttonTag);
 buttonTag.onclick = function () {
     createOrder(); // Function to create Razorpay order
 };
+
+// Append the totalContainerDiv to the cartContainer to ensure it's visible
+cartContainer.appendChild(totalContainerDiv);
 
 // BACKEND CALL
 let httpRequest = new XMLHttpRequest();
