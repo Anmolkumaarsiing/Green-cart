@@ -1,3 +1,4 @@
+
 console.clear();
 
 if (document.cookie.indexOf(',counter=') >= 0) {
@@ -26,11 +27,14 @@ function dynamicCartSection(ob, itemCounter) {
     boxDiv.appendChild(boxh3);
 
     let boxh4 = document.createElement('h4');
-    let h4Text = document.createTextNode('Amount: Rs ' + (ob.price * itemCounter));
+    let h4Text = document.createTextNode('Amount: Rs ' + ob.price);
     boxh4.appendChild(h4Text);
     boxDiv.appendChild(boxh4);
 
     cartContainer.appendChild(boxContainerDiv);
+    cartContainer.appendChild(totalContainerDiv);
+
+    return cartContainer;
 }
 
 let totalContainerDiv = document.createElement('div');
@@ -49,43 +53,75 @@ totalDiv.appendChild(totalh2);
 function amountUpdate(amount) {
     let totalh4 = document.createElement('h4');
     let totalh4Text = document.createTextNode('Amount: Rs ' + amount);
+    totalh4Text.id = 'toth4';
     totalh4.appendChild(totalh4Text);
     totalDiv.appendChild(totalh4);
+    totalDiv.appendChild(buttonDiv);
+    console.log(totalh4);
 }
 
-// Place Order Button
 let buttonDiv = document.createElement('div');
 buttonDiv.id = 'button';
-totalContainerDiv.appendChild(buttonDiv);
+totalDiv.appendChild(buttonDiv);
 
 let buttonTag = document.createElement('button');
-buttonTag.innerText = 'Place Order';
 buttonDiv.appendChild(buttonTag);
 
-// Add event listener for the button
-buttonTag.addEventListener('click', function () {
-    createOrder(); // Function to create Razorpay order
-});
+let buttonLink = document.createElement('a');
+buttonLink.href = '#'; // This will be handled by JavaScript
+buttonTag.appendChild(buttonLink);
 
-// Append the totalContainerDiv to the cartContainer to ensure it's visible
-cartContainer.appendChild(totalContainerDiv);
+buttonText = document.createTextNode('Place Order');
+buttonTag.appendChild(buttonText);
+
+// Function to initialize Razorpay
+function initializeRazorpay(amount) {
+    var options = {
+        "key": "rzp_test_4sMuXigiNls8Jr", // Your Razorpay API key
+        "amount": Math.round(amount * 100), // Convert rupees to paise and ensure it's an integer
+        "currency": "INR",
+        "name": "CARTER",
+        "description": "Payment for Selected items",
+        "image": "https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png", // Optional logo URL
+        "handler": function (response) {
+            alert("Payment successful: " + response.razorpay_payment_id);
+            window.location.href = "/orderPlaced.html";
+        },
+        "theme": {
+            "color": "#0d94fb"
+        }
+    };
+
+    var paymentObject = new Razorpay(options);
+    paymentObject.open();
+}
+
+// Modify button click event to call initializeRazorpay
+buttonTag.onclick = function() {
+    console.log("clicked");
+    initializeRazorpay(totalAmount); // Ensure totalAmount is in rupees
+}
 
 // BACKEND CALL
 let httpRequest = new XMLHttpRequest();
 let totalAmount = 0;
-httpRequest.onreadystatechange = function () {
+httpRequest.onreadystatechange = function() {
     if (this.readyState === 4) {
         if (this.status == 200) {
-            let contentTitle = JSON.parse(this.responseText);
+            contentTitle = JSON.parse(this.responseText);
+
             let counter = Number(document.cookie.split(',')[1].split('=')[1]);
             document.getElementById("totalItem").innerHTML = ('Total Items: ' + counter);
 
             let item = document.cookie.split(',')[0].split('=')[1].split(" ");
-            totalAmount = 0; // Declare totalAmount here to be accessible in createOrder
+            console.log(counter);
+            console.log(item);
 
-            for (let i = 0; i < counter; i++) {
+            let i;
+            totalAmount = 0; // Reset totalAmount before calculating
+            for (i = 0; i < counter; i++) {
                 let itemCounter = 1;
-                for (let j = i + 1; j < counter; j++) {
+                for (let j = i + 1; j < counter; j++) {   
                     if (Number(item[j]) == Number(item[i])) {
                         itemCounter += 1;
                     }
@@ -95,70 +131,11 @@ httpRequest.onreadystatechange = function () {
                 i += (itemCounter - 1);
             }
             amountUpdate(totalAmount);
+        } else {
+            console.log('call failed!');
         }
-    } else {
-        console.log('call failed!');
     }
 }
 
 httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
 httpRequest.send();
-
-// Function to create Razorpay order
-function createOrder() {
-    let amount = totalAmount * 100; // Amount should be in paise
-    let orderData = {
-        amount: amount,
-        currency: "INR",
-        receipt: "receipt#1"
-    };
-
-    // Create order on the server
-    fetch("/create-order", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(orderData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.error) {
-            console.error("Error creating order:", data.error);
-            alert("Failed to create order. Please try again.");
-            return;
-        }
-
-        // Open Razorpay payment modal
-        const options = {
-            key: "rzp_test_4sMuXigiNls8Jr", // Your Razorpay key ID
-            amount: data.amount, // Amount in paise
-            currency: data.currency,
-            name: "Your Company Name",
-            description: "Order Description",
-            image: "https://yourlogo.com/logo.png",
-            order_id: data.id, // Order ID from Razorpay
-            handler: function (response) {
-                alert("Payment successful!");
-                console.log(response);
-                // Redirect to order placed page
-                window.location.href = "orderplaced.html"; // Redirect to your order placed page
-            },
-            prefill: {
-                name: "Customer Name",
-                email: "customer@example.com",
-                contact: "9999999999"
-            },
-            theme: {
-                color: "#F37254"
-            }
-        };
-
-        const rzp1 = new Razorpay(options);
-        rzp1.open();
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        alert("An error occurred while creating the order. Please try again.");
-    });
-}
