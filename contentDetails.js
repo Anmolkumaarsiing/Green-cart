@@ -3,6 +3,7 @@ console.clear();
 let id = location.search.split('?')[1];
 console.log(id);
 
+// Update badge count if cookies are present
 if (document.cookie.indexOf(',counter=') >= 0) {
     let counter = document.cookie.split(',')[1].split('=')[1];
     document.getElementById("badge").innerHTML = counter;
@@ -61,43 +62,43 @@ function dynamicContentDetails(ob) {
         imgTagProductPreviewDiv.id = 'previewImg';
         imgTagProductPreviewDiv.src = ob.photos[i];
         imgTagProductPreviewDiv.onclick = function () {
+            console.log("clicked " + this.src);
             imgTag.src = this.src;
         };
         productPreviewDiv.appendChild(imgTagProductPreviewDiv);
     }
 
-    // Create button section
+    // Button Div
     let buttonDiv = document.createElement('div');
     buttonDiv.id = 'button';
 
     let buttonTag = document.createElement('button');
     buttonDiv.appendChild(buttonTag);
-
+    
     // Check if the item is a scrap item or a grocery item
     if (ob.isScrap) {
-        let buttonText = document.createTextNode('Request Pickup');
+        buttonTag.textContent = 'Request Pickup'; // Set button text for scrap items
+
         buttonTag.onclick = function () {
+            // Redirect to pickup request form with the item ID
             window.location.href = '/pickupRequestForm.html?id=' + id;
+            console.log("Request for pickup sent for ID: " + id);
         };
-        buttonTag.appendChild(buttonText);
     } else {
-        let buttonText = document.createTextNode('Add to Cart');
+        buttonTag.textContent = 'Add to Cart'; // Set button text for grocery items
+
         buttonTag.onclick = function () {
             let order = id + " ";
             let counter = 1;
-
-            // Check if the cookie exists
             if (document.cookie.indexOf(',counter=') >= 0) {
                 order = id + " " + document.cookie.split(',')[0].split('=')[1];
                 counter = Number(document.cookie.split(',')[1].split('=')[1]) + 1;
             }
-
-            // Set the cookie
-            document.cookie = "orderId=" + order + ",counter=" + counter;
-            document.getElementById("badge").innerHTML = counter;
-            console.log(document.cookie);
+            // Set the cookies
+            document.cookie = "orderId=" + order.trim() + ",counter=" + counter; // Make sure to trim spaces
+            document.getElementById("badge").innerHTML = counter; // Update the badge
+            console.log("Cookies after adding to cart: ", document.cookie);
         };
-        buttonTag.appendChild(buttonText);
     }
 
     // Append all sections to the main container
