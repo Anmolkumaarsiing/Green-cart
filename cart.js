@@ -1,8 +1,12 @@
 console.clear();
 
+// Check if the 'counter' cookie exists
 if (document.cookie.indexOf(',counter=') >= 0) {
-    let counter = document.cookie.split(',')[1].split('=')[1];
-    document.getElementById("badge").innerHTML = counter;
+    let counterCookie = document.cookie.split(',').find(c => c.trim().startsWith('counter='));
+    if (counterCookie) {
+        let counter = Number(counterCookie.split('=')[1]);
+        document.getElementById("badge").innerHTML = counter;
+    }
 }
 
 let cartContainer = document.getElementById('cartContainer');
@@ -102,7 +106,15 @@ httpRequest.onreadystatechange = function() {
         if (this.status == 200) {
             contentTitle = JSON.parse(this.responseText);
 
-            let counter = Number(document.cookie.split(',')[1].split('=')[1]);
+            // Check if the 'counter' cookie exists and read it
+            let counter = 0;
+            if (document.cookie.indexOf(',counter=') >= 0) {
+                let counterCookie = document.cookie.split(',').find(c => c.trim().startsWith('counter='));
+                if (counterCookie) {
+                    counter = Number(counterCookie.split('=')[1]);
+                }
+            }
+
             document.getElementById("totalItem").innerHTML = ('Total Items: ' + counter);
 
             let item = document.cookie.split(',')[0].split('=')[1].split(" ");
