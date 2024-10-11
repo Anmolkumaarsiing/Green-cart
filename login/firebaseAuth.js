@@ -58,7 +58,7 @@ if (signUpButton) {
 
             showMessage('Account Created Successfully', 'sinUpMessage');
             // Redirect to sign-in or another page (adjust the URL as needed)
-            window.location.href = '../homepage/home.html';
+            window.location.href = '../home.html';
         } catch (error) {
             if (error.code === 'auth/email-already-in-use') {
                 showMessage('Email Already Exists!', 'sinUpMessage');
