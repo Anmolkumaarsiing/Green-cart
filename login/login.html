@@ -2,10 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Green cart</title>
+    <title>Green Cart</title>
     <link rel="stylesheet" href="./style.css">
-    <!-- Firebase scripts -->
     <script type="module" src="firebaseAuth.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css">
+    <style>
+        .eye-icon {
+            cursor: pointer;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    </style>
 </head>
 <body>
     <!-- FORM SECTION -->
@@ -14,7 +23,7 @@
             <!-- SIGN UP -->
             <div class="col align-items-center flex-col sign-up">
                 <div class="form-wrapper align-items-center">
-                    <form action="" method="post">
+                    <form id="signUpForm" action="" method="post">
                         <div id="sinUpMessage" class="messageDiv" style="display:none;"></div>
                         <div class="form sign-up">
                             <div class="input-group">
@@ -28,10 +37,12 @@
                             <div class="input-group">
                                 <i class='bx bxs-lock-alt'></i>
                                 <input type="password" id="rPassword" placeholder="Password">
+                                <i class='bx bxs-show eye-icon' id="togglePassword1"></i>
                             </div>
                             <div class="input-group">
                                 <i class='bx bxs-lock-alt'></i>
                                 <input type="password" id="cPassword" placeholder="Confirm password">
+                                <i class='bx bxs-show eye-icon' id="togglePassword2"></i>
                             </div>
                             <button class="btn" id="submitSignUp" type="button">
                                 Sign up
@@ -57,6 +68,7 @@
                             <div class="input-group">
                                 <i class='bx bxs-lock-alt'></i>
                                 <input type="password" id="signInPassword" placeholder="Password">
+                                <i class='bx bxs-show eye-icon' id="toggleSignInPassword"></i>
                             </div>
                             <button id="submitSignIn" type="button">
                                 Sign in
@@ -77,5 +89,36 @@
 
     <!-- Custom Script -->
     <script src="./script.js"></script>
+    <script>
+        // Toggle password visibility for sign up
+        const togglePassword1 = document.getElementById('togglePassword1');
+        const rPasswordInput = document.getElementById('rPassword');
+        togglePassword1.addEventListener('click', () => {
+            const type = rPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            rPasswordInput.setAttribute('type', type);
+            togglePassword1.classList.toggle('bxs-show');
+            togglePassword1.classList.toggle('bxs-hide');
+        });
+
+        // Toggle password visibility for confirm password
+        const togglePassword2 = document.getElementById('togglePassword2');
+        const cPasswordInput = document.getElementById('cPassword');
+        togglePassword2.addEventListener('click', () => {
+            const type = cPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            cPasswordInput.setAttribute('type', type);
+            togglePassword2.classList.toggle('bxs-show');
+            togglePassword2.classList.toggle('bxs-hide');
+        });
+
+        // Toggle password visibility for sign in
+        const toggleSignInPassword = document.getElementById('toggleSignInPassword');
+        const signInPasswordInput = document.getElementById('signInPassword');
+        toggleSignInPassword.addEventListener('click', () => {
+            const type = signInPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            signInPasswordInput.setAttribute('type', type);
+            toggleSignInPassword.classList.toggle('bxs-show');
+            toggleSignInPassword.classList.toggle('bxs-hide');
+        });
+    </script>
 </body>
 </html>
