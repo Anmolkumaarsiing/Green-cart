@@ -78,16 +78,17 @@ function dynamicContentDetails(ob) {
     if(ob.isScrap)
     {
         let buttonText = document.createTextNode('Request Pickup');
-        buttonTag.appendChild(buttonText);
+        
         buttonTag.onclick = function ()
         {
             window.location.href = '/pickupRequestForm.html?id=' + id;
         };
+        buttonTag.appendChild(buttonText);
     }
     else
     {
         let buttonText = document.createTextNode('Add to Cart');
-        buttonTag.appendChild(buttonText);
+       
         buttonTag.onclick = function () 
         {
             let order = id + " ";
@@ -100,7 +101,9 @@ function dynamicContentDetails(ob) {
             document.cookie = "orderId=" + order + ",counter=" + counter;
             document.getElementById("badge").innerHTML = counter;
             console.log(document.cookie);
+            
         };
+        buttonTag.appendChild(buttonText);
     }
 
     // Append all sections to the main container
