@@ -1,108 +1,93 @@
-// Import the necessary Firebase SDK modules
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
-import { getFirestore, setDoc, doc } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
-
-// Firebase configuration
-const firebaseConfig = {
+ // Import the functions you need from the SDKs you need
+ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+ import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+ import{getFirestore, setDoc, doc} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js"
+ 
+ const firebaseConfig = {
     apiKey: "AIzaSyCrSBQoJDG9Cn5t2vsWNvDDkDQJm1UxTgk",
     authDomain: "green--cart.firebaseapp.com",
+    databaseURL: "https://green--cart-default-rtdb.firebaseio.com",
     projectId: "green--cart",
     storageBucket: "green--cart.appspot.com",
     messagingSenderId: "997863065",
     appId: "1:997863065:web:1716dad07cdbe649e81208",
     measurementId: "G-56BY927ZLY"
-};
+  };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(); // Get the authentication instance
-const db = getFirestore(); // Get the Firestore instance
+ // Initialize Firebase
+ const app = initializeApp(firebaseConfig);
 
-// Function to display messages
-function showMessage(message, divId) {
-    const messageDiv = document.getElementById(divId);
-    if (messageDiv) {
-        messageDiv.style.display = "block";
-        messageDiv.innerHTML = message;
-        messageDiv.style.opacity = 1;
-        setTimeout(() => {
-            messageDiv.style.opacity = 0;
-        }, 5000);
-    }
-}
+ function showMessage(message, divId){
+    var messageDiv=document.getElementById(divId);
+    messageDiv.style.display="block";
+    messageDiv.innerHTML=message;
+    messageDiv.style.opacity=1;
+    setTimeout(function(){
+        messageDiv.style.opacity=0;
+    },5000);
+ }
+ const signUp=document.getElementById('submitSignUp');
+ signUp.addEventListener('click', (event)=>{
+    event.preventDefault();
+    const email=document.getElementById('rEmail').value;
+    const password=document.getElementById('rPassword').value;
+    const firstName=document.getElementById('fName').value;
+    const lastName=document.getElementById('lName').value;
 
-// Event listener for sign-up button
-const signUpButton = document.getElementById('submitSignUp');
-if (signUpButton) {
-    signUpButton.addEventListener('click', async (event) => {
-        event.preventDefault();
+    const auth=getAuth();
+    const db=getFirestore();
 
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('rPassword').value;
-        const confirmPassword = document.getElementById('cPassword').value;
-        const username = document.getElementById('Uname').value;
+    createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential)=>{
+        const user=userCredential.user;
+        const userData={
+            email: email,
+            firstName: firstName,
+            lastName:lastName
+        };
+        showMessage('Account Created Successfully', 'signUpMessage');
+        const docRef=doc(db, "users", user.uid);
+        setDoc(docRef,userData)
+        .then(()=>{
+            window.location.href='index.html';
+        })
+        .catch((error)=>{
+            console.error("error writing document", error);
 
-        // Check if passwords match
-        if (password !== confirmPassword) {
-            showMessage('Passwords do not match!', 'sinUpMessage');
-            return;
+        });
+    })
+    .catch((error)=>{
+        const errorCode=error.code;
+        if(errorCode=='auth/email-already-in-use'){
+            showMessage('Email Address Already Exists !!!', 'signUpMessage');
         }
-
-        try {
-            // Create a new user account
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-             showMessage('Sign In Successful', 'sinInMessage');
-            // Store additional user data in Firestore
-            const userData = {
-                email: email,
-                username: username
-            };
-
-            const docRef = doc(db, "users", user.uid);
-            await setDoc(docRef, userData);
-
-            showMessage('Account Created Successfully', 'sinUpMessage');
-            // Redirect to sign-in or another page (adjust the URL as needed)
-            window.location.href = '../home.html';
-        } catch (error) {
-            if (error.code === 'auth/email-already-in-use') {
-                showMessage('Email Already Exists!', 'sinUpMessage');
-            } else {
-                showMessage('Error creating user: ' + error.message, 'sinUpMessage');
-            }
-            console.error("Error creating user:", error);
+        else{
+            showMessage('unable to create User', 'signUpMessage');
         }
-    });
-}
+    })
+ });
 
-// Event listener for sign-in button
-const signInButton = document.getElementById('submitSignIn');
-if (signInButton) {
-    signInButton.addEventListener('click', async (event) => {
-        event.preventDefault();
+ const signIn=document.getElementById('submitSignIn');
+ signIn.addEventListener('click', (event)=>{
+    event.preventDefault();
+    const email=document.getElementById('email').value;
+    const password=document.getElementById('password').value;
+    const auth=getAuth();
 
-        const email = document.getElementById('signInEmail').value;
-        const password = document.getElementById('signInPassword').value;
-
-        try {
-            // Sign in the user
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-
-            showMessage('Sign In Successful', 'sinInMessage');
-            // Redirect to home or another page after successful sign-in
-            window.location.href = '../home.html'; // Change this to your target page
-        } catch (error) {
-            if (error.code === 'auth/user-not-found') {
-                showMessage('User Not Found!', 'sinInMessage');
-            } else if (error.code === 'auth/wrong-password') {
-                showMessage('Incorrect Password!', 'sinInMessage');
-            } else {
-                showMessage('Invalid username or password', 'sinInMessage');
-            }
-            console.error("Error signing in:", error);
+    signInWithEmailAndPassword(auth, email,password)
+    .then((userCredential)=>{
+        showMessage('login is successful', 'signInMessage');
+        const user=userCredential.user;
+        localStorage.setItem('loggedInUserId', user.uid);
+        window.location.href='homepage.html';
+    })
+    .catch((error)=>{
+        const errorCode=error.code;
+        if(errorCode==='auth/invalid-credential'){
+            showMessage('Incorrect Email or Password', 'signInMessage');
         }
-    });
-}
+        else{
+            showMessage('Account does not Exist', 'signInMessage');
+        }
+    })
+ })
