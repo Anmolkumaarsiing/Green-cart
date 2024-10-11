@@ -40,7 +40,14 @@ if (signUpButton) {
 
         const email = document.getElementById('email').value;
         const password = document.getElementById('rPassword').value;
+        const confirmPassword = document.getElementById('cPassword').value;
         const username = document.getElementById('Uname').value;
+
+        // Check if passwords match
+        if (password !== confirmPassword) {
+            showMessage('Passwords do not match!', 'sinUpMessage');
+            return;
+        }
 
         try {
             // Create a new user account
@@ -63,7 +70,7 @@ if (signUpButton) {
             if (error.code === 'auth/email-already-in-use') {
                 showMessage('Email Already Exists!', 'sinUpMessage');
             } else {
-                showMessage('Password didnt match', 'sinUpMessage');
+                showMessage('Error creating user: ' + error.message, 'sinUpMessage');
             }
             console.error("Error creating user:", error);
         }
@@ -93,7 +100,7 @@ if (signInButton) {
             } else if (error.code === 'auth/wrong-password') {
                 showMessage('Incorrect Password!', 'sinInMessage');
             } else {
-                showMessage('Inavlid username or password', 'sinInMessage');
+                showMessage('Invalid username or password', 'sinInMessage');
             }
             console.error("Error signing in:", error);
         }
