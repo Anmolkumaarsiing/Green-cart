@@ -3,13 +3,13 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/fireba
 
 // Initialize Firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyCZQVEtuO3A66jf-ZzLMqM_OubWm20aWHw",
-    authDomain: "globeway-login-signup.firebaseapp.com",
-    projectId: "globeway-login-signup",
-    storageBucket: "globeway-login-signup.appspot.com",
-    messagingSenderId: "351033593285",
-    appId: "1:351033593285:web:8f5c42fd9d91415a32cfac",
-    measurementId: "G-P3PC2K9GQ0"
+    apiKey: "AIzaSyCrSBQoJDG9Cn5t2vsWNvDDkDQJm1UxTgk",
+    authDomain: "green--cart.firebaseapp.com",
+    projectId: "green--cart",
+    storageBucket: "green--cart.appspot.com",
+    messagingSenderId: "997863065",
+    appId: "1:997863065:web:1716dad07cdbe649e81208",
+    measurementId: "G-56BY927ZLY"
 };
 
 const app = initializeApp(firebaseConfig);
