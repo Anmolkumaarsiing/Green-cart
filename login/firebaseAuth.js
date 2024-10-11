@@ -53,7 +53,7 @@ if (signUpButton) {
             // Create a new user account
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
-
+             showMessage('Sign In Successful', 'sinInMessage');
             // Store additional user data in Firestore
             const userData = {
                 email: email,
