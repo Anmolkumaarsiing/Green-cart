@@ -2,85 +2,134 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Green Cart</title>
-    <link rel="icon" href="https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png" type="image/gif" sizes="16x16">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    <script type="module" src="firebaseauth.js"></script>
+     <link rel="icon" href="https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png" type="image/gif" sizes="16x16">
+    <link rel="stylesheet" href="./style.css">
+    <script type="module" src="firebaseAuth.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css">
+    <style>
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .eye-icon {
+            cursor: pointer;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10; /* Ensure the icon is above the input */
+        }
+        input {
+            width: 100%;
+            padding: 10px 40px; /* Add padding to accommodate the icon */
+            box-sizing: border-box; /* Ensures padding is included in total width */
+        }
+    </style>
 </head>
 <body>
-    <div class="container" id="signup" style="display:none;">
-      <h1 class="form-title">Register</h1>
-      <form method="post" action="">
-        <div id="signUpMessage" class="messageDiv" style="display:none;"></div>
-        <div class="input-group">
-           <i class="fas fa-user"></i>
-           <input type="text"  id="fName" placeholder="First Name" required>
-           <label for="fname">First Name</label>
+    <!-- FORM SECTION -->
+    <div id="container" class="container">
+        <div class="row">
+            <!-- SIGN UP -->
+            <div class="col align-items-center flex-col sign-up">
+                <div class="form-wrapper align-items-center">
+                    <form id="signUpForm" action="" method="post">
+                        <div id="sinUpMessage" class="messageDiv" style="display:none;"></div>
+                        <div class="form sign-up">
+                            <div class="input-group">
+                                <i class='bx bxs-user'></i>
+                                <input type="text" id="Uname" placeholder="Name" required>
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bx-mail-send'></i>
+                                <input type="email" id="email" placeholder="Email" required>
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bxs-lock-alt'></i>
+                                <input type="password" id="rPassword" placeholder="Password" required>
+                                <i class='bx bxs-show eye-icon' id="togglePassword1"></i>
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bxs-lock-alt'></i>
+                                <input type="password" id="cPassword" placeholder="Confirm Password" required>
+                                <i class='bx bxs-show eye-icon' id="togglePassword2"></i>
+                            </div>
+                            <button class="btn" id="submitSignUp" type="button">
+                                Sign up
+                            </button>
+                            <p>
+                                <span>Already have an account?</span>
+                                <b onclick="toggle()" class="pointer">Sign in here</b>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- SIGN IN -->
+            <div class="col align-items-center flex-col sign-in">
+                <div class="form-wrapper align-items-center">
+                    <form action="" method="post">
+                        <div id="sinInMessage" class="messageDiv" style="display:none;"></div>
+                        <div class="form sign-in">
+                            <div class="input-group">
+                                <i class='bx bxs-user'></i>
+                                <input type="email" id="signInEmail" placeholder="Email" required>
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bxs-lock-alt'></i>
+                                <input type="password" id="signInPassword" placeholder="Password" required>
+                                <i class='bx bxs-show eye-icon' id="toggleSignInPassword"></i>
+                            </div>
+                            <button id="submitSignIn" type="button">
+                                Sign in
+                            </button>
+                            <p>
+                                <b><a href="../forgotpassword/forgotpassword.html">Forgot password?</a></b>
+                            </p>
+                            <p>
+                                <span>Don't have an account?</span>
+                                <b onclick="toggle()" class="pointer">Sign up here</b>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="input-group">
-            <i class="fas fa-user"></i>
-            <input type="text"  id="lName" placeholder="Last Name" required>
-            <label for="lName">Last Name</label>
-        </div>
-        <div class="input-group">
-            <i class="fas fa-envelope"></i>
-            <input type="email"  id="rEmail" placeholder="Email" required>
-            <label for="rEmail">Email</label>
-        </div>
-        <div class="input-group">
-            <i class="fas fa-lock"></i>
-            <input type="password" id="rPassword"  placeholder="Password" required>
-            <label for="rPassword">Password</label>
-        </div>
-       <button class="btn" id="submitSignUp" >Sign Up</button>
-      </form>
-      <p class="or">
-        ----------or--------
-      </p>
-      <div class="icons">
-        <i class="fab fa-google"></i>
-        <i class="fab fa-facebook"></i>
-      </div>
-      <div class="links">
-        <p><br>Already Have Account ?</p>
-        <button id="signInButton">Sign In</button>
-      </div>
     </div>
 
-  <div class="container" id="signIn">
-        <h1 class="form-title">Sign In</h1>
-        <form method="post" action="">
-          <div id="signInMessage" class="messageDiv" style="display:none;"></div>
+    <!-- Custom Script -->
+    <script src="./script.js"></script>
+    <script>
+        // Toggle password visibility for sign up
+        const togglePassword1 = document.getElementById('togglePassword1');
+        const rPasswordInput = document.getElementById('rPassword');
+        togglePassword1.addEventListener('click', () => {
+            const type = rPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            rPasswordInput.setAttribute('type', type);
+            togglePassword1.classList.toggle('bxs-show');
+            togglePassword1.classList.toggle('bxs-hide');
+        });
 
-          <div class="input-group">
-              <i class="fas fa-envelope"></i>
-              <input type="email"  id="email" placeholder="Email" required>
-              <label for="email">Email</label>
-          </div>
-          <div class="input-group">
-              <i class="fas fa-lock"></i>
-            <input type="password" id="password"  placeholder="Password" required>
-              <label for="password">Password</label>
-          </div>
-          <p class="recover">
-            <a href="#">Recover Password</a>
-          </p>
-         <button  class="btn"  id="submitSignIn">Sign In</button>
-        </form>
-        <p class="or">
-          ----------or--------
-        </p>
-        <div class="icons">
-          <i class="fab fa-google"></i>
-          <i class="fab fa-facebook"></i>
-        </div>
-        <div class="links">
-          <p><br>Don't have account yet?</p>
-          <button id="signUpButton">Sign Up</button>
-        </div>
-      </div>
-      <script src="script.js"></script>
+        // Toggle password visibility for confirm password
+        const togglePassword2 = document.getElementById('togglePassword2');
+        const cPasswordInput = document.getElementById('cPassword');
+        togglePassword2.addEventListener('click', () => {
+            const type = cPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            cPasswordInput.setAttribute('type', type);
+            togglePassword2.classList.toggle('bxs-show');
+            togglePassword2.classList.toggle('bxs-hide');
+        });
+
+        // Toggle password visibility for sign in
+        const toggleSignInPassword = document.getElementById('toggleSignInPassword');
+        const signInPasswordInput = document.getElementById('signInPassword');
+        toggleSignInPassword.addEventListener('click', () => {
+            const type = signInPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            signInPasswordInput.setAttribute('type', type);
+            toggleSignInPassword.classList.toggle('bxs-show');
+            toggleSignInPassword.classList.toggle('bxs-hide');
+        });
+    </script>
 </body>
 </html>
