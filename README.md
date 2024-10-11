@@ -1,19 +1,24 @@
-# CARTER
-Carter is an e-commerce platform that allows you to order groceries and vegetables from local vendors, as well as sell scrap items.
+# GREEN CART
+GREEN CART is an e-commerce platform that allows you to order groceries and vegetables from local vendors, as well as sell scrap items.
 We aim to provide convenience and support local businesses and communities.
  
 ### Home page
-![image](https://github.com/user-attachments/assets/6f21838a-1217-43de-9d9e-498af1744415)
+![image](https://github.com/user-attachments/assets/4c085f6d-2bde-4ee0-a857-989c19f7c9a6)
+
 
 ### Content Description page
-![image](https://github.com/user-attachments/assets/d0dac30a-8766-4775-844d-ce576a8b81b8)
+![image](https://github.com/user-attachments/assets/e259831c-8293-4c45-baec-3277bc8c11dc)
+![image](https://github.com/user-attachments/assets/73f50dfb-622b-4c5f-914c-d53f374b8caf)
+
+
 
 ### Ordered List page
-![image](https://github.com/user-attachments/assets/9aff69dd-8c51-4f6b-b585-48c7a87497ca)
+![image](https://github.com/user-attachments/assets/7a05b20b-57f2-4028-9459-93418113f023)
 
 ### Payment Page
-![image](https://github.com/user-attachments/assets/ec52f7f6-9d44-4e87-8409-ac11f797d531)
+![image](https://github.com/user-attachments/assets/ad221365-1b40-4bf2-a855-aea22ff6eecf)
+
 
 
 ### Order confirm page
-![image](https://github.com/user-attachments/assets/e76e6ff8-ec49-4fe3-a0dd-fe85e95d4ae4)
+![image](https://github.com/user-attachments/assets/73bb430e-0cd6-4e6c-a4ca-28be3ff6be50)
