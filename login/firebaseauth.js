@@ -79,7 +79,7 @@
         showMessage('login is successful', 'signInMessage');
         const user=userCredential.user;
         localStorage.setItem('loggedInUserId', user.uid);
-        window.location.href='../homepage.html';
+        window.location.href='../homepage.html'; // Redirect to homepage.html, one folder back
     })
     .catch((error)=>{
         const errorCode=error.code;
@@ -90,4 +90,4 @@
             showMessage('Account does not Exist', 'signInMessage');
         }
     })
- })
+ });
