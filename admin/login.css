@@ -1,81 +1,155 @@
-/* Reset some default styles */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"poppins",sans-serif;
 }
-
-body {
-    font-family: 'Roboto', sans-serif; /* Updated font */
-    background-color: #f0f2f5; /* Light background for better contrast */
-    display: flex;
-    justify-content: center; /* Centering the container */
-    align-items: center; /* Centering the container vertically */
-    height: 100vh; /* Full viewport height */
+body{
+    background-image: linear-gradient(rgba(4,9,30,0.7),rgba(4,9,30,0.7)),url(https://png.pngtree.com/thumb_back/fh260/background/20230702/pngtree-3d-internet-login-page-illustration-with-user-and-password-fields-image_3740978.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 92vh;
 }
-
-.container {
-    width: 100%;
-    max-width: 400px; /* Increased max-width for larger screens */
-    padding: 30px; /* More padding for a spacious feel */
-    background: white;
-    border-radius: 12px; /* Slightly rounded corners */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Softer shadow */
-    text-align: center; /* Center text inside the container */
+.container{
+    background:#fff;
+    width:450px;
+    padding:1.5rem;
+    margin:50px auto;
+    border-radius:10px;
+    box-shadow: 0px 5px 10px 0px rgba(0,255,255,0.7);  
 }
-
-h1 {
-    font-size: 24px; /* Larger heading */
-    margin-bottom: 20px; /* Space below the heading */
-    color: #333; /* Darker text for better readability */
+.container:hover{
+    transform: translateY(-5px);
+    box-shadow: 0px 10px 20px 2px rgba(0,255,255,0.7);
 }
-
-.form-group {
-    margin-bottom: 20px; /* Increased space between form elements */
+form{
+    margin:0 2rem;
 }
-
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600; /* Bold labels for emphasis */
-    color: #555; /* Softer color for labels */
+.form-title{
+    font-size:1.5rem;
+    font-weight:bold;
+    text-align:center;
+    padding:1.3rem;
+    margin-bottom:0.4rem;
 }
-
-input {
-    width: 100%;
-    padding: 12px; /* Increased padding for inputs */
-    border: 1px solid #ccc; /* Subtle border */
-    border-radius: 6px; /* Rounded edges for inputs */
-    transition: border-color 0.3s; /* Smooth border color transition */
+input{
+    color:inherit;
+    width:100%;
+    background-color:transparent;
+    border:none;
+    border-bottom:1px solid #757575;
+    padding-left:1.5rem;
+    font-size:15px;
 }
+.input-group{
+    padding:1% 0;
+    position:relative;
 
-input:focus {
-    border-color: #007bff; /* Highlight border on focus */
-    outline: none; /* Remove default outline */
 }
+.input-group i{
+    position:absolute;
+    color:black;
+}
+input:focus{
+    background-color: transparent;
+    outline:transparent;
+    border-bottom:2px solid hsl(327,90%,28%);
+}
+input::placeholder{
+    color:transparent;
+}
+label{
+    color:#757575;
+    position:relative;
+    left:1.2em;
+    top:-1.3em;
+    cursor:auto;
+    transition:0.3s ease all;
+}
+input:focus~label,input:not(:placeholder-shown)~label{
+    top:-3em;
+    color:hsl(327,90%,28%);
+    font-size:15px;
+}
+.recover{
+    text-align:right;
+    font-size:1rem;
+    margin-bottom:1rem;
 
-button {
-    width: 100%;
-    padding: 12px;
-    background: #007bff;
-    border: none;
-    border-radius: 6px; /* Rounded button edges */
+}
+.recover a{
+    text-decoration:none;
+    color:rgb(125,125,235);
+}
+.recover a:hover{
+    color:blue;
+    text-decoration:underline;
+}
+button{
+    font-size:1.1rem;
+    padding:8px 0;
+    border-radius:5px;
+    outline:none;
+    border:none;
+    width:100%;
+    background:rgb(125,125,235);
+    color:white;
+    cursor:pointer;
+    transition:0.9s;
+}
+button:hover{
+    background:#07001f;
+}
+.or{
+    font-size:1.1rem;
+    margin-top:0.5rem;
+    text-align:center;
+}
+.icons{
+    text-align:center;
+}
+.icons i{
+    color:rgb(125,125,235);
+    padding:0.8rem 1.5rem;
+    border-radius:10px;
+    font-size:1.5rem;
+    cursor:pointer;
+    border:2px solid #dfe9f5;
+    margin:0 15px;
+    transition:1s;
+}
+.icons i:hover{
+    background:#07001f;
+    font-size:1.6rem;
+    border:2px solid rgb(125,125,235);
+}
+.links{
+    display:flex;
+    justify-content:space-around;
+    padding:0 4rem;
+    margin-top:0.9rem;
+    font-weight:bold;
+}
+ #signUpButton, #signInButton{
+    color:rgb(125,125,235);
+    border:none;
+    background-color:transparent;
+    font-size:1rem;
+    font-weight:bold;
+}
+#signUpButton:hover, #signInButton:hover {
+    text-decoration:underline;
+    color:blue;
+} 
+.alert {
+    background-color: hsl(327, 90%, 28%);
     color: white;
-    font-size: 16px; /* Larger text on button */
-    cursor: pointer;
-    transition: background 0.3s; /* Smooth background transition */
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 5px;
+    font-size: 1rem;
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.5s ease; /* Smooth transition for opacity change */
 }
 
-button:hover {
-    background: #0056b3; /* Darker blue on hover */
-}
-
-.button-container {
-    margin-top: 20px; /* Space above the button */
-}
-
-.error-message {
-    color: red; /* Error messages in red */
-    font-size: 14px; /* Smaller font size for error messages */
-    margin-top: 10px; /* Space above error message */
-}
