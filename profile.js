@@ -19,6 +19,36 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const db = getFirestore();
 
+// Redirect to login page if not authenticated
+onAuthStateChanged(auth, (user) => {
+    if (!user) {
+        window.location.href = 'index.html'; // Redirect to login page
+    } else {
+        const loggedInUserId = localStorage.getItem('loggedInUserId');
+        if (loggedInUserId) {
+            console.log(user);
+            const docRef = doc(db, "users", loggedInUserId);
+            getDoc(docRef)
+                .then((docSnap) => {
+                    if (docSnap.exists()) {
+                        const userData = docSnap.data();
+                        firstNameInput.value = userData.firstName;
+                        lastNameInput.value = userData.lastName;
+                        emailInput.value = userData.email;
+                    } else {
+                        console.log("No document found matching ID");
+                    }
+                })
+                .catch((error) => {
+                    console.log("Error getting document:", error);
+                });
+        } else {
+            console.log("User ID not found in local storage");
+        }
+    }
+});
+
+// UI elements
 const firstNameInput = document.getElementById('loggedUserFName');
 const lastNameInput = document.getElementById('loggedUserLName');
 const emailInput = document.getElementById('loggedUserEmail');
@@ -26,31 +56,7 @@ const editButton = document.getElementById('edit');
 const saveButton = document.getElementById('save');
 const cancelButton = document.getElementById('cancel');
 const messageDiv = document.getElementById('message');
-
-// Fetch user details from Firestore
-onAuthStateChanged(auth, (user) => {
-    const loggedInUserId = localStorage.getItem('loggedInUserId');
-    if (loggedInUserId) {
-        console.log(user);
-        const docRef = doc(db, "users", loggedInUserId);
-        getDoc(docRef)
-            .then((docSnap) => {
-                if (docSnap.exists()) {
-                    const userData = docSnap.data();
-                    firstNameInput.value = userData.firstName;
-                    lastNameInput.value = userData.lastName;
-                    emailInput.value = userData.email;
-                } else {
-                    console.log("No document found matching ID");
-                }
-            })
-            .catch((error) => {
-                console.log("Error getting document:", error);
-            });
-    } else {
-        console.log("User ID not found in local storage");
-    }
-});
+const logoutButton = document.getElementById('logout');
 
 // Enable editing when "Edit" is clicked
 editButton.addEventListener('click', () => {
@@ -99,15 +105,17 @@ function toggleEditMode(isEditing) {
     cancelButton.classList.toggle('hidden', !isEditing);
 }
 
-// Logout button logic
-const logoutButton = document.getElementById('logout');
+// Logout button logic with confirmation
 logoutButton.addEventListener('click', () => {
-    localStorage.removeItem('loggedInUserId');
-    signOut(auth)
-        .then(() => {
-            window.location.href = 'index.html';
-        })
-        .catch((error) => {
-            console.error('Error signing out:', error);
-        });
+    const confirmLogout = confirm("Do you want to logout?");
+    if (confirmLogout) {
+        localStorage.removeItem('loggedInUserId');
+        signOut(auth)
+            .then(() => {
+                window.location.href = 'index.html';
+            })
+            .catch((error) => {
+                console.error('Error signing out:', error);
+            });
+    }
 });
