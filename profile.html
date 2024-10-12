@@ -3,52 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Homepage</title>
+    <title>Profile</title>
     <style>
-        body{
-            padding:30px;
-            background:linear-gradient(to right, #e2e2e2, #c9d6ff);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        h1{
-            text-align:center;
-
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #c9d6ff, #e2e2e2);
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
-        button{
-            color:blueviolet;
-            background-color:#c9d6ff;
-            padding:5px;
-            border-radius:5px;
-            font-size:1rem;
-            font-weight:bold;
-            border:none;
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 400px;
+            text-align: center;
         }
-        button:hover{
-            text-decoration: underline;
-            color:blue;
+        h1 {
+            font-size: 2rem;
+            color: #4A90E2;
+            margin-bottom: 20px;
         }
-        button, div{
-            margin-left:15%;
-            font-size:20px;
-            padding:10px;
+        .user-details {
+            margin: 20px 0;
         }
-        div{
-            font-weight:400;
-            color:rgb(12,11,11);
-
+        .user-details div {
+            margin: 10px 0;
+            font-size: 1.2rem;
         }
-        span{
-            font-weight:600;
-            font-size:22px;
-            color:black;
+        .user-details input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .user-details input:disabled {
+            background-color: #f0f0f0;
+        }
+        button {
+            background-color: #4A90E2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 15px;
+        }
+        button:hover {
+            background-color: #357ABD;
+        }
+        .hidden {
+            display: none;
+        }
+        #message {
+            color: green;
+            font-size: 1rem;
+            margin-top: 10px;
         }
     </style>
     <script type="module" src="profile.js"></script>
 </head>
 <body>
-    <h1>Hi,</h1>
-    <div>First Name: <span id="loggedUserFName"></span></div>
-    <div>Last Name: <span id="loggedUserLName"></span></div>
-    <div>Email: <span id="loggedUserEmail"></span></div>
-    <button id="logout">Logout</button>
+    <div class="container">
+        <h1>Profile</h1>
+        <div class="user-details">
+            <div>
+                First Name: <input type="text" id="loggedUserFName" disabled>
+            </div>
+            <div>
+                Last Name: <input type="text" id="loggedUserLName" disabled>
+            </div>
+            <div>
+                Email: <input type="email" id="loggedUserEmail" disabled>
+            </div>
+        </div>
+        <button id="edit">Edit</button>
+        <button id="save" class="hidden">Save</button>
+        <button id="cancel" class="hidden">Cancel</button>
+        <button id="logout">Logout</button>
+        <div id="message" class="hidden">Details have been updated</div>
+    </div>
 </body>
 </html>
