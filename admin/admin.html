@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="my-4">Admin Dashboard</h1>
+
+        <!-- Home section showing total users count -->
+        <div id="home-section">
+            <h2>Total Users</h2>
+            <p id="totalUsers">Loading...</p>
+        </div>
+
+        <!-- User Management section with search and edit functionality -->
+        <div id="user-management-section">
+            <h2>Search User</h2>
+            <div class="input-group mb-3">
+                <input type="text" id="searchInput" class="form-control" placeholder="Enter user name or email">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" id="searchBtn">Search</button>
+                </div>
+            </div>
+
+            <table class="table table-bordered" id="userTable">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                    <!-- Dynamic rows will be appended here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- User Edit Form -->
+        <div id="edit-user-section" style="display:none;">
+            <h2>Edit User</h2>
+            <form id="editUserForm">
+                <div class="form-group">
+                    <label for="editName">Name</label>
+                    <input type="text" class="form-control" id="editName">
+                </div>
+                <div class="form-group">
+                    <label for="editEmail">Email</label>
+                    <input type="text" class="form-control" id="editEmail" disabled>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
+            <button id="cancelEditButton" class="btn btn-secondary">Cancel</button> <!-- Added cancel button -->
+        </div>
+    </div>
+
+    <script type="module" src="admin_users.js"></script>
+</body>
+</html>
