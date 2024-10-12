@@ -2,6 +2,7 @@
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
 import { getFirestore, collection, getDocs, query, getDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 
 // Your Firebase configuration
 const firebaseConfig = {
@@ -18,7 +19,16 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
+// Ensure the admin is logged in; otherwise, redirect to the login page
+onAuthStateChanged(auth, (user) => {
+    if (!user) {
+        window.location.href = "admin_login.html"; // Redirect if not logged in
+    }
+});
+
+// Event listener for DOM content loaded
 document.addEventListener("DOMContentLoaded", () => {
     // Fetch total users count
     async function fetchTotalUsers() {
@@ -109,4 +119,16 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("cancelEditButton").addEventListener("click", () => {
         document.getElementById("edit-user-section").style.display = "none";
     });
+
+    // Logout functionality
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+            signOut(auth).then(() => {
+                window.location.href = "admin_login.html"; // Redirect to login page after logout
+            }).catch((error) => {
+                console.error("Error during sign out:", error);
+            });
+        });
+    }
 });
