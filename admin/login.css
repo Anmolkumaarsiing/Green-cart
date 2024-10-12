@@ -1,109 +1,155 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Green admin</title>
-    <link rel="icon" href="https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png" type="image/gif" sizes="16x16">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="login.css">
-    <!-- Use ES Module scripts -->
-    <script type="module">
-        // Import Firebase scripts
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
-        import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
-        import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"poppins",sans-serif;
+}
+body{
+    background-image: linear-gradient(rgba(4,9,30,0.7),rgba(4,9,30,0.7)),url(https://png.pngtree.com/thumb_back/fh260/background/20230702/pngtree-3d-internet-login-page-illustration-with-user-and-password-fields-image_3740978.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 92vh;
+}
+.container{
+    background:#fff;
+    width:450px;
+    padding:1.5rem;
+    margin:50px auto;
+    border-radius:10px;
+    box-shadow: 0px 5px 10px 0px rgba(0,255,255,0.7);  
+}
+.container:hover{
+    transform: translateY(-5px);
+    box-shadow: 0px 10px 20px 2px rgba(0,255,255,0.7);
+}
+form{
+    margin:0 2rem;
+}
+.form-title{
+    font-size:1.5rem;
+    font-weight:bold;
+    text-align:center;
+    padding:1.3rem;
+    margin-bottom:0.4rem;
+}
+input{
+    color:inherit;
+    width:100%;
+    background-color:transparent;
+    border:none;
+    border-bottom:1px solid #757575;
+    padding-left:1.5rem;
+    font-size:15px;
+}
+.input-group{
+    padding:1% 0;
+    position:relative;
 
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCrSBQoJDG9Cn5t2vsWNvDDkDQJm1UxTgk",
-            authDomain: "green--cart.firebaseapp.com",
-            databaseURL: "https://green--cart-default-rtdb.firebaseio.com",
-            projectId: "green--cart",
-            storageBucket: "green--cart.appspot.com",
-            messagingSenderId: "997863065",
-            appId: "1:997863065:web:1716dad07cdbe649e81208",
-            measurementId: "G-56BY927ZLY"
-        };
+}
+.input-group i{
+    position:absolute;
+    color:black;
+}
+input:focus{
+    background-color: transparent;
+    outline:transparent;
+    border-bottom:2px solid hsl(327,90%,28%);
+}
+input::placeholder{
+    color:transparent;
+}
+label{
+    color:#757575;
+    position:relative;
+    left:1.2em;
+    top:-1.3em;
+    cursor:auto;
+    transition:0.3s ease all;
+}
+input:focus~label,input:not(:placeholder-shown)~label{
+    top:-3em;
+    color:hsl(327,90%,28%);
+    font-size:15px;
+}
+.recover{
+    text-align:right;
+    font-size:1rem;
+    margin-bottom:1rem;
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app); // Initialize auth
-        const db = getFirestore(app); // Initialize Firestore
+}
+.recover a{
+    text-decoration:none;
+    color:rgb(125,125,235);
+}
+.recover a:hover{
+    color:blue;
+    text-decoration:underline;
+}
+button{
+    font-size:1.1rem;
+    padding:8px 0;
+    border-radius:5px;
+    outline:none;
+    border:none;
+    width:100%;
+    background:rgb(125,125,235);
+    color:white;
+    cursor:pointer;
+    transition:0.9s;
+}
+button:hover{
+    background:#07001f;
+}
+.or{
+    font-size:1.1rem;
+    margin-top:0.5rem;
+    text-align:center;
+}
+.icons{
+    text-align:center;
+}
+.icons i{
+    color:rgb(125,125,235);
+    padding:0.8rem 1.5rem;
+    border-radius:10px;
+    font-size:1.5rem;
+    cursor:pointer;
+    border:2px solid #dfe9f5;
+    margin:0 15px;
+    transition:1s;
+}
+.icons i:hover{
+    background:#07001f;
+    font-size:1.6rem;
+    border:2px solid rgb(125,125,235);
+}
+.links{
+    display:flex;
+    justify-content:space-around;
+    padding:0 4rem;
+    margin-top:0.9rem;
+    font-weight:bold;
+}
+ #signUpButton, #signInButton{
+    color:rgb(125,125,235);
+    border:none;
+    background-color:transparent;
+    font-size:1rem;
+    font-weight:bold;
+}
+#signUpButton:hover, #signInButton:hover {
+    text-decoration:underline;
+    color:blue;
+} 
+.alert {
+    background-color: hsl(327, 90%, 28%);
+    color: white;
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 5px;
+    font-size: 1rem;
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.5s ease; /* Smooth transition for opacity change */
+}
 
-        // Event listener for the login form
-        document.getElementById("loginForm").addEventListener("submit", async (event) => {
-            event.preventDefault();
-            const email = document.getElementById("loginEmail").value;
-            const password = document.getElementById("loginPassword").value;
-
-            try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                // User logged in successfully
-                const user = userCredential.user;
-
-                // Check if the user is in the admin collection
-                const adminDoc = await getDoc(doc(db, "admin", user.uid));
-
-                if (adminDoc.exists()) {
-                    // Check the role of the user
-                    const userRole = adminDoc.data().role; // Assuming 'role' is the field name
-
-                    if (userRole === 'admin') {
-                        // User is an admin, redirect to the admin dashboard
-                        window.location.href = "admin.html"; // Adjust as necessary
-                    } else {
-                        // If the role is not admin, sign out and show an error
-                        await auth.signOut();
-                        showError("You don't have admin access. Contact support.");
-                    }
-                } else {
-                    // If the user document does not exist, sign out and show an error
-                    await auth.signOut();
-                    showError('Account does not exist');
-                }
-            } catch (error) {
-                const errorCode = error.code;
-                if (errorCode === 'auth/invalid-credential') {
-                    showError('Incorrect Email or Password');
-                } else {
-                    showError('Account does not exist');
-                }
-            }
-        });
-
-        // Function to show error messages
-        function showError(message) {
-            const signInMessage = document.getElementById("signInMessage");
-            signInMessage.innerText = message; // Set the error message
-            signInMessage.style.opacity = 1; // Make it visible
-
-            // Fade out after a delay
-            setTimeout(() => {
-                signInMessage.style.opacity = 0; // Fade out
-            }, 7000); // Match the fade-out duration in CSS
-        }
-
-
-    </script>
-</head>
-<body>
-    <div class="container">
-        <h1 class="form-title">Green cart Admin</h1>
-        <form id="loginForm">
-            <div class="input-group">
-                <i class="fas fa-envelope"></i>
-                <input type="email" id="loginEmail" placeholder="Email" required>
-                <label for="loginEmail">Email</label>
-            </div>
-            <div class="input-group">
-                <i class="fas fa-lock"></i>
-                <input type="password" id="loginPassword" placeholder="Password" required>
-                <label for="loginPassword">Password</label>
-            </div>
-            <button type="submit">Login</button>
-        </form>
-        <div id="signInMessage" class="alert" style="opacity: 0;"></div> <!-- Message Div -->
-    </div>
-</body>
-</html>
