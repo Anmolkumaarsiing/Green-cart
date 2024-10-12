@@ -3,75 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login</title>
+    <title>Green admin</title>
     <link rel="icon" href="https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png" type="image/gif" sizes="16x16">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="login.css">
     <!-- Use ES Module scripts -->
     <script type="module">
         // Import Firebase scripts
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
-        import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
-        import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
+import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
 
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCrSBQoJDG9Cn5t2vsWNvDDkDQJm1UxTgk",
-            authDomain: "green--cart.firebaseapp.com",
-            databaseURL: "https://green--cart-default-rtdb.firebaseio.com",
-            projectId: "green--cart",
-            storageBucket: "green--cart.appspot.com",
-            messagingSenderId: "997863065",
-            appId: "1:997863065:web:1716dad07cdbe649e81208",
-            measurementId: "G-56BY927ZLY"
-        };
+// Your web app's Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyCrSBQoJDG9Cn5t2vsWNvDDkDQJm1UxTgk",
+    authDomain: "green--cart.firebaseapp.com",
+    databaseURL: "https://green--cart-default-rtdb.firebaseio.com",
+    projectId: "green--cart",
+    storageBucket: "green--cart.appspot.com",
+    messagingSenderId: "997863065",
+    appId: "1:997863065:web:1716dad07cdbe649e81208",
+    measurementId: "G-56BY927ZLY"
+};
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app); // Initialize auth
-        const db = getFirestore(app); // Initialize Firestore
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app); // Initialize auth
+const db = getFirestore(app); // Initialize Firestore
 
-        // Event listener for the login form
-        document.getElementById("loginForm").addEventListener("submit", async (event) => {
-            event.preventDefault();
-            const email = document.getElementById("loginEmail").value;
-            const password = document.getElementById("loginPassword").value;
+// Event listener for the login form
+document.getElementById("loginForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
 
-            try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                // User logged in successfully
-                const user = userCredential.user;
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        // User logged in successfully
+        const user = userCredential.user;
 
-                // Check if the user is in the admin collection
-                const adminDoc = await getDoc(doc(db, "admin", user.uid));
+        // Check if the user is in the admin collection
+        const adminDoc = await getDoc(doc(db, "admin", user.uid));
 
-                if (adminDoc.exists() && adminDoc.data().email === user.email) {
-                    // User is an admin, redirect to the admin dashboard
-                    window.location.href = "admin.html"; // Adjust as necessary
-                } else {
-                    // If not an admin, sign out and show an error
-                    await auth.signOut();
-                    alert("You do not have admin access.");
-                }
-            } catch (error) {
-                alert(error.message);
-            }
-        });
+        if (adminDoc.exists() && adminDoc.data().email === user.email) {
+            // User is an admin, redirect to the admin dashboard
+            window.location.href = "admin.html"; // Adjust as necessary
+        } else {
+            // If not an admin, sign out and show an error
+            await auth.signOut();
+            showError("You don't have admin access. Contact support.");
+        }
+    } catch (error) {
+        const errorCode = error.code;
+        if (errorCode === 'auth/invalid-credential') {
+            showError('Incorrect Email or Password');
+        } else {
+            showError('Account does not exist');
+        }
+    }
+});
+
+// Function to show error messages
+function showError(message) {
+    const signInMessage = document.getElementById("signInMessage");
+    signInMessage.innerText = message; // Set the error message
+    signInMessage.style.opacity = 1; // Make it visible
+
+    // Fade out after a delay
+    setTimeout(() => {
+        signInMessage.style.opacity = 0; // Fade out
+    }, 7000); // Match the fade out duration in CSS
+}
+
     </script>
 </head>
 <body>
     <div class="container">
-        <h1>Admin Login</h1>
+        <h1 class="form-title">Green cart Admin</h1>
         <form id="loginForm">
-            <div class="form-group">
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="loginEmail" placeholder="Email" required>
                 <label for="loginEmail">Email</label>
-                <input type="email" id="loginEmail" required>
             </div>
-            <div class="form-group">
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="loginPassword" placeholder="Password" required>
                 <label for="loginPassword">Password</label>
-                <input type="password" id="loginPassword" required>
             </div>
             <button type="submit">Login</button>
         </form>
+        <div id="signInMessage" class="alert" style="opacity: 0;"></div> <!-- Message Div -->
     </div>
 </body>
 </html>
