@@ -19,36 +19,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const db = getFirestore();
 
-// Redirect to login page if not authenticated
-onAuthStateChanged(auth, (user) => {
-    if (!user) {
-        window.location.href = 'index.html'; // Redirect to login page
-    } else {
-        const loggedInUserId = localStorage.getItem('loggedInUserId');
-        if (loggedInUserId) {
-            console.log(user);
-            const docRef = doc(db, "users", loggedInUserId);
-            getDoc(docRef)
-                .then((docSnap) => {
-                    if (docSnap.exists()) {
-                        const userData = docSnap.data();
-                        firstNameInput.value = userData.firstName;
-                        lastNameInput.value = userData.lastName;
-                        emailInput.value = userData.email;
-                    } else {
-                        console.log("No document found matching ID");
-                    }
-                })
-                .catch((error) => {
-                    console.log("Error getting document:", error);
-                });
-        } else {
-            console.log("User ID not found in local storage");
-        }
-    }
-});
-
-// UI elements
 const firstNameInput = document.getElementById('loggedUserFName');
 const lastNameInput = document.getElementById('loggedUserLName');
 const emailInput = document.getElementById('loggedUserEmail');
@@ -57,6 +27,31 @@ const saveButton = document.getElementById('save');
 const cancelButton = document.getElementById('cancel');
 const messageDiv = document.getElementById('message');
 const logoutButton = document.getElementById('logout');
+
+// Redirect to login if user is not logged in
+onAuthStateChanged(auth, (user) => {
+    const loggedInUserId = localStorage.getItem('loggedInUserId');
+    if (!user || !loggedInUserId) {
+        window.location.href = 'login.html'; // Redirect to the login page
+    } else {
+        const docRef = doc(db, "users", loggedInUserId);
+        getDoc(docRef)
+            .then((docSnap) => {
+                if (docSnap.exists()) {
+                    const userData = docSnap.data();
+                    firstNameInput.value = userData.firstName;
+                    lastNameInput.value = userData.lastName;
+                    emailInput.value = userData.email;
+                    logoutButton.classList.remove('hidden'); // Show logout button when user details are fetched
+                } else {
+                    console.log("No document found matching ID");
+                }
+            })
+            .catch((error) => {
+                console.log("Error getting document:", error);
+            });
+    }
+});
 
 // Enable editing when "Edit" is clicked
 editButton.addEventListener('click', () => {
@@ -103,16 +98,23 @@ function toggleEditMode(isEditing) {
     editButton.classList.toggle('hidden', isEditing);
     saveButton.classList.toggle('hidden', !isEditing);
     cancelButton.classList.toggle('hidden', !isEditing);
+    
+    // Hide/show logout button based on editing mode
+    if (isEditing) {
+        logoutButton.classList.add('hidden'); // Hide logout button while editing
+    } else {
+        logoutButton.classList.remove('hidden'); // Show logout button when not editing
+    }
 }
 
-// Logout button logic with confirmation
+// Logout button logic
 logoutButton.addEventListener('click', () => {
-    const confirmLogout = confirm("Do you want to logout?");
-    if (confirmLogout) {
+    const confirmation = confirm("Do you want to logout?");
+    if (confirmation) {
         localStorage.removeItem('loggedInUserId');
         signOut(auth)
             .then(() => {
-                window.location.href = 'index.html';
+                window.location.href = 'index.html'; // Redirect to index page after logout
             })
             .catch((error) => {
                 console.error('Error signing out:', error);
