@@ -32,7 +32,7 @@ const logoutButton = document.getElementById('logout');
 onAuthStateChanged(auth, (user) => {
     const loggedInUserId = localStorage.getItem('loggedInUserId');
     if (!user || !loggedInUserId) {
-        window.location.href = 'login.html'; // Redirect to the login page
+        window.location.href = '/login/login.html'; // Redirect to the login page
     } else {
         const docRef = doc(db, "users", loggedInUserId);
         getDoc(docRef)
