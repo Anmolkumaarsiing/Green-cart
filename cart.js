@@ -206,5 +206,6 @@ httpRequest.onreadystatechange = function() {
     }
 };
 
-httpRequest.open("GET", "https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData"); // Replace with your API endpoint
+httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
 httpRequest.send();
+
