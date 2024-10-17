@@ -83,6 +83,12 @@ totalDiv.appendChild(totalh2);
 
 // TO UPDATE THE TOTAL AMOUNT
 function amountUpdate(amount) {
+    // Check if the amount is valid before proceeding
+    if (amount <= 0) {
+        console.log("Total amount is not valid:", amount);
+        return;
+    }
+
     let totalh4 = document.createElement('h4');
     let totalh4Text = document.createTextNode('Amount: Rs ' + amount);
     totalh4.appendChild(totalh4Text);
@@ -100,12 +106,15 @@ function createPlaceOrderButton(amount) {
     let buttonTag = document.createElement('button');
     buttonTag.innerText = 'Place Order'; // Set button text
     buttonTag.onclick = function() {
-        console.log("clicked");
+        console.log("Place Order button clicked");
         initializeRazorpay(amount); // Ensure amount is in rupees
     };
 
     buttonDiv.appendChild(buttonTag);
     totalDiv.appendChild(buttonDiv);
+
+    // Log to confirm the button was created
+    console.log("Place Order button created with amount:", amount);
 }
 
 // Function to initialize Razorpay
@@ -206,6 +215,5 @@ httpRequest.onreadystatechange = function() {
     }
 };
 
-httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
+httpRequest.open("GET", "https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData"); // Replace with your actual API endpoint
 httpRequest.send();
-
