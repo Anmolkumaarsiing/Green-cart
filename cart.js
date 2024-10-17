@@ -10,6 +10,10 @@ let cartContainer = document.getElementById('cartContainer');
 let boxContainerDiv = document.createElement('div');
 boxContainerDiv.id = 'boxContainer';
 
+// Firebase Initialization (Ensure your firebaseConfig is correct)
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
 // DYNAMIC CODE TO SHOW THE SELECTED ITEMS IN YOUR CART
 function dynamicCartSection(ob, itemCounter) {
     let boxDiv = document.createElement('div');
@@ -69,18 +73,54 @@ buttonTag.appendChild(buttonLink);
 let buttonText = document.createTextNode('Place Order');
 buttonTag.appendChild(buttonText);
 
+// Function to save order to Firestore
+function saveOrderToFirestore(paymentId, totalAmount) {
+    let userId = firebase.auth().currentUser ? firebase.auth().currentUser.uid : 'guest';
+
+    // Create an order object with the necessary details
+    let orderData = {
+        userId: userId, // Save user ID or 'guest'
+        paymentId: paymentId, // Razorpay payment ID
+        totalAmount: totalAmount, // Total order amount
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(), // Timestamp of the order
+        items: [] // This will hold the cart items
+    };
+
+    // Fetch the cart items from cookies
+    let itemParts = document.cookie.split(',')[0].split('=');
+    let items = itemParts.length > 1 ? itemParts[1].trim().split(" ") : [];
+    
+    items.forEach(item => {
+        orderData.items.push({
+            productId: item, // Assuming item has an id property
+            quantity: 1 // Assuming each item is ordered once, modify if you track quantities differently
+        });
+    });
+
+    // Save the order data to Firestore
+    db.collection('orders').add(orderData)
+        .then(() => {
+            console.log("Order successfully saved to Firestore!");
+        })
+        .catch((error) => {
+            console.error("Error saving order: ", error);
+        });
+}
+
 // Function to initialize Razorpay
 function initializeRazorpay(amount) {
     var options = {
         "key": "rzp_test_4sMuXigiNls8Jr", // Your Razorpay API key
-        "amount": Math.round(amount * 100), // Convert rupees to paise and ensure it's an integer
+        "amount": Math.round(amount * 100), // Convert rupees to paise
         "currency": "INR",
         "name": "CARTER",
         "description": "Payment for Selected items",
         "image": "https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png", // Optional logo URL
         "handler": function (response) {
             alert("Payment successful: " + response.razorpay_payment_id);
-            window.location.href = "/orderPlaced.html";
+            // Save order details to Firestore
+            saveOrderToFirestore(response.razorpay_payment_id, totalAmount);
+            window.location.href = "/orderPlaced.html"; // Redirect to order confirmation page
         },
         "theme": {
             "color": "#0d94fb"
