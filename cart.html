@@ -25,7 +25,7 @@
     <script>
         load("header.html");
         function load(url) {
-            req = new XMLHttpRequest();
+            const req = new XMLHttpRequest();
             req.open("GET", url, false);
             req.send(null);
             document.getElementById(1).innerHTML = req.responseText;
@@ -37,8 +37,10 @@
         <h1> Checkout </h1>
         <h3 id="totalItem"> Total Items: 0 </h3>
         <div id="cartContainer">
-            <!-- JS rendered code -->
+            <!-- JS rendered code will be inserted here -->
         </div>
+        <!-- Total Amount and Place Order Button will be inserted here -->
+        <div id="totalContainer"></div> <!-- Added a container for total and button -->
     </div>
 
     <!-- FOOTER -->
@@ -46,7 +48,7 @@
     <script>
         load("footer.html");
         function load(url) {
-            req = new XMLHttpRequest();
+            const req = new XMLHttpRequest();
             req.open("GET", url, false);
             req.send(null);
             document.getElementById(4).innerHTML = req.responseText;
