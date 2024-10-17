@@ -30,13 +30,11 @@ if (document.cookie.indexOf(',counter=') >= 0) {
 
 let cartContainer = document.getElementById('cartContainer');
 
-let boxContainerDiv = document.createElement('div');
-boxContainerDiv.id = 'boxContainer';
-
 // DYNAMIC CODE TO SHOW THE SELECTED ITEMS IN YOUR CART
 function dynamicCartSection(ob, itemCounter) {
     let boxDiv = document.createElement('div');
     boxDiv.id = 'box';
+    boxDiv.className = 'cart-item'; // Added class for styling
     boxContainerDiv.appendChild(boxDiv);
 
     let boxImg = document.createElement('img');
@@ -53,9 +51,10 @@ function dynamicCartSection(ob, itemCounter) {
     boxh4.appendChild(h4Text);
     boxDiv.appendChild(boxh4);
 
-    cartContainer.appendChild(boxContainerDiv);
+    cartContainer.appendChild(boxDiv);
 }
 
+// Initialize total and button divs
 let totalContainerDiv = document.createElement('div');
 totalContainerDiv.id = 'totalContainer';
 
@@ -74,22 +73,26 @@ function amountUpdate(amount) {
     let totalh4Text = document.createTextNode('Amount: Rs ' + amount);
     totalh4.appendChild(totalh4Text);
     totalDiv.appendChild(totalh4);
-    totalDiv.appendChild(buttonDiv);
+
+    // Create and display the Place Order button
+    createPlaceOrderButton(amount);
 }
 
-let buttonDiv = document.createElement('div');
-buttonDiv.id = 'button';
-totalDiv.appendChild(buttonDiv);
+// Function to create and append the "Place Order" button
+function createPlaceOrderButton(amount) {
+    let buttonDiv = document.createElement('div');
+    buttonDiv.id = 'button';
 
-let buttonTag = document.createElement('button');
-buttonDiv.appendChild(buttonTag);
+    let buttonTag = document.createElement('button');
+    buttonTag.innerText = 'Place Order'; // Set button text
+    buttonTag.onclick = function() {
+        console.log("clicked");
+        initializeRazorpay(amount); // Ensure amount is in rupees
+    };
 
-let buttonLink = document.createElement('a');
-buttonLink.href = '#'; // This will be handled by JavaScript
-buttonTag.appendChild(buttonLink);
-
-let buttonText = document.createTextNode('Place Order');
-buttonTag.appendChild(buttonText);
+    buttonDiv.appendChild(buttonTag);
+    totalDiv.appendChild(buttonDiv);
+}
 
 // Function to initialize Razorpay
 function initializeRazorpay(amount) {
@@ -117,53 +120,40 @@ function initializeRazorpay(amount) {
 // Function to save order details to Firestore
 async function saveOrderToFirestore(orderId) {
     const itemParts = document.cookie.split(',')[0].split('=');
-    const itemIds = itemParts.length > 1 ? itemParts[1].trim().split(" ") : [];
+    const items = itemParts.length > 1 ? itemParts[1].trim().split(" ") : [];
+    const userEmail = "user@example.com"; // Replace with actual user email logic
+    let totalItems = [];
 
-    // Prepare order details
-    const orderDetails = {
-        items: itemIds.map(itemId => {
-            const itemIndex = itemId - 1; // Assuming itemId is 1-based
-            const item = contentTitle[itemIndex]; // Get the item from contentTitle
-
-            // Return structured item data
-            return {
+    for (let itemId of items) {
+        const item = contentTitle[itemId - 1]; // Get item details
+        if (item) {
+            totalItems.push({
+                email: userEmail,
                 id: item.id,
                 name: item.name,
+                orderdate: new Date().toISOString(),
+                orderid: orderId,
                 price: item.price,
-                quantity: (itemIds.filter(id => id === itemId).length) // Count occurrences of each itemId
-            };
-        }),
-        orderDate: new Date().toISOString(),
-        orderId: orderId,
-        totalAmount: totalAmount,
-        userId: "exampleUserId" // Replace this with the actual user ID logic
-    };
-
-    try {
-        const docRef = await addDoc(collection(db, "orders"), orderDetails);
-        console.log("Order saved with ID: ", docRef.id);
-    } catch (e) {
-        console.error("Error adding document: ", e);
+                quantity: (itemCounts[itemId] || 0) // Get the quantity from itemCounts
+            });
+        }
     }
-}
 
-// Modify button click event to call initializeRazorpay
-buttonTag.onclick = function() {
-    console.log("clicked");
-    initializeRazorpay(totalAmount); // Ensure totalAmount is in rupees
-}
-
-// Function to extract the item counter from cookies
-function getCounterFromCookies() {
-    if (document.cookie.indexOf(',counter=') >= 0) {
-        return Number(document.cookie.split(',')[1].split('=')[1]);
+    // Save each item to Firestore
+    for (let item of totalItems) {
+        try {
+            const docRef = await addDoc(collection(db, "orders"), item);
+            console.log("Order saved with ID: ", docRef.id);
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
     }
-    return 0;
 }
 
 // BACKEND CALL
 let httpRequest = new XMLHttpRequest();
 let totalAmount = 0;
+let itemCounts = {}; // Object to store item quantities
 
 httpRequest.onreadystatechange = function() {
     if (this.readyState === 4 && this.status == 200) {
@@ -181,7 +171,6 @@ httpRequest.onreadystatechange = function() {
             console.log("Items from cookie:", items); // Log the item IDs
 
             totalAmount = 0; // Reset totalAmount before calculating
-            let itemCounts = {}; // Object to count item quantities
 
             // Count item quantities
             for (let i = 0; i < items.length; i++) {
