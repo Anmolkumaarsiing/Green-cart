@@ -20,6 +20,9 @@ const db = getFirestore(app);
 
 console.clear();
 
+// Initialize contentTitle
+let contentTitle = []; // Declare contentTitle here
+
 if (document.cookie.indexOf(',counter=') >= 0) {
     let counter = document.cookie.split(',')[1].split('=')[1];
     document.getElementById("badge").innerHTML = counter;
@@ -89,7 +92,6 @@ buttonTag.appendChild(buttonLink);
 let buttonText = document.createTextNode('Place Order');
 buttonTag.appendChild(buttonText);
 
-
 // Function to initialize Razorpay
 function initializeRazorpay(amount) {
     var options = {
@@ -144,7 +146,7 @@ let totalAmount = 0;
 httpRequest.onreadystatechange = function() {
     if (this.readyState === 4) {
         if (this.status == 200) {
-            contentTitle = JSON.parse(this.responseText);
+            contentTitle = JSON.parse(this.responseText); // Assign value to contentTitle here
             console.log("Current cookies:", document.cookie); // Log current cookies
 
             // Check for cookies
@@ -170,18 +172,14 @@ httpRequest.onreadystatechange = function() {
                         }
                         totalAmount += Number(contentTitle[item[i] - 1].price) * itemCounter;
                         dynamicCartSection(contentTitle[item[i] - 1], itemCounter);
-                        i += (itemCounter - 1);
                     }
+
+                    // Update the total amount
                     amountUpdate(totalAmount);
-                } else {
-                    console.error("Expected cookie format not found!");
                 }
             }
-        } else {
-            console.log('call failed!');
         }
     }
-}
-
+};
 httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
 httpRequest.send();
