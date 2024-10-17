@@ -1,3 +1,23 @@
+// Firebase imports
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+
+// Your Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyCrSBQoJDG9Cn5t2vsWNvDDkDQJm1UxTgk",
+    authDomain: "green--cart.firebaseapp.com",
+    databaseURL: "https://green--cart-default-rtdb.firebaseio.com",
+    projectId: "green--cart",
+    storageBucket: "green--cart.appspot.com",
+    messagingSenderId: "997863065",
+    appId: "1:997863065:web:1716dad07cdbe649e81208",
+    measurementId: "G-56BY927ZLY"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 console.clear();
 
 if (document.cookie.indexOf(',counter=') >= 0) {
@@ -80,6 +100,7 @@ function initializeRazorpay(amount) {
         "image": "https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png", // Optional logo URL
         "handler": function (response) {
             alert("Payment successful: " + response.razorpay_payment_id);
+            saveOrderToFirestore(response.razorpay_payment_id); // Call function to save order
             window.location.href = "/orderPlaced.html";
         },
         "theme": {
@@ -91,55 +112,27 @@ function initializeRazorpay(amount) {
     paymentObject.open();
 }
 
-// Initialize Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyCrSBQoJDG9Cn5t2vsWNvDDkDQJm1UxTgk",
-    authDomain: "green--cart.firebaseapp.com",
-    databaseURL: "https://green--cart-default-rtdb.firebaseio.com",
-    projectId: "green--cart",
-    storageBucket: "green--cart.appspot.com",
-    messagingSenderId: "997863065",
-    appId: "1:997863065:web:1716dad07cdbe649e81208",
-    measurementId: "G-56BY927ZLY"
-};
-
-// Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-// Function to store order in Firestore
-function storeOrder(items, totalAmount) {
-    const userId = "exampleUserId"; // Replace with the actual user ID (you may want to retrieve this from your authentication system)
-
-    db.collection("orders").add({
-        items: items,
-        orderdate: new Date().toISOString(),
-        orderId: Date.now(), // Unique order ID based on timestamp
+// Function to save order details to Firestore
+async function saveOrderToFirestore(orderId) {
+    const orderDetails = {
+        items: document.cookie.split(',')[0].split('=')[1].trim().split(" "), // Assuming this holds the item IDs
+        orderDate: new Date().toISOString(),
+        orderId: orderId,
         totalAmount: totalAmount,
-        userId: userId
-    })
-    .then((docRef) => {
-        console.log("Order stored with ID: ", docRef.id);
-        alert("Order placed successfully!");
-        window.location.href = "/orderPlaced.html"; // Redirect after successful order
-    })
-    .catch((error) => {
-        console.error("Error adding order: ", error);
-        alert("Failed to place order. Please try again.");
-    });
+        userId: "exampleUserId" // Replace this with the actual user ID logic
+    };
+
+    try {
+        const docRef = await addDoc(collection(db, "orders"), orderDetails);
+        console.log("Order saved with ID: ", docRef.id);
+    } catch (e) {
+        console.error("Error adding document: ", e);
+    }
 }
 
-// Modify button click event to call initializeRazorpay and store order
+// Modify button click event to call initializeRazorpay
 buttonTag.onclick = function() {
     console.log("clicked");
-    // Store order in Firebase before initializing Razorpay
-    let items = []; // Prepare your items array
-    let itemParts = document.cookie.split(',')[0].split('=');
-    if (itemParts.length > 1) {
-        items = itemParts[1].trim().split(" ").map(item => contentTitle[item - 1].name); // Assuming you want the names of the items
-    }
-
-    storeOrder(items, totalAmount); // Store order in Firebase
     initializeRazorpay(totalAmount); // Ensure totalAmount is in rupees
 }
 
@@ -176,18 +169,14 @@ httpRequest.onreadystatechange = function() {
                         }
                         totalAmount += Number(contentTitle[item[i] - 1].price) * itemCounter;
                         dynamicCartSection(contentTitle[item[i] - 1], itemCounter);
-                        i += (itemCounter - 1);
                     }
+
+                    // Update the total amount
                     amountUpdate(totalAmount);
-                } else {
-                    console.error("Expected cookie format not found!");
                 }
             }
-        } else {
-            console.log('call failed!');
         }
     }
-}
-
+};
 httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
 httpRequest.send();
