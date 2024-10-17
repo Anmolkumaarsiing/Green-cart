@@ -1,18 +1,37 @@
+// Initialize Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyCrSBQoJDG9Cn5t2vsWNvDDkDQJm1UxTgk",
+    authDomain: "green--cart.firebaseapp.com",
+    databaseURL: "https://green--cart-default-rtdb.firebaseio.com",
+    projectId: "green--cart",
+    storageBucket: "green--cart.appspot.com",
+    messagingSenderId: "997863065",
+    appId: "1:997863065:web:1716dad07cdbe649e81208",
+    measurementId: "G-56BY927ZLY"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+// Initialize Firestore
+const db = firebase.firestore();
+
+// Clear the console
 console.clear();
 
-if (document.cookie.indexOf(',counter=') >= 0) {
-    let counter = document.cookie.split(',')[1].split('=')[1];
-    document.getElementById("badge").innerHTML = counter;
+// Function to display the cart count from cookies
+function displayCartCount() {
+    if (document.cookie.indexOf(',counter=') >= 0) {
+        let counter = document.cookie.split(',')[1].split('=')[1];
+        document.getElementById("badge").innerHTML = counter;
+    }
 }
 
-let cartContainer = document.getElementById('cartContainer');
+displayCartCount();
 
+let cartContainer = document.getElementById('cartContainer');
 let boxContainerDiv = document.createElement('div');
 boxContainerDiv.id = 'boxContainer';
-
-// Firebase Initialization (Ensure your firebaseConfig is correct)
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
 
 // DYNAMIC CODE TO SHOW THE SELECTED ITEMS IN YOUR CART
 function dynamicCartSection(ob, itemCounter) {
@@ -40,7 +59,6 @@ function dynamicCartSection(ob, itemCounter) {
 
 let totalContainerDiv = document.createElement('div');
 totalContainerDiv.id = 'totalContainer';
-
 let totalDiv = document.createElement('div');
 totalDiv.id = 'total';
 totalContainerDiv.appendChild(totalDiv);
@@ -73,54 +91,18 @@ buttonTag.appendChild(buttonLink);
 let buttonText = document.createTextNode('Place Order');
 buttonTag.appendChild(buttonText);
 
-// Function to save order to Firestore
-function saveOrderToFirestore(paymentId, totalAmount) {
-    let userId = firebase.auth().currentUser ? firebase.auth().currentUser.uid : 'guest';
-
-    // Create an order object with the necessary details
-    let orderData = {
-        userId: userId, // Save user ID or 'guest'
-        paymentId: paymentId, // Razorpay payment ID
-        totalAmount: totalAmount, // Total order amount
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(), // Timestamp of the order
-        items: [] // This will hold the cart items
-    };
-
-    // Fetch the cart items from cookies
-    let itemParts = document.cookie.split(',')[0].split('=');
-    let items = itemParts.length > 1 ? itemParts[1].trim().split(" ") : [];
-    
-    items.forEach(item => {
-        orderData.items.push({
-            productId: item, // Assuming item has an id property
-            quantity: 1 // Assuming each item is ordered once, modify if you track quantities differently
-        });
-    });
-
-    // Save the order data to Firestore
-    db.collection('orders').add(orderData)
-        .then(() => {
-            console.log("Order successfully saved to Firestore!");
-        })
-        .catch((error) => {
-            console.error("Error saving order: ", error);
-        });
-}
-
 // Function to initialize Razorpay
 function initializeRazorpay(amount) {
     var options = {
         "key": "rzp_test_4sMuXigiNls8Jr", // Your Razorpay API key
-        "amount": Math.round(amount * 100), // Convert rupees to paise
+        "amount": Math.round(amount * 100), // Convert rupees to paise and ensure it's an integer
         "currency": "INR",
         "name": "CARTER",
         "description": "Payment for Selected items",
         "image": "https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png", // Optional logo URL
         "handler": function (response) {
             alert("Payment successful: " + response.razorpay_payment_id);
-            // Save order details to Firestore
-            saveOrderToFirestore(response.razorpay_payment_id, totalAmount);
-            window.location.href = "/orderPlaced.html"; // Redirect to order confirmation page
+            window.location.href = "/orderPlaced.html";
         },
         "theme": {
             "color": "#0d94fb"
@@ -137,51 +119,47 @@ buttonTag.onclick = function() {
     initializeRazorpay(totalAmount); // Ensure totalAmount is in rupees
 }
 
-// BACKEND CALL
-let httpRequest = new XMLHttpRequest();
+// Fetch product data from Firestore
 let totalAmount = 0;
 
-httpRequest.onreadystatechange = function() {
-    if (this.readyState === 4) {
-        if (this.status == 200) {
-            contentTitle = JSON.parse(this.responseText);
-            console.log("Current cookies:", document.cookie); // Log current cookies
+db.collection('products') // Change 'products' to your Firestore collection name
+    .get()
+    .then((querySnapshot) => {
+        let contentTitle = [];
+        querySnapshot.forEach((doc) => {
+            contentTitle.push({ id: doc.id, ...doc.data() }); // Add document ID to data
+        });
 
-            // Check for cookies
-            if (document.cookie.indexOf(',counter=') >= 0) {
-                let counter = Number(document.cookie.split(',')[1].split('=')[1]);
-                document.getElementById("totalItem").innerHTML = ('Total Items: ' + counter);
-                
-                // Split cookies safely
-                let itemParts = document.cookie.split(',')[0].split('=');
-                if (itemParts.length > 1) {
-                    let item = itemParts[1].trim().split(" ");
-                    console.log("Items from cookie:", item);
+        // Check for cookies
+        if (document.cookie.indexOf(',counter=') >= 0) {
+            let counter = Number(document.cookie.split(',')[1].split('=')[1]);
+            document.getElementById("totalItem").innerHTML = ('Total Items: ' + counter);
 
-                    // Calculate totalAmount and dynamically show items
-                    let i;
-                    totalAmount = 0; // Reset totalAmount before calculating
-                    for (i = 0; i < counter; i++) {
-                        let itemCounter = 1;
-                        for (let j = i + 1; j < counter; j++) {   
-                            if (Number(item[j]) == Number(item[i])) {
-                                itemCounter += 1;
-                            }
+            // Split cookies safely
+            let itemParts = document.cookie.split(',')[0].split('=');
+            if (itemParts.length > 1) {
+                let item = itemParts[1].trim().split(" ");
+                console.log("Items from cookie:", item);
+
+                // Calculate totalAmount and dynamically show items
+                totalAmount = 0; // Reset totalAmount before calculating
+                for (let i = 0; i < counter; i++) {
+                    let itemCounter = 1;
+                    for (let j = i + 1; j < counter; j++) {   
+                        if (Number(item[j]) == Number(item[i])) {
+                            itemCounter += 1;
                         }
-                        totalAmount += Number(contentTitle[item[i] - 1].price) * itemCounter;
-                        dynamicCartSection(contentTitle[item[i] - 1], itemCounter);
-                        i += (itemCounter - 1);
                     }
-                    amountUpdate(totalAmount);
-                } else {
-                    console.error("Expected cookie format not found!");
+                    totalAmount += Number(contentTitle[item[i] - 1].price) * itemCounter;
+                    dynamicCartSection(contentTitle[item[i] - 1], itemCounter);
+                    i += (itemCounter - 1);
                 }
+                amountUpdate(totalAmount);
+            } else {
+                console.error("Expected cookie format not found!");
             }
-        } else {
-            console.log('call failed!');
         }
-    }
-}
-
-httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
-httpRequest.send();
+    })
+    .catch((error) => {
+        console.error("Error fetching products: ", error);
+    });
