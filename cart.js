@@ -54,7 +54,6 @@ function dynamicCartSection(ob, itemCounter) {
     boxDiv.appendChild(boxh4);
 
     cartContainer.appendChild(boxContainerDiv);
-    cartContainer.appendChild(totalContainerDiv);
 }
 
 let totalContainerDiv = document.createElement('div');
@@ -117,8 +116,23 @@ function initializeRazorpay(amount) {
 
 // Function to save order details to Firestore
 async function saveOrderToFirestore(orderId) {
+    const itemParts = document.cookie.split(',')[0].split('=');
+    const itemIds = itemParts.length > 1 ? itemParts[1].trim().split(" ") : [];
+
+    // Prepare order details
     const orderDetails = {
-        items: document.cookie.split(',')[0].split('=')[1].trim().split(" "), // Assuming this holds the item IDs
+        items: itemIds.map(itemId => {
+            const itemIndex = itemId - 1; // Assuming itemId is 1-based
+            const item = contentTitle[itemIndex]; // Get the item from contentTitle
+
+            // Return structured item data
+            return {
+                id: item.id,
+                name: item.name,
+                price: item.price,
+                quantity: (itemIds.filter(id => id === itemId).length) // Count occurrences of each itemId
+            };
+        }),
         orderDate: new Date().toISOString(),
         orderId: orderId,
         totalAmount: totalAmount,
