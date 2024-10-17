@@ -10,28 +10,21 @@
     <link rel="icon" href="https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png" type="image/gif" sizes="16x16">
     <!-- header links -->
     <script type="module" src="auth.js"></script>
+    
     <!-- Firebase App (the core Firebase SDK) is always required and must be first -->
-<script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js"></script>
-
-<!-- Add Firestore -->
-<script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js"></script>
-
-<!-- Add other Firebase products as needed -->
-
-
+    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js"></script>
+    
     <script src="https://kit.fontawesome.com/4a3b1f73a2.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-
 </head>
 <body>
-        <!-- HEADER -->
+    <!-- HEADER -->
     <div id="1"></div>
     <script>
         load("header.html");
-        function load(url)
-        {
+        function load(url) {
             req = new XMLHttpRequest();
             req.open("GET", url, false);
             req.send(null);
@@ -39,29 +32,28 @@
         }
     </script>
 
-        <!-- CART CONTAINER -->
+    <!-- CART CONTAINER -->
     <div id="cartMainContainer">
         <h1> Checkout </h1>
         <h3 id="totalItem"> Total Items: 0 </h3>
-
         <div id="cartContainer">
             <!-- JS rendered code -->
         </div>
-
     </div>
 
-</body>
     <!-- FOOTER -->
     <div id="4"></div>
     <script>
         load("footer.html");
-        function load(url)
-        {
+        function load(url) {
             req = new XMLHttpRequest();
             req.open("GET", url, false);
             req.send(null);
             document.getElementById(4).innerHTML = req.responseText;
         }
     </script>
-<script src="/cart.js"></script>
+    
+    <!-- Load your cart.js as a module -->
+    <script type="module" src="cart.js"></script>
+</body>
 </html>
