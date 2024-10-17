@@ -40,19 +40,18 @@ function getCounterFromCookies() {
     return counter; // Return the total count
 }
 
-if (document.cookie.indexOf(',counter=') >= 0) {
-    let counter = getCounterFromCookies(); // Use the new function here
-    document.getElementById("badge").innerHTML = counter;
-}
-
+// Initialize cart container
 let cartContainer = document.getElementById('cartContainer');
+let boxContainerDiv = document.createElement('div'); // Define boxContainerDiv
+boxContainerDiv.id = 'boxContainer'; // Assign an ID for styling if needed
+cartContainer.appendChild(boxContainerDiv); // Append it to the cart container
 
 // DYNAMIC CODE TO SHOW THE SELECTED ITEMS IN YOUR CART
 function dynamicCartSection(ob, itemCounter) {
     let boxDiv = document.createElement('div');
     boxDiv.id = 'box';
     boxDiv.className = 'cart-item'; // Added class for styling
-    boxContainerDiv.appendChild(boxDiv);
+    boxContainerDiv.appendChild(boxDiv); // Append to boxContainerDiv
 
     let boxImg = document.createElement('img');
     boxImg.src = ob.preview;
@@ -67,8 +66,6 @@ function dynamicCartSection(ob, itemCounter) {
     let h4Text = document.createTextNode('Amount: Rs ' + ob.price);
     boxh4.appendChild(h4Text);
     boxDiv.appendChild(boxh4);
-
-    cartContainer.appendChild(boxDiv);
 }
 
 // Initialize total and button divs
@@ -209,6 +206,5 @@ httpRequest.onreadystatechange = function() {
     }
 };
 
-httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
+httpRequest.open("GET", "https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData"); // Replace with your API endpoint
 httpRequest.send();
-
