@@ -23,7 +23,7 @@ document.cookie = "orderId=" + 0 + ",counter=" + 0;
 
 let httpRequest = new XMLHttpRequest();
 let method = "GET";
-let jsonRequestURL = "https://669e2f559a1bda368005b99b.mockapi.io/Product/productdata";
+let jsonRequestURL = "https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData";
 
 httpRequest.open(method, jsonRequestURL, true);
 httpRequest.onreadystatechange = async function() {
