@@ -139,48 +139,59 @@ buttonTag.onclick = function() {
     initializeRazorpay(totalAmount); // Ensure totalAmount is in rupees
 }
 
+// Function to extract the item counter from cookies
+function getCounterFromCookies() {
+    if (document.cookie.indexOf(',counter=') >= 0) {
+        return Number(document.cookie.split(',')[1].split('=')[1]);
+    }
+    return 0;
+}
+
 // BACKEND CALL
 let httpRequest = new XMLHttpRequest();
 let totalAmount = 0;
 
 httpRequest.onreadystatechange = function() {
-    if (this.readyState === 4) {
-        if (this.status == 200) {
-            contentTitle = JSON.parse(this.responseText); // Assign value to contentTitle here
-            console.log("Current cookies:", document.cookie); // Log current cookies
+    if (this.readyState === 4 && this.status == 200) {
+        contentTitle = JSON.parse(this.responseText); // Assign value to contentTitle here
+        console.log("Current cookies:", document.cookie); // Log current cookies
+        console.log("Content Title:", contentTitle); // Log the content title data to check the structure
 
-            // Check for cookies
-            if (document.cookie.indexOf(',counter=') >= 0) {
-                let counter = Number(document.cookie.split(',')[1].split('=')[1]);
-                document.getElementById("totalItem").innerHTML = ('Total Items: ' + counter);
-                
-                // Split cookies safely
-                let itemParts = document.cookie.split(',')[0].split('=');
-                if (itemParts.length > 1) {
-                    let item = itemParts[1].trim().split(" ");
-                    console.log("Items from cookie:", item);
+        // Check for cookies and update cart
+        const counter = getCounterFromCookies();
+        document.getElementById("totalItem").innerHTML = `Total Items: ${counter}`;
+        
+        let itemParts = document.cookie.split(',')[0].split('=');
+        if (itemParts.length > 1) {
+            let items = itemParts[1].trim().split(" ");
+            console.log("Items from cookie:", items); // Log the item IDs
 
-                    // Calculate totalAmount and dynamically show items
-                    let i;
-                    totalAmount = 0; // Reset totalAmount before calculating
-                    for (i = 0; i < counter; i++) {
-                        let itemCounter = 1;
-                        for (let j = i + 1; j < counter; j++) {   
-                            if (Number(item[j]) == Number(item[i])) {
-                                itemCounter += 1;
-                            }
-                        }
-                        totalAmount += Number(contentTitle[item[i] - 1].price) * itemCounter;
-                        dynamicCartSection(contentTitle[item[i] - 1], itemCounter);
-                    }
+            totalAmount = 0; // Reset totalAmount before calculating
+            let itemCounts = {}; // Object to count item quantities
 
-                    // Update the total amount
-                    amountUpdate(totalAmount);
+            // Count item quantities
+            for (let i = 0; i < items.length; i++) {
+                itemCounts[items[i]] = (itemCounts[items[i]] || 0) + 1;
+            }
+
+            // Calculate total amount and dynamically show items
+            for (const [itemId, itemCounter] of Object.entries(itemCounts)) {
+                const itemIndex = itemId - 1; // Assuming itemId is 1-based
+                const item = contentTitle[itemIndex]; // Get the item from contentTitle
+
+                if (item) {
+                    totalAmount += Number(item.price) * itemCounter;
+                    dynamicCartSection(item, itemCounter); // Use the item object
+                } else {
+                    console.warn(`Item with ID ${itemId} is not found in contentTitle.`); // Log a warning if item is not found
                 }
             }
+
+            // Update the total amount
+            amountUpdate(totalAmount);
         }
     }
 };
+
 httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
 httpRequest.send();
-
