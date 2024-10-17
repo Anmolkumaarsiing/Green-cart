@@ -23,8 +23,25 @@ console.clear();
 // Initialize contentTitle
 let contentTitle = []; // Declare contentTitle here
 
+// Function to retrieve the item count from cookies
+function getCounterFromCookies() {
+    const cookieString = document.cookie; // Get the full cookie string
+    let counter = 0; // Initialize the counter
+    if (cookieString.indexOf(',counter=') >= 0) {
+        const cookieParts = cookieString.split(','); // Split cookies by comma
+        for (const part of cookieParts) {
+            const [key, value] = part.split('='); // Split each part by '='
+            if (key.trim() === 'counter') {
+                counter = parseInt(value); // Parse the counter value
+                break; // Stop searching after finding the counter
+            }
+        }
+    }
+    return counter; // Return the total count
+}
+
 if (document.cookie.indexOf(',counter=') >= 0) {
-    let counter = document.cookie.split(',')[1].split('=')[1];
+    let counter = getCounterFromCookies(); // Use the new function here
     document.getElementById("badge").innerHTML = counter;
 }
 
@@ -162,7 +179,7 @@ httpRequest.onreadystatechange = function() {
         console.log("Content Title:", contentTitle); // Log the content title data to check the structure
 
         // Check for cookies and update cart
-        const counter = getCounterFromCookies();
+        const counter = getCounterFromCookies(); // Use the new function here
         document.getElementById("totalItem").innerHTML = `Total Items: ${counter}`;
         
         let itemParts = document.cookie.split(',')[0].split('=');
@@ -179,22 +196,18 @@ httpRequest.onreadystatechange = function() {
 
             // Calculate total amount and dynamically show items
             for (const [itemId, itemCounter] of Object.entries(itemCounts)) {
-                const itemIndex = itemId - 1; // Assuming itemId is 1-based
-                const item = contentTitle[itemIndex]; // Get the item from contentTitle
-
-                if (item) {
-                    totalAmount += Number(item.price) * itemCounter;
-                    dynamicCartSection(item, itemCounter); // Use the item object
-                } else {
-                    console.warn(`Item with ID ${itemId} is not found in contentTitle.`); // Log a warning if item is not found
+                const itemIndex = itemId - 1; // Assuming itemId is 1-based index
+                if (contentTitle[itemIndex]) {
+                    dynamicCartSection(contentTitle[itemIndex], itemCounter);
+                    totalAmount += contentTitle[itemIndex].price * itemCounter; // Accumulate total amount
                 }
             }
 
-            // Update the total amount
+            // Call amount update function
             amountUpdate(totalAmount);
         }
     }
 };
 
-httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
+httpRequest.open("GET", "https://example.com/path/to/your/api"); // Replace with your API endpoint
 httpRequest.send();
