@@ -21,7 +21,7 @@ const db = getFirestore(app);
 console.clear();
 
 // Initialize contentTitle
-let contentTitle = [];
+let contentTitle = []; // Declare contentTitle here
 
 if (document.cookie.indexOf(',counter=') >= 0) {
     let counter = document.cookie.split(',')[1].split('=')[1];
@@ -117,33 +117,13 @@ function initializeRazorpay(amount) {
 
 // Function to save order details to Firestore
 async function saveOrderToFirestore(orderId) {
-    // Get the logged-in user's email from the Firestore database
-    const loggedInUserId = localStorage.getItem('loggedInUserId'); // Assuming you're storing user ID here
-    const userDocRef = doc(db, "users", loggedInUserId);
-    const userDoc = await getDoc(userDocRef);
-    const userEmail = userDoc.exists() ? userDoc.data().email : "unknown@example.com"; // Default email if user doesn't exist
-
     const orderDetails = {
-        items: [], // Initialize as an empty array
+        items: document.cookie.split(',')[0].split('=')[1].trim().split(" "), // Assuming this holds the item IDs
         orderDate: new Date().toISOString(),
         orderId: orderId,
         totalAmount: totalAmount,
-        userId: userEmail // Store user email instead of user ID
+        userId: "exampleUserId" // Replace this with the actual user ID logic
     };
-
-    // Fill items with names instead of IDs
-    const itemParts = document.cookie.split(',')[0].split('=');
-    if (itemParts.length > 1) {
-        const itemIds = itemParts[1].trim().split(" ");
-        
-        for (const itemId of itemIds) {
-            const itemIndex = itemId - 1; // Assuming itemId is 1-based
-            const item = contentTitle[itemIndex]; // Get the item from contentTitle
-            if (item) {
-                orderDetails.items.push(item.name); // Push product name into the items array
-            }
-        }
-    }
 
     try {
         const docRef = await addDoc(collection(db, "orders"), orderDetails);
