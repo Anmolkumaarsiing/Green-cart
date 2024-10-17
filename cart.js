@@ -20,6 +20,9 @@ const db = getFirestore(app);
 
 console.clear();
 
+// Initialize contentTitle
+let contentTitle = []; // Declare contentTitle here
+
 if (document.cookie.indexOf(',counter=') >= 0) {
     let counter = document.cookie.split(',')[1].split('=')[1];
     document.getElementById("badge").innerHTML = counter;
@@ -143,7 +146,7 @@ let totalAmount = 0;
 httpRequest.onreadystatechange = function() {
     if (this.readyState === 4) {
         if (this.status == 200) {
-            contentTitle = JSON.parse(this.responseText);
+            contentTitle = JSON.parse(this.responseText); // Assign value to contentTitle here
             console.log("Current cookies:", document.cookie); // Log current cookies
 
             // Check for cookies
