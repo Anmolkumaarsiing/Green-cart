@@ -13,9 +13,7 @@
     <link rel="stylesheet" href="css/orderPlaced.css">
 
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js"></script>
-    <script>
+    <script type="module">
         // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCrSBQoJDG9Cn5t2vsWNvDDkDQJm1UxTgk",
@@ -28,9 +26,13 @@
             measurementId: "G-56BY927ZLY"
         };
 
+        // Import Firebase functions
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+
         // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
     </script>
 </head>
 <body>
@@ -68,6 +70,6 @@
         }
     </script>
 
-    <script src="/orderPlaced.js"></script>
+    <script type="module" src="/orderPlaced.js"></script>
 </body>
 </html>
