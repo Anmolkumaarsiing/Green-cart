@@ -1,35 +1,12 @@
-// Initialize Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyCrSBQoJDG9Cn5t2vsWNvDDkDQJm1UxTgk",
-    authDomain: "green--cart.firebaseapp.com",
-    databaseURL: "https://green--cart-default-rtdb.firebaseio.com",
-    projectId: "green--cart",
-    storageBucket: "green--cart.appspot.com",
-    messagingSenderId: "997863065",
-    appId: "1:997863065:web:1716dad07cdbe649e81208",
-    measurementId: "G-56BY927ZLY"
-};
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-
-// Initialize Firestore
-const db = firebase.firestore();
-
-// Clear the console
 console.clear();
 
-// Function to display the cart count from cookies
-function displayCartCount() {
-    if (document.cookie.indexOf(',counter=') >= 0) {
-        let counter = document.cookie.split(',')[1].split('=')[1];
-        document.getElementById("badge").innerHTML = counter;
-    }
+if (document.cookie.indexOf(',counter=') >= 0) {
+    let counter = document.cookie.split(',')[1].split('=')[1];
+    document.getElementById("badge").innerHTML = counter;
 }
 
-displayCartCount();
-
 let cartContainer = document.getElementById('cartContainer');
+
 let boxContainerDiv = document.createElement('div');
 boxContainerDiv.id = 'boxContainer';
 
@@ -59,6 +36,7 @@ function dynamicCartSection(ob, itemCounter) {
 
 let totalContainerDiv = document.createElement('div');
 totalContainerDiv.id = 'totalContainer';
+
 let totalDiv = document.createElement('div');
 totalDiv.id = 'total';
 totalContainerDiv.appendChild(totalDiv);
@@ -119,47 +97,51 @@ buttonTag.onclick = function() {
     initializeRazorpay(totalAmount); // Ensure totalAmount is in rupees
 }
 
-// Fetch product data from Firestore
+// BACKEND CALL
+let httpRequest = new XMLHttpRequest();
 let totalAmount = 0;
 
-db.collection('products') // Change 'products' to your Firestore collection name
-    .get()
-    .then((querySnapshot) => {
-        let contentTitle = [];
-        querySnapshot.forEach((doc) => {
-            contentTitle.push({ id: doc.id, ...doc.data() }); // Add document ID to data
-        });
+httpRequest.onreadystatechange = function() {
+    if (this.readyState === 4) {
+        if (this.status == 200) {
+            contentTitle = JSON.parse(this.responseText);
+            console.log("Current cookies:", document.cookie); // Log current cookies
 
-        // Check for cookies
-        if (document.cookie.indexOf(',counter=') >= 0) {
-            let counter = Number(document.cookie.split(',')[1].split('=')[1]);
-            document.getElementById("totalItem").innerHTML = ('Total Items: ' + counter);
+            // Check for cookies
+            if (document.cookie.indexOf(',counter=') >= 0) {
+                let counter = Number(document.cookie.split(',')[1].split('=')[1]);
+                document.getElementById("totalItem").innerHTML = ('Total Items: ' + counter);
+                
+                // Split cookies safely
+                let itemParts = document.cookie.split(',')[0].split('=');
+                if (itemParts.length > 1) {
+                    let item = itemParts[1].trim().split(" ");
+                    console.log("Items from cookie:", item);
 
-            // Split cookies safely
-            let itemParts = document.cookie.split(',')[0].split('=');
-            if (itemParts.length > 1) {
-                let item = itemParts[1].trim().split(" ");
-                console.log("Items from cookie:", item);
-
-                // Calculate totalAmount and dynamically show items
-                totalAmount = 0; // Reset totalAmount before calculating
-                for (let i = 0; i < counter; i++) {
-                    let itemCounter = 1;
-                    for (let j = i + 1; j < counter; j++) {   
-                        if (Number(item[j]) == Number(item[i])) {
-                            itemCounter += 1;
+                    // Calculate totalAmount and dynamically show items
+                    let i;
+                    totalAmount = 0; // Reset totalAmount before calculating
+                    for (i = 0; i < counter; i++) {
+                        let itemCounter = 1;
+                        for (let j = i + 1; j < counter; j++) {   
+                            if (Number(item[j]) == Number(item[i])) {
+                                itemCounter += 1;
+                            }
                         }
+                        totalAmount += Number(contentTitle[item[i] - 1].price) * itemCounter;
+                        dynamicCartSection(contentTitle[item[i] - 1], itemCounter);
+                        i += (itemCounter - 1);
                     }
-                    totalAmount += Number(contentTitle[item[i] - 1].price) * itemCounter;
-                    dynamicCartSection(contentTitle[item[i] - 1], itemCounter);
-                    i += (itemCounter - 1);
+                    amountUpdate(totalAmount);
+                } else {
+                    console.error("Expected cookie format not found!");
                 }
-                amountUpdate(totalAmount);
-            } else {
-                console.error("Expected cookie format not found!");
             }
+        } else {
+            console.log('call failed!');
         }
-    })
-    .catch((error) => {
-        console.error("Error fetching products: ", error);
-    });
+    }
+}
+
+httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
+httpRequest.send();
