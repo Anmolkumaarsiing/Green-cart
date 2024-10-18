@@ -16,8 +16,14 @@ httpRequest.onreadystatechange = function() {
         // Assuming you have the Razorpay transaction ID from your payment process
         let transactionId = "YOUR_RAZORPAY_TRANSACTION_ID"; // Replace with actual transaction ID
 
+        // Example: IDs of products ordered
+        let orderedProductIds = ["1", "2"]; // Replace with actual ordered product IDs
+
+        // Filter products based on the ordered IDs
+        let orderedProducts = jsonArray.filter(product => orderedProductIds.includes(product.id));
+
         // Prepare data for the order
-        let orderData = jsonArray.map(product => ({
+        let orderData = orderedProducts.map(product => ({
             id: product.id,
             name: product.name,
             brand: product.brand,
