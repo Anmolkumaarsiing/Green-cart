@@ -48,12 +48,12 @@ httpRequest.onreadystatechange = function() {
         document.getElementById("badge").innerHTML = counter;
       }
       for (let i = 0; i < contentTitle.length; i++) {
-        if (!contentTitle[i].isScrap) {
-          containerGrocery.appendChild(dynamicSection(contentTitle[i]));
-        } else {
-           console.log("No grocerry items available");
-        }
-      }
+    if (contentTitle[i].isScrap) {
+        // If isScrap is true, append the content to containerGrocery
+        containerGrocery.appendChild(dynamicSection(contentTitle[i]));
+    }
+    // No need for an else statement if you don't want to show or log anything
+}
     } else {
       console.log("Call failed!");
     }
