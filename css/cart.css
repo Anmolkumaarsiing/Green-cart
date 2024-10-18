@@ -68,8 +68,13 @@ button
     padding: 8px 12px;
     background-color: #64f018;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
+    background-size: 300% 100%;
+    border-radius: 5px;
+    moz-transition: all .4s ease-in-out;
+    -o-transition: all .4s ease-in-out;
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out;
 }
 button a
 {
@@ -79,13 +84,20 @@ button a
 }
 button:hover
 {
-    background-color: #5cc523;
+    background-position: 100% 0;
+    moz-transition: all .4s ease-in-out;
+    -o-transition: all .4s ease-in-out;
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out;
 }
 button a:focus
 {
     outline: none;
 }
-
+.button{
+    background-image: linear-gradient(to right, #6253e1, #852D91, #A3A1FF, #F24645);
+    box-shadow: 0 4px 15px 0 rgba(126, 52, 161, 0.75);
+}
 /* ----------------------------- MEDIA QUERY --------------------------- */
 
 @media(max-width: 800px)
