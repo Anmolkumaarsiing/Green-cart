@@ -25,7 +25,7 @@ function dynamicCartSection(ob, itemCounter) {
     boxDiv.appendChild(boxh3);
 
     let boxh4 = document.createElement('h4');
-    let h4Text = document.createTextNode('Amount: Rs ' + ob.price);
+    let h4Text = document.createTextNode('Amount: Rs ' + (ob.price * itemCounter));
     boxh4.appendChild(h4Text);
     boxDiv.appendChild(boxh4);
 
@@ -46,26 +46,34 @@ totalDiv.appendChild(totalh2);
 
 // TO UPDATE THE TOTAL AMOUNT
 function amountUpdate(amount) {
+    // Clear previous total if any
+    totalDiv.innerHTML = '';
+    
     let totalh4 = document.createElement('h4');
     let totalh4Text = document.createTextNode('Amount: Rs ' + amount);
     totalh4.appendChild(totalh4Text);
     totalDiv.appendChild(totalh4);
+    
+    // Append the button after total amount is updated
+    buttonDiv = document.createElement('div');
+    buttonDiv.id = 'button';
     totalDiv.appendChild(buttonDiv);
+
+    let buttonTag = document.createElement('button');
+    buttonTag.id = 'placeOrderButton';
+    buttonDiv.appendChild(buttonTag);
+
+    let buttonText = document.createTextNode('Place Order');
+    buttonTag.appendChild(buttonText);
+
+    // Attach event listener to button
+    buttonTag.onclick = function() {
+        console.log("Order placed");
+        initializeRazorpay(amount); // Ensure totalAmount is in rupees
+    };
 }
 
-let buttonDiv = document.createElement('div');
-buttonDiv.id = 'button';
-totalDiv.appendChild(buttonDiv);
-
-let buttonTag = document.createElement('button');
-buttonDiv.appendChild(buttonTag);
-
-let buttonLink = document.createElement('a');
-buttonLink.href = '#'; // This will be handled by JavaScript
-buttonTag.appendChild(buttonLink);
-
-let buttonText = document.createTextNode('Place Order');
-buttonTag.appendChild(buttonText);
+let buttonDiv;
 
 // Function to initialize Razorpay
 function initializeRazorpay(amount) {
@@ -88,12 +96,6 @@ function initializeRazorpay(amount) {
 
     var paymentObject = new Razorpay(options);
     paymentObject.open();
-}
-
-// Modify button click event to call initializeRazorpay
-buttonTag.onclick = function() {
-    console.log("clicked");
-    initializeRazorpay(totalAmount); // Ensure totalAmount is in rupees
 }
 
 // BACKEND CALL
