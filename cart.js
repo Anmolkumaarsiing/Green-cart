@@ -80,6 +80,8 @@ function initializeRazorpay(amount) {
         "image": "https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png", // Optional logo URL
         "handler": function (response) {
             alert("Payment successful: " + response.razorpay_payment_id);
+            // Call the function to send the order details
+            sendOrderDetails(response.razorpay_payment_id);
             window.location.href = "/orderPlaced.html";
         },
         "theme": {
@@ -95,6 +97,33 @@ function initializeRazorpay(amount) {
 buttonTag.onclick = function() {
     console.log("clicked");
     initializeRazorpay(totalAmount); // Ensure totalAmount is in rupees
+}
+
+// Function to send order details to the API
+function sendOrderDetails(transactionId) {
+    // Prepare the order data
+    let orderData = [];
+    let itemParts = document.cookie.split(',')[0].split('=');
+    if (itemParts.length > 1) {
+        let item = itemParts[1].trim().split(" ");
+        for (let i = 0; i < item.length; i++) {
+            let productIndex = Number(item[i]) - 1; // Adjust index
+            let productDetails = {
+                id: contentTitle[productIndex].id,
+                name: contentTitle[productIndex].name,
+                brand: contentTitle[productIndex].brand,
+                transactionId: transactionId,
+                createdAt: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) // Current date and time in IST
+            };
+            orderData.push(productDetails);
+        }
+
+        // Send the order data to the orders API
+        let httpRequest2 = new XMLHttpRequest();
+        httpRequest2.open("POST", "https://669e2f559a1bda368005b99b.mockapi.io/Product/orders", true);
+        httpRequest2.setRequestHeader("Content-Type", "application/json"); // Set the correct content type for JSON
+        httpRequest2.send(JSON.stringify(orderData));
+    }
 }
 
 // BACKEND CALL
