@@ -34,7 +34,6 @@ img
     box-shadow: 1px 2px 6px 2px rgb(219, 219, 219);
     border-radius: 10px;
     width: 100%;
-    margin: 5px;
     padding: 20px 10px;
 }
 #box:hover
@@ -46,8 +45,8 @@ img
     background-color: white;
     box-shadow: 1px 2px 6px 2px rgb(219, 219, 219);
     border-radius: 10px;
-    width: 100%;
-    margin: 5px;
+    width: 50%;
+    margin: auto;
     padding: 20px 10px;
 }
 #totalContainer:hover
