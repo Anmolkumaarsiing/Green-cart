@@ -76,9 +76,9 @@ img
     cursor: pointer; /* Pointer cursor on hover */
     border-radius: 5px;
     border: none; /* Remove default border */
-    background-image: linear-gradient(to right, #A0D683, #7dee12, #5df30c, #12ee6c); /* Gradient background */
+    background-image: linear-gradient(to right, #6253e1, #852D91, #A3A1FF, #F24645); /* Gradient background */
     background-size: 300% 100%; /* For gradient background */
-    box-shadow: 0 4px 15px rgba(18, 238, 55, 0.75); /* Shadow effect */
+    box-shadow: 0 4px 15px rgba(126, 52, 161, 0.75); /* Shadow effect */
     transition: all 0.4s ease-in-out; /* Smooth transition */
 }
 
