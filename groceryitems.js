@@ -47,13 +47,23 @@ httpRequest.onreadystatechange = function() {
         let counter = document.cookie.split(",")[1].split("=")[1];
         document.getElementById("badge").innerHTML = counter;
       }
-      for (let i = 0; i < contentTitle.length; i++) {
-    if (!contentTitle[i].isScrap) {
+      let hasScrap = false;
+
+for (let i = 0; i < contentTitle.length; i++) {
+    if (contentTitle[i].isScrap) {
         // If isScrap is true, append the content to containerGrocery
         containerGrocery.appendChild(dynamicSection(contentTitle[i]));
+        hasScrap = true;  // Mark that we have at least one 'scrap' item
     }
-    // No need for an else statement if you don't want to show or log anything
 }
+
+// After the loop, show containerGrocery only if at least one item was appended
+if (!hasScrap) {
+    console.log("No grocery items available.");
+} else {
+    containerGrocery.style.display = "block";  // Ensure the container is visible if items were added
+}
+
     } else {
       console.log("Call failed!");
     }
