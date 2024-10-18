@@ -35,7 +35,6 @@ function dynamicSection(ob) {
 }
 
 let containerGrocery = document.getElementById("containerGrocery");
-let containerScrap = document.getElementById("containerScrap");
 
 // Making the backend call to fetch data
 let httpRequest = new XMLHttpRequest();
