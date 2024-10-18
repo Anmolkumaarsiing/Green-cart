@@ -6,7 +6,6 @@ if (document.cookie.indexOf(',counter=') >= 0) {
 }
 
 let cartContainer = document.getElementById('cartContainer');
-
 let boxContainerDiv = document.createElement('div');
 boxContainerDiv.id = 'boxContainer';
 
@@ -31,7 +30,6 @@ function dynamicCartSection(ob, itemCounter) {
     boxDiv.appendChild(boxh4);
 
     cartContainer.appendChild(boxContainerDiv);
-    cartContainer.appendChild(totalContainerDiv);
 }
 
 let totalContainerDiv = document.createElement('div');
@@ -80,8 +78,7 @@ function initializeRazorpay(amount) {
         "image": "https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png", // Optional logo URL
         "handler": function (response) {
             alert("Payment successful: " + response.razorpay_payment_id);
-            // Call the function to send the order details
-            sendOrderDetails(response.razorpay_payment_id);
+            sendOrderDetails(response.razorpay_payment_id); // Send order details after payment
             window.location.href = "/orderPlaced.html";
         },
         "theme": {
@@ -99,33 +96,6 @@ buttonTag.onclick = function() {
     initializeRazorpay(totalAmount); // Ensure totalAmount is in rupees
 }
 
-// Function to send order details to the API
-function sendOrderDetails(transactionId) {
-    // Prepare the order data
-    let orderData = [];
-    let itemParts = document.cookie.split(',')[0].split('=');
-    if (itemParts.length > 1) {
-        let item = itemParts[1].trim().split(" ");
-        for (let i = 0; i < item.length; i++) {
-            let productIndex = Number(item[i]) - 1; // Adjust index
-            let productDetails = {
-                id: contentTitle[productIndex].id,
-                name: contentTitle[productIndex].name,
-                brand: contentTitle[productIndex].brand,
-                transactionId: transactionId,
-                createdAt: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) // Current date and time in IST
-            };
-            orderData.push(productDetails);
-        }
-
-        // Send the order data to the orders API
-        let httpRequest2 = new XMLHttpRequest();
-        httpRequest2.open("POST", "https://669e2f559a1bda368005b99b.mockapi.io/Product/orders", true);
-        httpRequest2.setRequestHeader("Content-Type", "application/json"); // Set the correct content type for JSON
-        httpRequest2.send(JSON.stringify(orderData));
-    }
-}
-
 // BACKEND CALL
 let httpRequest = new XMLHttpRequest();
 let totalAmount = 0;
@@ -134,7 +104,7 @@ httpRequest.onreadystatechange = function() {
     if (this.readyState === 4) {
         if (this.status == 200) {
             contentTitle = JSON.parse(this.responseText);
-            console.log("Current cookies:", document.cookie); // Log current cookies
+            console.log("Content Title Data:", contentTitle); // Check the data
 
             // Check for cookies
             if (document.cookie.indexOf(',counter=') >= 0) {
@@ -174,3 +144,36 @@ httpRequest.onreadystatechange = function() {
 
 httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
 httpRequest.send();
+
+// Function to send order details to the API
+function sendOrderDetails(transactionId) {
+    // Prepare the order data
+    let orderData = [];
+    let itemParts = document.cookie.split(',')[0].split('=');
+    if (itemParts.length > 1) {
+        let item = itemParts[1].trim().split(" ");
+        for (let i = 0; i < item.length; i++) {
+            let productIndex = Number(item[i]) - 1; // Adjust index
+            
+            // Check if the productIndex is within the bounds of contentTitle
+            if (productIndex >= 0 && productIndex < contentTitle.length) {
+                let productDetails = {
+                    id: contentTitle[productIndex].id,
+                    name: contentTitle[productIndex].name,
+                    brand: contentTitle[productIndex].brand,
+                    transactionId: transactionId,
+                    createdAt: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) // Current date and time in IST
+                };
+                orderData.push(productDetails);
+            } else {
+                console.error(`Product index ${productIndex} is out of bounds for contentTitle array.`);
+            }
+        }
+
+        // Send the order data to the orders API
+        let httpRequest2 = new XMLHttpRequest();
+        httpRequest2.open("POST", "https://669e2f559a1bda368005b99b.mockapi.io/Product/orders", true);
+        httpRequest2.setRequestHeader("Content-Type", "application/json"); // Set the correct content type for JSON
+        httpRequest2.send(JSON.stringify(orderData));
+    }
+}
