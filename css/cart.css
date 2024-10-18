@@ -76,7 +76,6 @@ img
     cursor: pointer; /* Pointer cursor on hover */
     height: 55px; /* Fixed height */
     border: none; /* Remove default border */
-    border-radius: 50px; /* Rounded corners */
     background-image: linear-gradient(to right, #6253e1, #852D91, #A3A1FF, #F24645); /* Gradient background */
     background-size: 300% 100%; /* For gradient background */
     box-shadow: 0 4px 15px rgba(126, 52, 161, 0.75); /* Shadow effect */
