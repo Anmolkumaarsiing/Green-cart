@@ -48,7 +48,7 @@ httpRequest.onreadystatechange = function() {
         document.getElementById("badge").innerHTML = counter;
       }
       for (let i = 0; i < contentTitle.length; i++) {
-    if (contentTitle[i].isScrap) {
+    if (!contentTitle[i].isScrap) {
         // If isScrap is true, append the content to containerGrocery
         containerGrocery.appendChild(dynamicSection(contentTitle[i]));
     }
