@@ -3,13 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Shopping Cart</title>
-    <link rel="stylesheet" href="/css/cart.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="css/cart.css">
+    <link rel="icon" href="https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png" type="image/gif" sizes="16x16">
+    <script src="https://kit.fontawesome.com/4a3b1f73a2.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Shopping Cart</h1>
+    <!-- HEADER -->
+    <div id="header"></div>
+    <script>
+        load("header.html");
+        function load(url) {
+            req = new XMLHttpRequest();
+            req.open("GET", url, false);
+            req.send(null);
+            document.getElementById("header").innerHTML = req.responseText;
+        }
+    </script>
 
+    <!-- CART CONTAINER -->
+    <h1>Shopping Cart</h1>
     <div class="shopping-cart">
         <div class="column-labels">
             <label class="product-image">Image</label>
@@ -20,8 +35,8 @@
             <label class="product-line-price">Total</label>
         </div>
 
-        <div class="products-container">
-            <!-- Products will be added here dynamically -->
+        <div id="cartContainer">
+            <!-- Dynamically generated product rows will go here -->
         </div>
 
         <div class="totals">
@@ -42,9 +57,20 @@
                 <div class="totals-value" id="cart-total">0.00</div>
             </div>
         </div>
+
         <button class="checkout">Checkout</button>
     </div>
 
+    <div id="footer"></div>
+    <script>
+        load("footer.html");
+        function load(url) {
+            req = new XMLHttpRequest();
+            req.open("GET", url, false);
+            req.send(null);
+            document.getElementById("footer").innerHTML = req.responseText;
+        }
+    </script>
     <script src="cart.js"></script>
 </body>
 </html>
