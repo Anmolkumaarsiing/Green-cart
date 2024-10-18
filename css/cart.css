@@ -69,12 +69,11 @@ img
 }
 
 #button button {
-    width: 200px; /* Fixed width for the button */
-    font-size: 16px; /* Font size */
+    padding: 8px 12px;
+    font-size: 15px; /* Font size */
     font-weight: 600; /* Bold text */
-    color: #fff; /* Text color */
+    color: white; /* Text color */
     cursor: pointer; /* Pointer cursor on hover */
-    height: 55px; /* Fixed height */
     border-radius: 5px;
     border: none; /* Remove default border */
     background-image: linear-gradient(to right, #A0D683, #7dee12, #5df30c, #12ee6c); /* Gradient background */
@@ -90,12 +89,6 @@ img
 
 #button button:focus {
     outline: none; /* Remove outline on focus */
-}
-button a
-{
-    text-decoration: none;
-    color: white;
-    font-size: 15px;
 }
 
 /* ----------------------------- MEDIA QUERY --------------------------- */
