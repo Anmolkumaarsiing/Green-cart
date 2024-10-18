@@ -83,7 +83,7 @@ function initializeRazorpay(amount) {
             window.location.href = "/orderPlaced.html";
         },
         "theme": {
-            "color": "#0d94fb"
+            "color": "#A0D683"
         }
     };
 
