@@ -63,18 +63,33 @@ img
     transform: translateY(-5px);
     box-shadow: linear-gradient(45deg, #36D8FF, #00acee, #66757f);
 }
-button
-{
-    padding: 8px 12px;
-    background-color: #64f018;
-    border: none;
-    cursor: pointer;
-    background-size: 300% 100%;
-    border-radius: 5px;
-    moz-transition: all .4s ease-in-out;
-    -o-transition: all .4s ease-in-out;
-    -webkit-transition: all .4s ease-in-out;
-    transition: all .4s ease-in-out;
+#button {
+    text-align: center; /* Center the button within its container */
+    margin-top: 20px; /* Space above the button */
+}
+
+#button button {
+    width: 200px; /* Fixed width for the button */
+    font-size: 16px; /* Font size */
+    font-weight: 600; /* Bold text */
+    color: #fff; /* Text color */
+    cursor: pointer; /* Pointer cursor on hover */
+    height: 55px; /* Fixed height */
+    border: none; /* Remove default border */
+    border-radius: 50px; /* Rounded corners */
+    background-image: linear-gradient(to right, #6253e1, #852D91, #A3A1FF, #F24645); /* Gradient background */
+    background-size: 300% 100%; /* For gradient background */
+    box-shadow: 0 4px 15px rgba(126, 52, 161, 0.75); /* Shadow effect */
+    transition: all 0.4s ease-in-out; /* Smooth transition */
+}
+
+#button button:hover {
+    background-position: 100% 0; /* Change background position on hover */
+    transform: translateY(-2px); /* Slight lift effect on hover */
+}
+
+#button button:focus {
+    outline: none; /* Remove outline on focus */
 }
 button a
 {
@@ -82,22 +97,7 @@ button a
     color: white;
     font-size: 15px;
 }
-button:hover
-{
-    background-position: 100% 0;
-    moz-transition: all .4s ease-in-out;
-    -o-transition: all .4s ease-in-out;
-    -webkit-transition: all .4s ease-in-out;
-    transition: all .4s ease-in-out;
-}
-button a:focus
-{
-    outline: none;
-}
-.button{
-    background-image: linear-gradient(to right, #6253e1, #852D91, #A3A1FF, #F24645);
-    box-shadow: 0 4px 15px 0 rgba(126, 52, 161, 0.75);
-}
+
 /* ----------------------------- MEDIA QUERY --------------------------- */
 
 @media(max-width: 800px)
