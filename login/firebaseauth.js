@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
-import { getFirestore, setDoc, doc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+import { getFirestore, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCrSBQoJDG9Cn5t2vsWNvDDkDQJm1UxTgk",
@@ -99,11 +99,25 @@ googleSignInButton.addEventListener('click', (event) => {
     event.preventDefault();
     const provider = new GoogleAuthProvider();
     const auth = getAuth();
+    const db = getFirestore();
 
     signInWithPopup(auth, provider)
-        .then((result) => {
+        .then(async (result) => {
             const user = result.user;
             console.log("Google Sign-In successful:", user);
+            const userDocRef = doc(db, "users", user.uid);
+            const docSnap = await getDoc(userDocRef);
+            // Check if the user document already exists
+            if (!docSnap.exists()) {
+                // Save new user data if not exists
+                const userData = {
+                    email: user.email,
+                    firstName: user.displayName.split(" ")[0], // Use the first part of the display name
+                    lastName: user.displayName.split(" ")[1] || "", // Use the second part or empty string
+                };
+                await setDoc(userDocRef, userData);
+                console.log("User data saved to Firestore:", userData);
+            }
             showMessage('Login is successful', 'signInMessage');
             localStorage.setItem('loggedInUserId', user.uid);
             window.location.href = '../homepage.html';
