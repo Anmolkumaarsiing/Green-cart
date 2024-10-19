@@ -47,11 +47,36 @@ totalh2.appendChild(h2Text);
 totalDiv.appendChild(totalh2);
 
 // TO UPDATE THE TOTAL AMOUNT
-function amountUpdate(amount) {
-    let totalh4 = document.createElement('h4');
-    let totalh4Text = document.createTextNode('Amount: Rs ' + amount);
-    totalh4.appendChild(totalh4Text);
-    totalDiv.appendChild(totalh4);
+function amountUpdate(subtotal) {
+    let gst = subtotal * 0.18; // GST at 18%
+    let deliveryCharge = Math.min(subtotal * 0.1, 20); // Delivery charge 10% or Rs 20, whichever is less
+    let finalAmount = subtotal + gst + deliveryCharge;
+
+    // Subtotal display
+    let subtotalh4 = document.createElement('h4');
+    let subtotalh4Text = document.createTextNode('Subtotal: Rs ' + subtotal.toFixed(2));
+    subtotalh4.appendChild(subtotalh4Text);
+    totalDiv.appendChild(subtotalh4);
+
+    // GST display
+    let gsth4 = document.createElement('h4');
+    let gsth4Text = document.createTextNode('GST (18%): Rs ' + gst.toFixed(2));
+    gsth4.appendChild(gsth4Text);
+    totalDiv.appendChild(gsth4);
+
+    // Delivery charge display
+    let deliveryh4 = document.createElement('h4');
+    let deliveryh4Text = document.createTextNode('Delivery Charges: Rs ' + deliveryCharge.toFixed(2));
+    deliveryh4.appendChild(deliveryh4Text);
+    totalDiv.appendChild(deliveryh4);
+
+    // Final amount display
+    let finalh4 = document.createElement('h4');
+    let finalh4Text = document.createTextNode('Final Amount: Rs ' + finalAmount.toFixed(2));
+    finalh4.appendChild(finalh4Text);
+    totalDiv.appendChild(finalh4);
+
+    // Attach the button div for Razorpay
     totalDiv.appendChild(buttonDiv);
 }
 
