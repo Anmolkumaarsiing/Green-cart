@@ -7,6 +7,7 @@ if (document.cookie.indexOf(',counter=') >= 0) {
 }
 
 let cartContainer = document.getElementById('cartContainer');
+
 let boxContainerDiv = document.createElement('div');
 boxContainerDiv.id = 'boxContainer';
 
@@ -31,6 +32,7 @@ function dynamicCartSection(ob, itemCounter) {
     boxDiv.appendChild(boxh4);
 
     cartContainer.appendChild(boxContainerDiv);
+    cartContainer.appendChild(totalContainerDiv);
 }
 
 let totalContainerDiv = document.createElement('div');
@@ -128,7 +130,7 @@ function postTransaction(transactionId, amount) {
         if (this.readyState === 4) {
             if (this.status == 201) {
                 console.log("Transaction successfully posted:", JSON.parse(this.responseText));
-                generateInvoicePDF(transactionId, amount); // Generate invoice after successful transaction
+                generateInvoicePDF(transactionId, amount); // Generate invoice after successful transaction posting
             } else {
                 console.error("Failed to post transaction data:", this.responseText);
             }
@@ -160,15 +162,119 @@ function generateOrderId() {
     return `GC${dateString}${randomFourDigit}`; // Format: GCYYYYMMDDXXXX
 }
 
+// Function to generate PDF invoice
+function generateInvoicePDF(transactionId, amount) {
+    // Fetch item details from cookies
+    getItemDetailsFromCookies().then(items => {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Set the title and other header information
+        doc.setFontSize(18);
+        doc.text("TAX INVOICE", 10, 10);
+        doc.setFontSize(12);
+        doc.text(`GREEN CART`, 10, 20);
+        doc.text(`Parul university, Vadodara, Gujarat, 391025`, 10, 25);
+        doc.text(`Email ID: anmolkumaarsiingh@gmail.com`, 10, 30);
+        doc.text(`DATE: ${new Date().toLocaleDateString("en-IN")}`, 10, 35);
+        doc.text(`Order ID: ${transactionId}`, 10, 40);
+
+        doc.text("Bill of: Grocerry items from Green cart", 10, 50);
+        doc.text("Payment Date: " + new Date().toLocaleDateString("en-IN"), 10, 55);
+        doc.text("Payment Mode: Razorpay", 10, 60);
+        doc.text("Description", 10, 70);
+
+        // Add table headers
+        const headers = [["S.No", "Product Name", "Qty", "Price", "Amount"]];
+        const data = items.map((item, index) => [index + 1, item.name, item.quantity, item.price.toFixed(2), (item.price * item.quantity).toFixed(2)]);
+
+        // Calculate totals
+        const totalAmount = items.reduce((total, item) => total + (item.price * item.quantity), 0);
+        const gst = totalAmount * 0.18;
+        const deliveryCharge = Math.min(20, 0.10 * totalAmount);
+        const grandTotal = totalAmount + gst + deliveryCharge;
+
+        doc.autoTable({
+            head: headers,
+            body: data,
+            startY: 80,
+            theme: 'grid'
+        });
+
+        // Add total amounts
+        doc.text(`Total: ₹ ${totalAmount.toFixed(2)}`, 10, doc.autoTable.previous.finalY + 10);
+        doc.text(`CGST (9%): ₹ ${(gst / 2).toFixed(2)}`, 10, doc.autoTable.previous.finalY + 15);
+        doc.text(`SGST (9%): ₹ ${(gst / 2).toFixed(2)}`, 10, doc.autoTable.previous.finalY + 20);
+        doc.text(`Delivery Charges: ₹ ${deliveryCharge.toFixed(2)}`, 10, doc.autoTable.previous.finalY + 25);
+        doc.text(`Grand Total: ₹ ${grandTotal.toFixed(2)}`, 10, doc.autoTable.previous.finalY + 30);
+        doc.text(`Terms & Conditions: No returns, no refunds.`, 10, doc.autoTable.previous.finalY + 35);
+        doc.text(`Signature: ______________`, 10, doc.autoTable.previous.finalY + 40);
+
+        // Save the PDF
+        doc.save(`Invoice_${transactionId}.pdf`);
+    });
+}
+
+// Fetch item details from cookies
+function getItemDetailsFromCookies() {
+    return new Promise((resolve, reject) => {
+        if (document.cookie.indexOf(',counter=') >= 0) {
+            let counter = Number(document.cookie.split(',')[1].split('=')[1]);
+            let itemParts = document.cookie.split(',')[0].split('=');
+            if (itemParts.length > 1) {
+                let item = itemParts[1].trim().split(" ");
+                let items = [];
+
+                // Fetch item details
+                let httpRequest = new XMLHttpRequest();
+                httpRequest.onreadystatechange = function() {
+                    if (this.readyState === 4) {
+                        if (this.status == 200) {
+                            let contentTitle = JSON.parse(this.responseText);
+                            // Calculate and store item quantities
+                            for (let i = 0; i < counter; i++) {
+                                let itemCounter = 1;
+                                for (let j = i + 1; j < counter; j++) {   
+                                    if (Number(item[j]) == Number(item[i])) {
+                                        itemCounter += 1;
+                                    }
+                                }
+                                
+                                let itemIndex = item[i] - 1; // Adjust for zero-based index
+                                if (itemIndex >= 0 && itemIndex < contentTitle.length) {
+                                    items.push({
+                                        name: contentTitle[itemIndex].name,
+                                        price: Number(contentTitle[itemIndex].price),
+                                        quantity: itemCounter
+                                    });
+                                }
+                                i += (itemCounter - 1);
+                            }
+                            resolve(items);
+                        } else {
+                            reject("Failed to fetch item details.");
+                        }
+                    }
+                }
+                httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
+                httpRequest.send();
+            } else {
+                reject("Expected cookie format not found!");
+            }
+        } else {
+            reject("No items in cart.");
+        }
+    });
+}
+
 // BACKEND CALL
 let httpRequest = new XMLHttpRequest();
 let totalAmount = 0;
-let contentTitle = []; // Declare contentTitle globally to store fetched data
 
 httpRequest.onreadystatechange = function() {
     if (this.readyState === 4) {
         if (this.status == 200) {
-            contentTitle = JSON.parse(this.responseText); // Store fetched data in contentTitle
+            let contentTitle = JSON.parse(this.responseText);
             console.log("Current cookies:", document.cookie); // Log current cookies
 
             // Check for cookies
@@ -216,123 +322,3 @@ httpRequest.onreadystatechange = function() {
 
 httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
 httpRequest.send();
-
-// Function to generate PDF invoice
-function generateInvoicePDF(transactionId, amount) {
-    const gstRate = 0.18;
-    const deliveryCharge = Math.min(20, 0.10 * amount); // Delivery charges (10% of total or Rs 20, whichever is less)
-    const totalGst = amount * gstRate; // Total GST amount
-    const grandTotal = amount + totalGst + deliveryCharge; // Grand total
-
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
-    // Header
-    doc.setFontSize(22);
-    doc.text("TAX INVOICE", 14, 20);
-    doc.setFontSize(12);
-    doc.text(`DATE : ${new Date().toLocaleDateString('en-IN')}`, 14, 30);
-    doc.text("GREEN CART", 14, 40);
-    doc.text("Parul university, Vadodara, Gujarat, 391025", 14, 45);
-    doc.text("Email ID: anmolkumaarsiingh@gmail.com", 14, 50);
-    
-    // Bill To
-    doc.text("Bill of:", 14, 60);
-    doc.text("Grocery items from Green Cart", 14, 65);
-    doc.text("Order ID: " + transactionId, 14, 70);
-    doc.text("Payment Date: " + new Date().toLocaleDateString('en-IN'), 14, 75);
-    doc.text("Payment Mode: Razorpay", 14, 80);
-    
-    // Table header
-    doc.setFontSize(12);
-    doc.text("S.No", 14, 90);
-    doc.text("Description", 40, 90);
-    doc.text("Qty", 120, 90);
-    doc.text("Rate", 140, 90);
-    doc.text("Amount", 160, 90);
-    
-    // Items
-    let currentY = 95;
-    const uniqueItems = {}; // To hold unique items and their details
-    
-    items.forEach(item => {
-        if (uniqueItems[item.description]) {
-            uniqueItems[item.description].qty += item.qty; // Aggregate quantity for the same item
-            uniqueItems[item.description].amount += item.amount; // Aggregate amount for the same item
-        } else {
-            uniqueItems[item.description] = { ...item }; // Add new unique item
-        }
-    });
-
-    // Display unique items in the PDF
-    let serialNumber = 1;
-    Object.values(uniqueItems).forEach(item => {
-        doc.text(serialNumber.toString(), 14, currentY); // Serial number
-        doc.text(item.description, 40, currentY);
-        doc.text(item.qty.toString(), 120, currentY);
-        doc.text(item.rate.toFixed(2), 140, currentY);
-        doc.text(item.amount.toFixed(2), 160, currentY);
-        currentY += 5;
-        serialNumber++;
-    });
-
-    // Add totals
-    doc.text("Total", 140, currentY);
-    doc.text(amount.toFixed(2), 160, currentY);
-    currentY += 5;
-
-    doc.text("CGST (9%)", 140, currentY);
-    doc.text((totalGst / 2).toFixed(2), 160, currentY);
-    currentY += 5;
-
-    doc.text("SGST (9%)", 140, currentY);
-    doc.text((totalGst / 2).toFixed(2), 160, currentY);
-    currentY += 5;
-
-    // Add Delivery Charges
-    doc.text("Delivery Charges", 140, currentY);
-    doc.text(deliveryCharge.toFixed(2), 160, currentY);
-    currentY += 5;
-
-    // Add Grand Total
-    doc.text("Grand Total", 140, currentY);
-    doc.text(grandTotal.toFixed(2), 160, currentY);
-    
-    // Terms and Conditions
-    currentY += 10;
-    doc.text("Terms & Conditions", 14, currentY);
-    currentY += 5;
-    doc.text("1. All sales are final.", 14, currentY);
-    currentY += 5;
-    doc.text("2. No returns or exchanges after purchase.", 14, currentY);
-    currentY += 5;
-    doc.text("3. Delivery charges apply for all orders.", 14, currentY);
-    currentY += 10;
-
-    // Signature
-    doc.text("Signature: __________________", 14, currentY);
-
-    // Save the PDF
-    doc.save(`Invoice_${transactionId}.pdf`);
-}
-
-// Get item details from cookies
-function getItemDetailsFromCookies() {
-    const cookieData = document.cookie.split(',')[0].split('=')[1].trim().split(" ");
-    const items = [];
-    cookieData.forEach((itemIndex) => {
-        const index = Number(itemIndex) - 1; // Adjusting for zero-based index
-        if (contentTitle && contentTitle[index]) { // Check if contentTitle is defined and item exists
-            items.push({
-                description: contentTitle[index].name,
-                qty: 1, // Assuming quantity is 1 for simplicity
-                rate: contentTitle[index].price,
-                amount: contentTitle[index].price // Set the individual item amount
-            });
-        }
-    });
-    return items; // Return items array
-}
-
-// Ensure to call getItemDetailsFromCookies before generating the invoice
-// Adjust this call in generateInvoicePDF as needed
