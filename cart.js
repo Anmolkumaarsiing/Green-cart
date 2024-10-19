@@ -10,6 +10,9 @@ let cartContainer = document.getElementById('cartContainer');
 let boxContainerDiv = document.createElement('div');
 boxContainerDiv.id = 'boxContainer';
 
+// Store previously generated order IDs
+let generatedOrderIds = new Set();
+
 // DYNAMIC CODE TO SHOW THE SELECTED ITEMS IN YOUR CART
 function dynamicCartSection(ob, itemCounter) {
     let boxDiv = document.createElement('div');
@@ -117,7 +120,8 @@ function initializeRazorpay(finalAmount) {
             let orderData = {
                 transactionId: response.razorpay_payment_id, // Razorpay transaction ID
                 amount: finalAmount, // Final payment amount
-                timestamp: new Date().toISOString() // Add a timestamp for record-keeping
+                createdAt: getISTDateTime(), // Get current time in IST
+                orderId: generateUniqueOrderId() // Generate unique order ID
             };
 
             // Send transaction data to the API
@@ -130,6 +134,37 @@ function initializeRazorpay(finalAmount) {
 
     var paymentObject = new Razorpay(options);
     paymentObject.open();
+}
+
+// Function to generate a unique Order ID
+function generateUniqueOrderId() {
+    let orderId;
+    do {
+        orderId = generateOrderId();
+    } while (generatedOrderIds.has(orderId)); // Keep generating until we find a unique one
+    generatedOrderIds.add(orderId); // Add to the set of generated IDs
+    return orderId;
+}
+
+// Helper function to generate the basic order ID format
+function generateOrderId() {
+    let date = new Date();
+    let year = date.getFullYear();
+    let month = String(date.getMonth() + 1).padStart(2, '0'); // Pad month to 2 digits
+    let day = String(date.getDate()).padStart(2, '0'); // Pad day to 2 digits
+    let randomNum = Math.floor(1000 + Math.random() * 9000); // Generate random 4-digit number
+    return `GC-${year}${month}${day}-${randomNum}`;
+}
+
+// Function to get current IST date and time in ISO format
+function getISTDateTime() {
+    let date = new Date();
+
+    // Convert UTC to IST (IST is UTC+5:30)
+    date.setHours(date.getUTCHours() + 5);
+    date.setMinutes(date.getUTCMinutes() + 30);
+
+    return date.toISOString();
 }
 
 // Function to post transaction details to the provided API
