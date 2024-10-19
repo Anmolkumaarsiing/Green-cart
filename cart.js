@@ -193,19 +193,12 @@ function generateInvoicePDF(transactionId, amount) {
     doc.text("Parul University, Vadodara, Gujarat, 391025", 14, 45);
     doc.text("Email: anmolkumaresiingh@gmail.com", 14, 50);
 
-    // Add Bill To Section
-    doc.setFontSize(14);
-    doc.text("Bill To:", 14, 65);
-    doc.setFontSize(12);
-    doc.text("Customer Name", 14, 75); // Replace with actual customer name
-    doc.text("Customer Address", 14, 80); // Replace with actual customer address
-
     // Payment Details
     doc.setFontSize(14);
-    doc.text("Payment Details:", 14, 90);
+    doc.text("Payment Details:", 14, 65);
     doc.setFontSize(12);
-    doc.text(`Payment Date: ${new Date().toLocaleDateString('en-IN')}`, 14, 100);
-    doc.text("Payment Mode: Razorpay", 14, 105);
+    doc.text(`Payment Date: ${new Date().toLocaleDateString('en-IN')}`, 14, 70);
+    doc.text("Payment Mode: Razorpay", 14, 75);
 
     // Table Header
     doc.setFontSize(12);
@@ -213,10 +206,10 @@ function generateInvoicePDF(transactionId, amount) {
     doc.rect(14, 115, 180, 10, "F"); 
     doc.setTextColor(255); 
     doc.text("Description", 14, 120);
-    doc.text("Serial Number", 80, 120); // Changed HSN Code to Serial Number
+    doc.text("Serial Number", 80, 120);
     doc.text("Qty", 110, 120);
     doc.text("Rate", 130, 120);
-    doc.text("Amount", 160, 120);
+    doc.text("Amount", 170, 120);
     doc.setTextColor(0); 
 
     // Items with consistent background
@@ -231,10 +224,10 @@ function generateInvoicePDF(transactionId, amount) {
         // Adding item details
         doc.setTextColor(0);
         doc.text(item.description, 14, currentY);
-        doc.text((index + 1).toString(), 80, currentY); // Serial number
-        doc.text(item.qty.toString(), 110, currentY);
-        doc.text(item.rate.toFixed(2), 130, currentY);
-        doc.text(item.amount.toFixed(2), 160, currentY);
+        doc.text((index + 1).toString(), 110, currentY); // Serial number
+        doc.text(item.qty.toString(), 130, currentY);
+        doc.text(item.rate.toFixed(2), 150, currentY);
+        doc.text(item.amount.toFixed(2), 170, currentY);
         currentY += rowHeight; // Move down for the next row
     });
 
@@ -263,8 +256,9 @@ function generateInvoicePDF(transactionId, amount) {
 
     // Authorized Signatory Section
     doc.setFontSize(12);
+    const signatoryText = "Authorized Signatory: ;
     doc.setFont("courier", "italic"); // Set font to cursive; adjust as needed
-    const signatoryText = "Authorized Signatory: Anmol Singh";
+    const signatoryText = "Anmol Singh";
     const signatoryX = doc.internal.pageSize.getWidth() - doc.getTextWidth(signatoryText) - 14; // Right aligned
     doc.text(signatoryText, signatoryX, currentY + 30); // Positioning
 
