@@ -166,8 +166,10 @@ function generateOrderId() {
 function generateInvoicePDF(transactionId, amount) {
     // Fetch item details from cookies
     getItemDetailsFromCookies().then(items => {
+        // Access jsPDF and autoTable
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
+        doc.autoTable = window.jspdf.autoTable; // Ensure autoTable is correctly referenced
 
         // Set the title and other header information
         doc.setFontSize(18);
@@ -179,14 +181,20 @@ function generateInvoicePDF(transactionId, amount) {
         doc.text(`DATE: ${new Date().toLocaleDateString("en-IN")}`, 10, 35);
         doc.text(`Order ID: ${transactionId}`, 10, 40);
 
-        doc.text("Bill of: Grocerry items from Green cart", 10, 50);
+        doc.text("Bill of: Grocery items from Green cart", 10, 50);
         doc.text("Payment Date: " + new Date().toLocaleDateString("en-IN"), 10, 55);
         doc.text("Payment Mode: Razorpay", 10, 60);
         doc.text("Description", 10, 70);
 
         // Add table headers
         const headers = [["S.No", "Product Name", "Qty", "Price", "Amount"]];
-        const data = items.map((item, index) => [index + 1, item.name, item.quantity, item.price.toFixed(2), (item.price * item.quantity).toFixed(2)]);
+        const data = items.map((item, index) => [
+            index + 1,
+            item.name,
+            item.quantity,
+            item.price.toFixed(2),
+            (item.price * item.quantity).toFixed(2)
+        ]);
 
         // Calculate totals
         const totalAmount = items.reduce((total, item) => total + (item.price * item.quantity), 0);
@@ -194,6 +202,7 @@ function generateInvoicePDF(transactionId, amount) {
         const deliveryCharge = Math.min(20, 0.10 * totalAmount);
         const grandTotal = totalAmount + gst + deliveryCharge;
 
+        // Create the table in the PDF
         doc.autoTable({
             head: headers,
             body: data,
@@ -212,8 +221,11 @@ function generateInvoicePDF(transactionId, amount) {
 
         // Save the PDF
         doc.save(`Invoice_${transactionId}.pdf`);
+    }).catch(error => {
+        console.error("Error fetching item details:", error);
     });
 }
+
 
 // Fetch item details from cookies
 function getItemDetailsFromCookies() {
