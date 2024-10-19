@@ -139,7 +139,7 @@ function postTransaction(transactionId, amount) {
     const orderId = generateOrderId();
     
     // Get current date in IST format
-    const createdAt = getLocalTime();
+    const createdAt = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
 
     // Send only the necessary fields as JSON string
     let cleanOrderData = {
@@ -152,20 +152,12 @@ function postTransaction(transactionId, amount) {
     httpRequest.send(JSON.stringify(cleanOrderData));
 }
 
-// Function to get local time in IST format
-function getLocalTime() {
-    var utc = new Date();
-    var offset = utc.getTimezoneOffset();
-    var local = new Date(utc.getTime() + offset * 60000);
-    return local.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }); // Return in IST
-}
-
 // Generate unique Order ID
 function generateOrderId() {
     const today = new Date();
     const dateString = today.toISOString().slice(0, 10).replace(/-/g, ""); // Format: YYYYMMDD
     const randomFourDigit = Math.floor(1000 + Math.random() * 9000); // Random 4 digit number
-    return `ODGC${dateString}${randomFourDigit}`; // Format: GCYYYYMMDDXXXX
+    return `GC${dateString}${randomFourDigit}`; // Format: GCYYYYMMDDXXXX
 }
 
 // BACKEND CALL
