@@ -26,15 +26,11 @@ function dynamicCartSection(ob, itemCounter) {
     boxh3.appendChild(h3Text);
     boxDiv.appendChild(boxh3);
 
-    // Create a new element for the amount with a line break
-    let boxh4 = document.createElement('h4');
-    let h4Text = document.createTextNode('Amount: Rs ' + ob.price);
-    boxh4.appendChild(h4Text);
-    boxDiv.appendChild(boxh4);
-    
-    // Append a line break to ensure that the amount appears on a new line
-    boxDiv.appendChild(document.createElement('br'));
-    boxDiv.appendChild(document.createElement('br'));
+    // Use a new div for the amount to ensure it's on a new line
+    let amountDiv = document.createElement('div');
+    let amountText = document.createTextNode('Amount: Rs ' + ob.price);
+    amountDiv.appendChild(amountText);
+    boxDiv.appendChild(amountDiv);
 
     cartContainer.appendChild(boxContainerDiv);
     cartContainer.appendChild(totalContainerDiv);
