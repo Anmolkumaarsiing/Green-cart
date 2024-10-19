@@ -214,9 +214,10 @@ function generateInvoicePDF(transactionId, amount) {
         currentY += 5;
     });
 
-    doc.text("Subtotal", 130, currentY); // Change "Total" to "Subtotal"
-doc.text(amount.toFixed(2), 160, currentY); // Use the same amount variable here
-currentY += 5;
+    // Add totals
+    doc.text("Total", 130, currentY);
+    doc.text(amount.toFixed(2), 160, currentY);
+    currentY += 5;
 
     doc.text("CGST (9%)", 130, currentY);
     doc.text((totalGst / 2).toFixed(2), 160, currentY);
