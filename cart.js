@@ -153,7 +153,7 @@ function generateOrderId() {
     let month = String(date.getMonth() + 1).padStart(2, '0'); // Pad month to 2 digits
     let day = String(date.getDate()).padStart(2, '0'); // Pad day to 2 digits
     let randomNum = Math.floor(1000 + Math.random() * 9000); // Generate random 4-digit number
-    return `GC-${year}${month}${day}-${randomNum}`;
+    return `GC${year}${month}${day}${randomNum}`; // Removed hyphen
 }
 
 // Function to get current IST date and time in ISO format
@@ -164,7 +164,7 @@ function getISTDateTime() {
     date.setHours(date.getUTCHours() + 5);
     date.setMinutes(date.getUTCMinutes() + 30);
 
-    return date.toISOString();
+    return date.toISOString(); // Keep the ISO format
 }
 
 // Function to post transaction details to the provided API
@@ -185,8 +185,15 @@ function postTransaction(orderData) {
         }
     };
 
-    // Send orderData as JSON string
-    httpRequest.send(JSON.stringify(orderData));
+    // Send orderData as JSON string, removing unwanted fields
+    let cleanOrderData = {
+        transactionId: orderData.transactionId,
+        amount: orderData.amount,
+        createdAt: orderData.createdAt,
+        orderId: orderData.orderId
+    };
+
+    httpRequest.send(JSON.stringify(cleanOrderData));
 }
 
 // BACKEND CALL
