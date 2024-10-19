@@ -53,6 +53,9 @@ function amountUpdate(amount) {
     let deliveryCharge = Math.min(20, 0.10 * amount); // Delivery charges (10% of total or Rs 20, whichever is less)
     let finalAmount = amount + gst + deliveryCharge; // Calculate final amount
 
+    // Set final amount globally
+    window.finalAmount = finalAmount; // Set finalAmount as a global variable
+
     let totalh4 = document.createElement('h4');
     let totalh4Text = document.createTextNode('Subtotal: Rs ' + amount.toFixed(2));
     totalh4.appendChild(totalh4Text);
@@ -111,10 +114,10 @@ function initializeRazorpay(amount) {
     paymentObject.open();
 }
 
-// Modify button click event to call initializeRazorpay
+// Modify button click event to call initializeRazorpay with final amount
 buttonTag.onclick = function() {
     console.log("clicked");
-    initializeRazorpay(totalAmount); // Ensure totalAmount is in rupees
+    initializeRazorpay(window.finalAmount); // Use the final amount calculated in amountUpdate
 }
 
 // Function to post transaction details to the API
@@ -202,7 +205,7 @@ httpRequest.onreadystatechange = function() {
                         }
                         i += (itemCounter - 1);
                     }
-                    amountUpdate(totalAmount);
+                    amountUpdate(totalAmount); // Call amountUpdate with totalAmount
                 } else {
                     console.error("Expected cookie format not found!");
                 }
