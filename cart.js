@@ -203,6 +203,9 @@ function generateInvoicePDF(transactionId, amount) {
 
     // Table header
     doc.setFontSize(12);
+    doc.setFillColor(0, 112, 192);
+    doc.rect(14, 115, 180, 10, "F"); 
+    doc.setTextColor(255); 
     const headerY = 85; // Position for table header
     doc.text("Description", 14, headerY);
     doc.text("Serial Number", 80, headerY);
@@ -216,15 +219,16 @@ function generateInvoicePDF(transactionId, amount) {
 
     // Items
     let currentY = headerY + 10; // Starting position for items
+    doc.setFillColor(8, 243, 79); 
     items.forEach((item, index) => {
         const rowHeight = 10; // Height for each row
         if (index % 2 === 0) {
-            doc.setFillColor(240, 240, 240); // Light gray for even rows
             doc.rect(14, currentY, 180, rowHeight, "F"); // Fill rectangle for row
         }
         
         // Adding item details
         doc.setTextColor(0); // Reset text color to black
+        
         doc.text(item.description, 14, currentY + 7); // Adjust position slightly down
         doc.text((index + 1).toString(), 80, currentY + 7); // Serial number
         doc.text(item.qty.toString(), 110, currentY + 7); // Quantity
@@ -234,11 +238,28 @@ function generateInvoicePDF(transactionId, amount) {
         currentY += rowHeight; // Move down for the next row
     });
 
-    // Add totals and other information...
-    // Example: Add total amounts
-    doc.text("Total", 130, currentY);
-    doc.text(amount.toFixed(2), 160, currentY);
-    // Continue with other totals as needed...
+    // Add totals to the invoice correctly
+    doc.setFontSize(12);
+    doc.text("Subtotal", 130, currentY);
+    doc.text(subtotal.toFixed(2), 160, currentY);
+    currentY += 5;
+
+    doc.text("GST (18%)", 130, currentY);
+    doc.text(totalGst.toFixed(2), 160, currentY);
+    currentY += 5;
+
+    doc.text("Delivery Charges", 130, currentY);
+    doc.text(deliveryCharge.toFixed(2), 160, currentY);
+    currentY += 5;
+
+    doc.setFontSize(14);
+    doc.text("Grand Total", 130, currentY);
+    doc.text(grandTotal.toFixed(2), 160, currentY);
+
+    // Add footer
+    doc.setFontSize(10);
+    doc.text("Thank you for your purchase!", 14, currentY + 15);
+    doc.text("Please keep this invoice for your records.", 14, currentY + 20);
 
     // Authorised Signatory in the right corner
     doc.text("Authorised Signatory : Anmol Singh", 160, currentY + 30, { align: "right" });
