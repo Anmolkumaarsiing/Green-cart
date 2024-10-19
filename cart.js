@@ -130,9 +130,10 @@ function postTransaction(transactionId, amount) {
         if (this.readyState === 4) {
             if (this.status == 201) {
                 console.log("Transaction successfully posted:", JSON.parse(this.responseText));
-                // Generate invoice PDF after posting transaction data
-                const orderId = JSON.parse(this.responseText).orderId || generateOrderId();
-                generateInvoicePDF(orderId, amount);
+                
+                // Generate the invoice PDF
+                generateInvoicePDF(transactionId, amount);
+                
                 // Redirect to order placed page after successfully posting transaction data
                 window.location.href = "/orderPlaced.html";
             } else {
@@ -141,6 +142,9 @@ function postTransaction(transactionId, amount) {
         }
     };
 
+    // Generate the order ID
+    const orderId = generateOrderId();
+    
     // Get current date in IST format
     const createdAt = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
 
@@ -149,7 +153,7 @@ function postTransaction(transactionId, amount) {
         transactionId: transactionId,
         amount: amount,
         createdAt: createdAt,
-        orderId: transactionId // Assuming transactionId is used as Order ID
+        orderId: orderId
     };
 
     httpRequest.send(JSON.stringify(cleanOrderData));
@@ -165,115 +169,148 @@ function generateOrderId() {
 
 // Function to generate PDF invoice
 function generateInvoicePDF(transactionId, amount) {
-    // Fetch item details from cookies
-    getItemDetailsFromCookies().then(items => {
-        if (!items || items.length === 0) {
-            console.error("No items found for the invoice.");
-            return; // Exit if no items are found
-        }
+    const gstRate = 0.18;
+    const deliveryCharge = Math.min(20, 0.10 * amount);
+    const totalGst = amount * gstRate;
+    const grandTotal = amount + totalGst + deliveryCharge;
 
-        // Access jsPDF and autoTable
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        doc.autoTable = window.jspdf.autoTable; // Ensure autoTable is correctly referenced
+    const items = getItemDetailsFromCookies(); // Get item details for the invoice
 
-        // Set the title and other header information
-        doc.setFontSize(18);
-        doc.text("TAX INVOICE", 10, 10);
-        doc.setFontSize(12);
-        doc.text(`GREEN CART`, 10, 20);
-        doc.text(`Parul university, Vadodara, Gujarat, 391025`, 10, 25);
-        doc.text(`Email ID: anmolkumaarsiingh@gmail.com`, 10, 30);
-        doc.text(`DATE: ${new Date().toLocaleDateString("en-IN")}`, 10, 35);
-        doc.text(`Order ID: ${transactionId}`, 10, 40);
+    // Create a PDF document
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
-        doc.text("Bill of: Grocery items from Green cart", 10, 50);
-        doc.text("Payment Date: " + new Date().toLocaleDateString("en-IN"), 10, 55);
-        doc.text("Payment Mode: Razorpay", 10, 60);
-        doc.text("Description", 10, 70);
-
-        // Add table headers
-        const headers = [["S.No", "Product Name", "Qty", "Price", "Amount"]];
-        const data = items.map((item, index) => [
-            index + 1,
-            item.name,
-            item.quantity,
-            item.price.toFixed(2),
-            (item.price * item.quantity).toFixed(2)
-        ]);
-
-        // Calculate totals
-        const totalAmount = items.reduce((total, item) => total + (item.price * item.quantity), 0);
-        const gst = totalAmount * 0.18;
-        const deliveryCharge = Math.min(20, 0.10 * totalAmount);
-        const grandTotal = totalAmount + gst + deliveryCharge;
-
-        // Create the table in the PDF
-        doc.autoTable({
-            head: headers,
-            body: data,
-            startY: 80,
-            theme: 'grid'
-        });
-
-        // Add total amounts
-        doc.text(`Total: ₹ ${totalAmount.toFixed(2)}`, 10, doc.autoTable.previous.finalY + 10);
-        doc.text(`CGST (9%): ₹ ${(gst / 2).toFixed(2)}`, 10, doc.autoTable.previous.finalY + 15);
-        doc.text(`SGST (9%): ₹ ${(gst / 2).toFixed(2)}`, 10, doc.autoTable.previous.finalY + 20);
-        doc.text(`Delivery Charges: ₹ ${deliveryCharge.toFixed(2)}`, 10, doc.autoTable.previous.finalY + 25);
-        doc.text(`Grand Total: ₹ ${grandTotal.toFixed(2)}`, 10, doc.autoTable.previous.finalY + 30);
-        doc.text(`Terms & Conditions: No returns, no refunds.`, 10, doc.autoTable.previous.finalY + 35);
-        doc.text(`Signature: ______________`, 10, doc.autoTable.previous.finalY + 40);
-
-        // Save the PDF
-        doc.save(`Invoice_${transactionId}.pdf`);
-    }).catch(error => {
-        console.error("Error fetching item details:", error);
+    // Header
+    doc.setFontSize(22);
+    doc.text("TAX INVOICE", 14, 20);
+    doc.setFontSize(12);
+    doc.text(`DATE : ${new Date().toLocaleDateString('en-IN')}`, 14, 30);
+    doc.text("GREEN CART", 14, 40);
+    doc.text("Parul university, Vadodara, Gujarat, 391025", 14, 45);
+    doc.text("Email ID: anmolkumaarsiingh@gmail.com", 14, 50);
+    
+    // Bill To
+    doc.text("Bill of:", 14, 60);
+    doc.text("Grocery items from Green Cart", 14, 65);
+    doc.text("Payment Date: " + new Date().toLocaleDateString('en-IN'), 14, 70);
+    doc.text("Payment Mode: Razorpay", 14, 75);
+    
+    // Table header
+    doc.setFontSize(12);
+    doc.text("Description", 14, 85);
+    doc.text("HSN Code", 80, 85);
+    doc.text("Qty", 110, 85);
+    doc.text("Rate", 130, 85);
+    doc.text("Amount", 160, 85);
+    
+    // Items
+    let currentY = 90;
+    items.forEach(item => {
+        doc.text(item.description, 14, currentY);
+        doc.text(item.hsnCode, 80, currentY);
+        doc.text(item.qty.toString(), 110, currentY);
+        doc.text(item.rate.toFixed(2), 130, currentY);
+        doc.text(item.amount.toFixed(2), 160, currentY);
+        currentY += 5;
     });
+
+    // Add totals
+    doc.text("Total", 130, currentY);
+    doc.text(amount.toFixed(2), 160, currentY);
+    currentY += 5;
+
+    doc.text("CGST (9%)", 130, currentY);
+    doc.text((totalGst / 2).toFixed(2), 160, currentY);
+    currentY += 5;
+
+    doc.text("SGST (9%)", 130, currentY);
+    doc.text((totalGst / 2).toFixed(2), 160, currentY);
+    currentY += 5;
+
+    // Add Delivery Charges
+    doc.text("Delivery Charges", 130, currentY);
+    doc.text(deliveryCharge.toFixed(2), 160, currentY);
+    currentY += 5;
+
+    // Add Grand Total
+    doc.text("Grand Total", 130, currentY);
+    doc.text(grandTotal.toFixed(2), 160, currentY);
+
+    // Save the PDF
+    doc.save(`Invoice_${transactionId}.pdf`);
 }
 
-// Function to fetch item details from cookies (update this according to your actual implementation)
+// Get item details from cookies
 function getItemDetailsFromCookies() {
-    return new Promise((resolve, reject) => {
-        try {
-            const items = []; // Replace this with your actual code to get items
-            // Example of item structure
-            // items.push({ name: "Potato", quantity: 1, price: 30 });
-            // items.push({ name: "Carrot", quantity: 1, price: 20 });
-
-            // Assuming you have a method to parse your cookies
-            const cookieData = document.cookie.split('; ').find(row => row.startsWith('items='));
-            if (cookieData) {
-                const jsonData = decodeURIComponent(cookieData.split('=')[1]);
-                const parsedItems = JSON.parse(jsonData);
-                parsedItems.forEach(item => {
-                    items.push({
-                        name: item.name,
-                        quantity: item.quantity,
-                        price: item.price
-                    });
-                });
-            }
-
-            resolve(items);
-        } catch (error) {
-            reject(error);
+    const cookieData = document.cookie.split(',')[0].split('=')[1].trim().split(" ");
+    const items = [];
+    cookieData.forEach((itemIndex) => {
+        const index = Number(itemIndex) - 1; // Adjusting for zero-based index
+        if (contentTitle && contentTitle[index]) { // Check if contentTitle is defined and item exists
+            items.push({
+                description: contentTitle[index].name,
+                hsnCode: '1234', // Placeholder HSN Code
+                qty: 1, // Assuming quantity is 1 for simplicity
+                rate: contentTitle[index].price,
+                amount: contentTitle[index].price
+            });
         }
     });
+    return items; // Return items array
 }
 
-// Assuming you have a method to initialize cart items from cookies
-function initializeCartItems() {
-    const items = getItemDetailsFromCookies();
-    items.then(itemList => {
-        let totalAmount = 0;
-        itemList.forEach(item => {
-            dynamicCartSection(item, item.quantity);
-            totalAmount += item.price * item.quantity; // Update total amount for the invoice
-        });
-        amountUpdate(totalAmount);
-    });
+// BACKEND CALL
+let httpRequest = new XMLHttpRequest();
+let totalAmount = 0;
+
+httpRequest.onreadystatechange = function() {
+    if (this.readyState === 4) {
+        if (this.status == 200) {
+            contentTitle = JSON.parse(this.responseText); // Declare contentTitle here
+            console.log("Current cookies:", document.cookie); // Log current cookies
+
+            // Check for cookies
+            if (document.cookie.indexOf(',counter=') >= 0) {
+                let counter = Number(document.cookie.split(',')[1].split('=')[1]);
+                document.getElementById("totalItem").innerHTML = ('Total Items: ' + counter);
+                
+                // Split cookies safely
+                let itemParts = document.cookie.split(',')[0].split('=');
+                if (itemParts.length > 1) {
+                    let item = itemParts[1].trim().split(" ");
+                    console.log("Items from cookie:", item);
+
+                    // Calculate totalAmount and dynamically show items
+                    let i;
+                    totalAmount = 0; // Reset totalAmount before calculating
+                    for (i = 0; i < counter; i++) {
+                        let itemCounter = 1;
+                        for (let j = i + 1; j < counter; j++) {   
+                            if (Number(item[j]) == Number(item[i])) {
+                                itemCounter += 1;
+                            }
+                        }
+                        
+                        // Ensure the item index is valid
+                        let itemIndex = item[i] - 1; // Adjust for zero-based index
+                        if (itemIndex >= 0 && itemIndex < contentTitle.length) {
+                            totalAmount += Number(contentTitle[itemIndex].price) * itemCounter;
+                            dynamicCartSection(contentTitle[itemIndex], itemCounter);
+                        } else {
+                            console.error("Item index out of bounds:", itemIndex);
+                        }
+                        i += (itemCounter - 1);
+                    }
+                    amountUpdate(totalAmount); // Call amountUpdate with totalAmount
+                } else {
+                    console.error("Expected cookie format not found!");
+                }
+            }
+        } else {
+            console.log('call failed!');
+        }
+    }
 }
 
-// Call this function to initialize the cart items when the page loads
-initializeCartItems();
+httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
+httpRequest.send();
