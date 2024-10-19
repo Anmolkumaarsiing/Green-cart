@@ -130,16 +130,17 @@ function postTransaction(transactionId, amount) {
         if (this.readyState === 4) {
             if (this.status == 201) {
                 console.log("Transaction successfully posted:", JSON.parse(this.responseText));
-                generateInvoicePDF(transactionId, amount); // Generate invoice after successful transaction posting
+                // Generate invoice PDF after posting transaction data
+                const orderId = JSON.parse(this.responseText).orderId || generateOrderId();
+                generateInvoicePDF(orderId, amount);
+                // Redirect to order placed page after successfully posting transaction data
+                window.location.href = "/orderPlaced.html";
             } else {
                 console.error("Failed to post transaction data:", this.responseText);
             }
         }
     };
 
-    // Generate the order ID
-    const orderId = generateOrderId();
-    
     // Get current date in IST format
     const createdAt = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
 
@@ -148,7 +149,7 @@ function postTransaction(transactionId, amount) {
         transactionId: transactionId,
         amount: amount,
         createdAt: createdAt,
-        orderId: orderId
+        orderId: transactionId // Assuming transactionId is used as Order ID
     };
 
     httpRequest.send(JSON.stringify(cleanOrderData));
@@ -235,12 +236,24 @@ function generateInvoicePDF(transactionId, amount) {
 function getItemDetailsFromCookies() {
     return new Promise((resolve, reject) => {
         try {
-            // Assume this retrieves item data correctly
             const items = []; // Replace this with your actual code to get items
-
             // Example of item structure
             // items.push({ name: "Potato", quantity: 1, price: 30 });
             // items.push({ name: "Carrot", quantity: 1, price: 20 });
+
+            // Assuming you have a method to parse your cookies
+            const cookieData = document.cookie.split('; ').find(row => row.startsWith('items='));
+            if (cookieData) {
+                const jsonData = decodeURIComponent(cookieData.split('=')[1]);
+                const parsedItems = JSON.parse(jsonData);
+                parsedItems.forEach(item => {
+                    items.push({
+                        name: item.name,
+                        quantity: item.quantity,
+                        price: item.price
+                    });
+                });
+            }
 
             resolve(items);
         } catch (error) {
@@ -249,112 +262,18 @@ function getItemDetailsFromCookies() {
     });
 }
 
-
-
-// Fetch item details from cookies
-function getItemDetailsFromCookies() {
-    return new Promise((resolve, reject) => {
-        if (document.cookie.indexOf(',counter=') >= 0) {
-            let counter = Number(document.cookie.split(',')[1].split('=')[1]);
-            let itemParts = document.cookie.split(',')[0].split('=');
-            if (itemParts.length > 1) {
-                let item = itemParts[1].trim().split(" ");
-                let items = [];
-
-                // Fetch item details
-                let httpRequest = new XMLHttpRequest();
-                httpRequest.onreadystatechange = function() {
-                    if (this.readyState === 4) {
-                        if (this.status == 200) {
-                            let contentTitle = JSON.parse(this.responseText);
-                            // Calculate and store item quantities
-                            for (let i = 0; i < counter; i++) {
-                                let itemCounter = 1;
-                                for (let j = i + 1; j < counter; j++) {   
-                                    if (Number(item[j]) == Number(item[i])) {
-                                        itemCounter += 1;
-                                    }
-                                }
-                                
-                                let itemIndex = item[i] - 1; // Adjust for zero-based index
-                                if (itemIndex >= 0 && itemIndex < contentTitle.length) {
-                                    items.push({
-                                        name: contentTitle[itemIndex].name,
-                                        price: Number(contentTitle[itemIndex].price),
-                                        quantity: itemCounter
-                                    });
-                                }
-                                i += (itemCounter - 1);
-                            }
-                            resolve(items);
-                        } else {
-                            reject("Failed to fetch item details.");
-                        }
-                    }
-                }
-                httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
-                httpRequest.send();
-            } else {
-                reject("Expected cookie format not found!");
-            }
-        } else {
-            reject("No items in cart.");
-        }
+// Assuming you have a method to initialize cart items from cookies
+function initializeCartItems() {
+    const items = getItemDetailsFromCookies();
+    items.then(itemList => {
+        let totalAmount = 0;
+        itemList.forEach(item => {
+            dynamicCartSection(item, item.quantity);
+            totalAmount += item.price * item.quantity; // Update total amount for the invoice
+        });
+        amountUpdate(totalAmount);
     });
 }
 
-// BACKEND CALL
-let httpRequest = new XMLHttpRequest();
-let totalAmount = 0;
-
-httpRequest.onreadystatechange = function() {
-    if (this.readyState === 4) {
-        if (this.status == 200) {
-            let contentTitle = JSON.parse(this.responseText);
-            console.log("Current cookies:", document.cookie); // Log current cookies
-
-            // Check for cookies
-            if (document.cookie.indexOf(',counter=') >= 0) {
-                let counter = Number(document.cookie.split(',')[1].split('=')[1]);
-                document.getElementById("totalItem").innerHTML = ('Total Items: ' + counter);
-                
-                // Split cookies safely
-                let itemParts = document.cookie.split(',')[0].split('=');
-                if (itemParts.length > 1) {
-                    let item = itemParts[1].trim().split(" ");
-                    console.log("Items from cookie:", item);
-
-                    // Calculate totalAmount and dynamically show items
-                    let i;
-                    totalAmount = 0; // Reset totalAmount before calculating
-                    for (i = 0; i < counter; i++) {
-                        let itemCounter = 1;
-                        for (let j = i + 1; j < counter; j++) {   
-                            if (Number(item[j]) == Number(item[i])) {
-                                itemCounter += 1;
-                            }
-                        }
-                        
-                        // Ensure the item index is valid
-                        let itemIndex = item[i] - 1; // Adjust for zero-based index
-                        if (itemIndex >= 0 && itemIndex < contentTitle.length) {
-                            totalAmount += Number(contentTitle[itemIndex].price) * itemCounter;
-                            dynamicCartSection(contentTitle[itemIndex], itemCounter);
-                        } else {
-                            console.error("Item index out of bounds:", itemIndex);
-                        }
-                        i += (itemCounter - 1);
-                    }
-                    amountUpdate(totalAmount); // Call amountUpdate with totalAmount
-                } else {
-                    console.error("Expected cookie format not found!");
-                }
-            }
-        } else {
-            console.log('call failed!');
-        }
-    }
-}
-
-httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
-httpRequest.send();
+// Call this function to initialize the cart items when the page loads
+initializeCartItems();
