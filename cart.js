@@ -53,6 +53,9 @@ function amountUpdate(amount) {
     let deliveryCharge = Math.min(20, 0.10 * amount); // Delivery charges (10% of total or Rs 20, whichever is less)
     let finalAmount = amount + gst + deliveryCharge; // Calculate final amount
 
+    // Set final amount globally
+    window.finalAmount = finalAmount; // Set finalAmount as a global variable
+
     let totalh4 = document.createElement('h4');
     let totalh4Text = document.createTextNode('Subtotal: Rs ' + amount.toFixed(2));
     totalh4.appendChild(totalh4Text);
@@ -72,26 +75,22 @@ function amountUpdate(amount) {
     let finalText = document.createTextNode('Final Amount: Rs ' + finalAmount.toFixed(2));
     finalh4.appendChild(finalText);
     totalDiv.appendChild(finalh4);
-
-    // Enable Place Order button
-    buttonTag.disabled = false;
+    totalDiv.appendChild(buttonDiv);
 }
 
-// Button Section
 let buttonDiv = document.createElement('div');
 buttonDiv.id = 'button';
 totalDiv.appendChild(buttonDiv);
 
 let buttonTag = document.createElement('button');
-buttonTag.innerHTML = 'Place Order';
-buttonTag.disabled = true; // Start as disabled
 buttonDiv.appendChild(buttonTag);
 
-// Modify button click event to call initializeRazorpay
-buttonTag.onclick = function() {
-    console.log("clicked");
-    initializeRazorpay(totalAmount); // Ensure totalAmount is in rupees
-}
+let buttonLink = document.createElement('a');
+buttonLink.href = '#'; // This will be handled by JavaScript
+buttonTag.appendChild(buttonLink);
+
+let buttonText = document.createTextNode('Place Order');
+buttonTag.appendChild(buttonText);
 
 // Function to initialize Razorpay
 function initializeRazorpay(amount) {
@@ -115,6 +114,12 @@ function initializeRazorpay(amount) {
     paymentObject.open();
 }
 
+// Modify button click event to call initializeRazorpay with final amount
+buttonTag.onclick = function() {
+    console.log("clicked");
+    initializeRazorpay(window.finalAmount); // Use the final amount calculated in amountUpdate
+}
+
 // Function to post transaction details to the API
 function postTransaction(transactionId, amount) {
     let httpRequest = new XMLHttpRequest();
@@ -125,8 +130,10 @@ function postTransaction(transactionId, amount) {
         if (this.readyState === 4) {
             if (this.status == 201) {
                 console.log("Transaction successfully posted:", JSON.parse(this.responseText));
-                // Generate PDF invoice here after successful payment
-                generateInvoice(); // Call your invoice function
+                
+                // Generate the invoice PDF
+                generateInvoicePDF(transactionId, amount);
+                
                 // Redirect to order placed page after successfully posting transaction data
                 window.location.href = "/orderPlaced.html";
             } else {
@@ -158,6 +165,101 @@ function generateOrderId() {
     const dateString = today.toISOString().slice(0, 10).replace(/-/g, ""); // Format: YYYYMMDD
     const randomFourDigit = Math.floor(1000 + Math.random() * 9000); // Random 4 digit number
     return `GC${dateString}${randomFourDigit}`; // Format: GCYYYYMMDDXXXX
+}
+
+// Function to generate PDF invoice
+function generateInvoicePDF(transactionId, amount) {
+    // Retrieve the product data
+    const itemDetails = getItemDetailsFromCookies(); // Implement this function to fetch items from cookies
+    const gstRate = 0.18;
+    const deliveryCharge = Math.min(20, 0.10 * amount);
+    const totalGst = amount * gstRate;
+    const grandTotal = amount + totalGst + deliveryCharge;
+
+    const { items } = itemDetails; // Destructure to get items
+
+    // Create a PDF document
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Header
+    doc.setFontSize(22);
+    doc.text("TAX INVOICE", 14, 20);
+    doc.setFontSize(12);
+    doc.text(`DATE : ${new Date().toLocaleDateString('en-IN')}`, 14, 30);
+    doc.text("GREEN CART", 14, 40);
+    doc.text("Parul university, Vadodara, Gujarat, 391025", 14, 45);
+    doc.text("Email ID: anmolkumaarsiingh@gmail.com", 14, 50);
+    
+    // Bill To
+    doc.text("Bill of:", 14, 60);
+    doc.text("Grocery items from Green Cart", 14, 65);
+    doc.text("Payment Date: " + new Date().toLocaleDateString('en-IN'), 14, 70);
+    doc.text("Payment Mode: Razorpay", 14, 75);
+    
+    // Table header
+    doc.setFontSize(12);
+    doc.text("Description", 14, 85);
+    doc.text("HSN Code", 80, 85);
+    doc.text("Qty", 110, 85);
+    doc.text("Rate", 130, 85);
+    doc.text("Amount", 160, 85);
+    
+    // Items
+    let currentY = 90;
+    items.forEach(item => {
+        doc.text(item.description, 14, currentY);
+        doc.text(item.hsnCode, 80, currentY);
+        doc.text(item.qty.toString(), 110, currentY);
+        doc.text(item.rate.toFixed(2), 130, currentY);
+        doc.text(item.amount.toFixed(2), 160, currentY);
+        currentY += 5;
+    });
+
+    // Total Section
+    doc.text("Total", 130, currentY);
+    doc.text(amount.toFixed(2), 160, currentY);
+    currentY += 10;
+
+    // Add CGST and SGST
+    doc.text("CGST (9%)", 130, currentY);
+    doc.text((totalGst / 2).toFixed(2), 160, currentY);
+    currentY += 5;
+
+    doc.text("SGST (9%)", 130, currentY);
+    doc.text((totalGst / 2).toFixed(2), 160, currentY);
+    currentY += 5;
+
+    // Add Delivery Charges
+    doc.text("Delivery Charges", 130, currentY);
+    doc.text(deliveryCharge.toFixed(2), 160, currentY);
+    currentY += 5;
+
+    // Add Grand Total
+    doc.text("Grand Total", 130, currentY);
+    doc.text(grandTotal.toFixed(2), 160, currentY);
+
+    // Save the PDF
+    doc.save(`Invoice_${transactionId}.pdf`);
+}
+
+// Get item details from cookies
+function getItemDetailsFromCookies() {
+    const cookieData = document.cookie.split(',')[0].split('=')[1].trim().split(" ");
+    const items = [];
+    cookieData.forEach((itemIndex) => {
+        const index = Number(itemIndex) - 1; // Adjusting for zero-based index
+        if (contentTitle[index]) {
+            items.push({
+                description: contentTitle[index].name,
+                hsnCode: '1234', // Placeholder HSN Code
+                qty: 1, // Assuming quantity is 1 for simplicity
+                rate: contentTitle[index].price,
+                amount: contentTitle[index].price
+            });
+        }
+    });
+    return { items };
 }
 
 // BACKEND CALL
@@ -202,7 +304,7 @@ httpRequest.onreadystatechange = function() {
                         }
                         i += (itemCounter - 1);
                     }
-                    amountUpdate(totalAmount);
+                    amountUpdate(totalAmount); // Call amountUpdate with totalAmount
                 } else {
                     console.error("Expected cookie format not found!");
                 }
