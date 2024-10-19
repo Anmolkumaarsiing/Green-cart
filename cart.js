@@ -185,44 +185,37 @@ function postTransaction(orderData) {
         }
     };
 
-    // Send orderData as JSON string, removing unwanted fields
+    // Send only the necessary fields as JSON string
     let cleanOrderData = {
         transactionId: orderData.transactionId,
         amount: orderData.amount,
-        createdAt: orderData.createdAt,
+        createdAt: orderData.createdAt, // Ensure this is in IST format
         orderId: orderData.orderId
     };
 
     httpRequest.send(JSON.stringify(cleanOrderData));
 }
 
-// BACKEND CALL
-let httpRequest = new XMLHttpRequest();
-let totalAmount = 0;
+// Load cart items when the document is ready
+document.addEventListener("DOMContentLoaded", function () {
+    loadCartItems();
+});
 
-httpRequest.onreadystatechange = function() {
-    if (this.readyState === 4) {
-        if (this.status == 200) {
-            contentTitle = JSON.parse(this.responseText);
-            console.log("Current cookies:", document.cookie); // Log current cookies
+// Function to load cart items from API
+function loadCartItems() {
+    let httpRequest = new XMLHttpRequest();
+    httpRequest.onreadystatechange = function () {
+        if (this.readyState === 4) {
+            if (this.status === 200) {
+                let contentTitle = JSON.parse(this.responseText);
+                let cookieData = document.cookie.split(',')[0].split('=');
 
-            // Check for cookies
-            if (document.cookie.indexOf(',counter=') >= 0) {
-                let counter = Number(document.cookie.split(',')[1].split('=')[1]);
-                document.getElementById("totalItem").innerHTML = ('Total Items: ' + counter);
-                
-                // Split cookies safely
-                let itemParts = document.cookie.split(',')[0].split('=');
-                if (itemParts.length > 1) {
-                    let item = itemParts[1].trim().split(" ");
-                    console.log("Items from cookie:", item);
-
-                    // Calculate totalAmount and dynamically show items
-                    let i;
-                    totalAmount = 0; // Reset totalAmount before calculating
-                    for (i = 0; i < counter; i++) {
-                        let itemCounter = 1;
-                        for (let j = i + 1; j < counter; j++) {   
+                if (cookieData.length == 2) {
+                    let item = cookieData[1].split(';');
+                    let totalAmount = 0;
+                    for (let i = 0; i < item.length; i++) {
+                        let itemCounter = 0;
+                        for (let j = 0; j < item.length; j++) {
                             if (Number(item[j]) == Number(item[i])) {
                                 itemCounter += 1;
                             }
@@ -239,8 +232,8 @@ httpRequest.onreadystatechange = function() {
         } else {
             console.log('call failed!');
         }
-    }
-};
+    };
 
-httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
-httpRequest.send();
+    httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
+    httpRequest.send();
+}
