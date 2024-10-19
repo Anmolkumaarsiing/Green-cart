@@ -167,6 +167,7 @@ function generateOrderId() {
     return `GC${dateString}${randomFourDigit}`; // Format: GCYYYYMMDDXXXX
 }
 
+//function to generate pdf
 function generateInvoicePDF(transactionId, amount) {
     const gstRate = 0.18; 
     const deliveryChargeRate = 0.10; 
@@ -265,10 +266,6 @@ function generateInvoicePDF(transactionId, amount) {
     // Save the PDF
     doc.save(`Invoice_${transactionId}.pdf`);
 }
-
-
-
-
 
 // Get item details from cookies
 function getItemDetailsFromCookies() {
