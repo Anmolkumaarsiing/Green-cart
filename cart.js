@@ -169,46 +169,49 @@ function generateOrderId() {
 
 // Function to generate PDF invoice
 function generateInvoicePDF(transactionId, amount) {
-    // Assuming 'amount' is the total amount after applying GST and delivery charges
     const gstRate = 0.18; // GST rate
     const deliveryChargeRate = 0.10; // Delivery charge rate
     const deliveryChargeCap = 20; // Maximum delivery charge
-    const subtotal = amount / (1 + gstRate + Math.min(deliveryChargeRate * amount, deliveryChargeCap) / amount); // Calculate subtotal
-    const totalGst = subtotal * gstRate; // Calculate GST based on subtotal
-    const deliveryCharge = Math.min(deliveryChargeCap, deliveryChargeRate * subtotal); // Calculate delivery charge
-    const grandTotal = subtotal + totalGst + deliveryCharge; // Calculate grand total
+    const subtotal = amount / (1 + gstRate + Math.min(deliveryChargeRate * amount, deliveryChargeCap) / amount);
+    const totalGst = subtotal * gstRate; 
+    const deliveryCharge = Math.min(deliveryChargeCap, deliveryChargeRate * subtotal); 
+    const grandTotal = subtotal + totalGst + deliveryCharge; 
 
-    const items = getItemDetailsFromCookies(); // Get item details for the invoice
-
-    // Create a PDF document
+    const items = getItemDetailsFromCookies(); 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    // Header
+    // Add Header
     doc.setFontSize(22);
-    doc.text("TAX INVOICE", 14, 20);
+    doc.text("INVOICE", 14, 20);
     doc.setFontSize(12);
-    doc.text(`DATE : ${new Date().toLocaleDateString('en-IN')}`, 14, 30);
+    doc.text(`DATE: ${new Date().toLocaleDateString('en-IN')}`, 14, 30);
     doc.text("GREEN CART", 14, 40);
-    doc.text("Parul university, Vadodara, Gujarat, 391025", 14, 45);
-    doc.text("Email ID: anmolkumaresiingh@gmail.com", 14, 50);
-    
-    // Bill To
-    doc.text("Bill of:", 14, 60);
-    doc.text("Grocery items from Green Cart", 14, 65);
-    doc.text("Payment Date: " + new Date().toLocaleDateString('en-IN'), 14, 70);
-    doc.text("Payment Mode: Razorpay", 14, 75);
-    
-    // Table header
+    doc.text("Parul University, Vadodara, Gujarat, 391025", 14, 45);
+    doc.text("Email: anmolkumaresiingh@gmail.com", 14, 50);
+
+
+    // Payment Details
+    doc.setFontSize(14);
+    doc.text("Payment Details:", 14, 90);
     doc.setFontSize(12);
-    doc.text("Description", 14, 85);
-    doc.text("HSN Code", 80, 85);
-    doc.text("Qty", 110, 85);
-    doc.text("Rate", 130, 85);
-    doc.text("Amount", 160, 85);
-    
+    doc.text(`Payment Date: ${new Date().toLocaleDateString('en-IN')}`, 14, 100);
+    doc.text("Payment Mode: Razorpay", 14, 105);
+
+    // Table Header
+    doc.setFontSize(12);
+    doc.setFillColor(0, 112, 192); // Set header background color
+    doc.rect(14, 115, 180, 10, "F"); // Draw filled rectangle
+    doc.setTextColor(255); // White text
+    doc.text("Description", 14, 120);
+    doc.text("HSN Code", 80, 120);
+    doc.text("Qty", 110, 120);
+    doc.text("Rate", 130, 120);
+    doc.text("Amount", 160, 120);
+    doc.setTextColor(0); // Reset text color to black
+
     // Items
-    let currentY = 90;
+    let currentY = 125;
     items.forEach(item => {
         doc.text(item.description, 14, currentY);
         doc.text(item.hsnCode, 80, currentY);
@@ -219,6 +222,7 @@ function generateInvoicePDF(transactionId, amount) {
     });
 
     // Add totals to the invoice correctly
+    doc.setFontSize(12);
     doc.text("Subtotal", 130, currentY);
     doc.text(subtotal.toFixed(2), 160, currentY);
     currentY += 5;
@@ -231,12 +235,27 @@ function generateInvoicePDF(transactionId, amount) {
     doc.text(deliveryCharge.toFixed(2), 160, currentY);
     currentY += 5;
 
+    doc.setFontSize(14);
     doc.text("Grand Total", 130, currentY);
     doc.text(grandTotal.toFixed(2), 160, currentY);
 
-    // Save PDF
+    // Add footer
+    doc.setFontSize(10);
+    doc.text("Thank you for your purchase!", 14, currentY + 15);
+    doc.text("Please keep this invoice for your records.", 14, currentY + 20);
+
+    // Authorized Signatory Section
+    doc.setFontSize(12);
+    doc.setFont("courier", "italic"); // Set font to cursive; adjust as needed
+    const signatoryText = "Authorized Signatory: Anmol Singh";
+    const signatoryX = doc.internal.pageSize.getWidth() - doc.getTextWidth(signatoryText) - 14; // Right aligned
+    doc.text(signatoryText, signatoryX, currentY + 30); // Positioning
+
+
+    // Save the PDF
     doc.save(`Invoice_${transactionId}.pdf`);
 }
+
 
 
 
