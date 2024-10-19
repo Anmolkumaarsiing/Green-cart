@@ -22,7 +22,7 @@ function dynamicCartSection(ob, itemCounter) {
     boxDiv.appendChild(boxImg);
 
     let boxh3 = document.createElement('h3');
-    let h3Text = document.createTextNode(ob.name + ' × ' + itemCounter);
+    let h3Text = document.createTextNode(ob.name + ' ×  ' + itemCounter \n);
     boxh3.appendChild(h3Text);
     boxDiv.appendChild(boxh3);
 
