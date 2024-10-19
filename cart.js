@@ -76,6 +76,12 @@ function amountUpdate(subtotal) {
     finalh4.appendChild(finalh4Text);
     totalDiv.appendChild(finalh4);
 
+    // Update button click event to send final amount to Razorpay
+    buttonTag.onclick = function() {
+        console.log("clicked");
+        initializeRazorpay(finalAmount); // Use the calculated final amount here
+    };
+
     // Attach the button div for Razorpay
     totalDiv.appendChild(buttonDiv);
 }
@@ -95,10 +101,10 @@ let buttonText = document.createTextNode('Place Order');
 buttonTag.appendChild(buttonText);
 
 // Function to initialize Razorpay
-function initializeRazorpay(amount) {
+function initializeRazorpay(finalAmount) {  // Use finalAmount instead of subtotal
     var options = {
         "key": "rzp_test_4sMuXigiNls8Jr", // Your Razorpay API key
-        "amount": Math.round(amount * 100), // Convert rupees to paise and ensure it's an integer
+        "amount": Math.round(finalAmount * 100), // Convert rupees to paise and ensure it's an integer
         "currency": "INR",
         "name": "CARTER",
         "description": "Payment for Selected items",
@@ -114,12 +120,6 @@ function initializeRazorpay(amount) {
 
     var paymentObject = new Razorpay(options);
     paymentObject.open();
-}
-
-// Modify button click event to call initializeRazorpay
-buttonTag.onclick = function() {
-    console.log("clicked");
-    initializeRazorpay(totalAmount); // Ensure totalAmount is in rupees
 }
 
 // BACKEND CALL
