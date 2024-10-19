@@ -34,7 +34,7 @@ httpRequest.onreadystatechange = function() {
         // Send the order data to the server using a POST request
         let httpRequest2 = new XMLHttpRequest();
         let method2 = "POST";
-        let jsonRequestURL2 = "https://669e2f559a1bda368005b99b.mockapi.io/Product/orders";
+        let jsonRequestURL2 = "https://669e2f559a1bda368005b99b.mockapi.io/Product/orderss";
 
         httpRequest2.open(method2, jsonRequestURL2, true);
         httpRequest2.setRequestHeader("Content-Type", "application/json"); // Set correct content type for JSON
