@@ -261,8 +261,12 @@ function generateInvoicePDF(transactionId, amount) {
     doc.text("Thank you for your purchase!", 14, currentY + 15);
     doc.text("Please keep this invoice for your records.", 14, currentY + 20);
 
-    // Authorised Signatory in the right corner
-    doc.text("Authorised Signatory : Anmol Singh", 160, currentY + 30, { align: "right" });
+     // Authorized Signatory Section
+    doc.setFontSize(12);
+    doc.setFont("courier", "italic"); // Set font to cursive; adjust as needed
+    const signatoryText = "Authorized Signatory: Anmol Singh";
+    const signatoryX = doc.internal.pageSize.getWidth() - doc.getTextWidth(signatoryText) - 14; // Right aligned
+    doc.text(signatoryText, signatoryX, currentY + 30); // Positioning
 
     // Save the PDF
     doc.save(`Invoice_${transactionId}.pdf`);
