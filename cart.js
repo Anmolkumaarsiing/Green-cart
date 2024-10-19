@@ -26,13 +26,10 @@ function dynamicCartSection(ob, itemCounter) {
     boxh3.appendChild(h3Text);
     boxDiv.appendChild(boxh3);
 
-    // Add two line breaks for spacing
-    boxDiv.appendChild(document.createElement('br'));
-    boxDiv.appendChild(document.createElement('br'));
-
-    // Create the amount display
+    // Create the amount display with \n
     let amountDiv = document.createElement('div');
-    let amountText = document.createTextNode('Amount: Rs ' + ob.price);
+    amountDiv.style.whiteSpace = 'pre-line'; // Ensure \n is rendered as a line break
+    let amountText = document.createTextNode('Amount:\nRs ' + ob.price);
     amountDiv.appendChild(amountText);
     boxDiv.appendChild(amountDiv);
 
