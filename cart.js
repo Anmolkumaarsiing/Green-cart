@@ -26,6 +26,7 @@ function dynamicCartSection(ob, itemCounter) {
     boxh3.appendChild(h3Text);
     boxDiv.appendChild(boxh3);
 
+    // Create a new element for the amount to move it to the next line
     let boxh4 = document.createElement('h4');
     let h4Text = document.createTextNode('Amount: Rs ' + ob.price);
     boxh4.appendChild(h4Text);
@@ -157,7 +158,7 @@ function generateOrderId() {
     const today = new Date();
     const dateString = today.toISOString().slice(0, 10).replace(/-/g, ""); // Format: YYYYMMDD
     const randomFourDigit = Math.floor(1000 + Math.random() * 9000); // Random 4 digit number
-    return `GC${dateString}${randomFourDigit}`; // Format: GCYYYYMMDDXXXX
+    return `ODGC${dateString}${randomFourDigit}`; // Format: GCYYYYMMDDXXXX
 }
 
 // BACKEND CALL
