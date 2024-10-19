@@ -187,7 +187,7 @@ function generateInvoicePDF(transactionId, amount) {
     doc.text(`DATE : ${new Date().toLocaleDateString('en-IN')}`, 14, 30);
     doc.text("GREEN CART", 14, 40);
     doc.text("Parul university, Vadodara, Gujarat, 391025", 14, 45);
-    doc.text("Email ID: anmolkumaarsiingh@gmail.com", 14, 50);
+    doc.text("Email ID: anmolkumaresiingh@gmail.com", 14, 50);
     
     // Bill To
     doc.text("Bill of:", 14, 60);
@@ -214,31 +214,26 @@ function generateInvoicePDF(transactionId, amount) {
         currentY += 5;
     });
 
-    // Add totals
-    doc.text("Total", 130, currentY);
+    // Add totals to the invoice correctly
+    doc.text("Subtotal", 130, currentY);
     doc.text(amount.toFixed(2), 160, currentY);
     currentY += 5;
 
-    doc.text("CGST (9%)", 130, currentY);
-    doc.text((totalGst / 2).toFixed(2), 160, currentY);
+    doc.text("GST (18%)", 130, currentY);
+    doc.text(totalGst.toFixed(2), 160, currentY);
     currentY += 5;
 
-    doc.text("SGST (9%)", 130, currentY);
-    doc.text((totalGst / 2).toFixed(2), 160, currentY);
-    currentY += 5;
-
-    // Add Delivery Charges
     doc.text("Delivery Charges", 130, currentY);
     doc.text(deliveryCharge.toFixed(2), 160, currentY);
     currentY += 5;
 
-    // Add Grand Total
     doc.text("Grand Total", 130, currentY);
     doc.text(grandTotal.toFixed(2), 160, currentY);
 
-    // Save the PDF
+    // Save PDF
     doc.save(`Invoice_${transactionId}.pdf`);
 }
+
 
 // Get item details from cookies
 function getItemDetailsFromCookies() {
