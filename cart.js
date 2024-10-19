@@ -166,6 +166,11 @@ function generateOrderId() {
 function generateInvoicePDF(transactionId, amount) {
     // Fetch item details from cookies
     getItemDetailsFromCookies().then(items => {
+        if (!items || items.length === 0) {
+            console.error("No items found for the invoice.");
+            return; // Exit if no items are found
+        }
+
         // Access jsPDF and autoTable
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
@@ -225,6 +230,25 @@ function generateInvoicePDF(transactionId, amount) {
         console.error("Error fetching item details:", error);
     });
 }
+
+// Function to fetch item details from cookies (update this according to your actual implementation)
+function getItemDetailsFromCookies() {
+    return new Promise((resolve, reject) => {
+        try {
+            // Assume this retrieves item data correctly
+            const items = []; // Replace this with your actual code to get items
+
+            // Example of item structure
+            // items.push({ name: "Potato", quantity: 1, price: 30 });
+            // items.push({ name: "Carrot", quantity: 1, price: 20 });
+
+            resolve(items);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
 
 
 // Fetch item details from cookies
