@@ -215,8 +215,9 @@ function generateInvoicePDF(transactionId, amount) {
     });
 
     // Add totals
-    doc.text(`Total: ₹ ${totalAmount.toFixed(2)}`, 10, 
-    doc.autoTable.previous.finalY + 10);
+    doc.text("Total", 130, currentY);
+    doc.text(amount.toFixed(2), 160, currentY);
+    currentY += 5;
 
     doc.text("CGST (9%)", 130, currentY);
     doc.text((totalGst / 2).toFixed(2), 160, currentY);
