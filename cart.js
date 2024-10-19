@@ -169,10 +169,14 @@ function generateOrderId() {
 
 // Function to generate PDF invoice
 function generateInvoicePDF(transactionId, amount) {
-    const gstRate = 0.18;
-    const deliveryCharge = Math.min(20, 0.10 * amount);
-    const totalGst = amount * gstRate;
-    const grandTotal = amount + totalGst + deliveryCharge;
+    // Assuming 'amount' is the total amount after applying GST and delivery charges
+    const gstRate = 0.18; // GST rate
+    const deliveryChargeRate = 0.10; // Delivery charge rate
+    const deliveryChargeCap = 20; // Maximum delivery charge
+    const subtotal = amount / (1 + gstRate + Math.min(deliveryChargeRate * amount, deliveryChargeCap) / amount); // Calculate subtotal
+    const totalGst = subtotal * gstRate; // Calculate GST based on subtotal
+    const deliveryCharge = Math.min(deliveryChargeCap, deliveryChargeRate * subtotal); // Calculate delivery charge
+    const grandTotal = subtotal + totalGst + deliveryCharge; // Calculate grand total
 
     const items = getItemDetailsFromCookies(); // Get item details for the invoice
 
@@ -216,7 +220,7 @@ function generateInvoicePDF(transactionId, amount) {
 
     // Add totals to the invoice correctly
     doc.text("Subtotal", 130, currentY);
-    doc.text(amount.toFixed(2), 160, currentY);
+    doc.text(subtotal.toFixed(2), 160, currentY);
     currentY += 5;
 
     doc.text("GST (18%)", 130, currentY);
@@ -233,6 +237,7 @@ function generateInvoicePDF(transactionId, amount) {
     // Save PDF
     doc.save(`Invoice_${transactionId}.pdf`);
 }
+
 
 
 // Get item details from cookies
