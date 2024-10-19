@@ -7,7 +7,6 @@ if (document.cookie.indexOf(',counter=') >= 0) {
 }
 
 let cartContainer = document.getElementById('cartContainer');
-
 let boxContainerDiv = document.createElement('div');
 boxContainerDiv.id = 'boxContainer';
 
@@ -32,7 +31,6 @@ function dynamicCartSection(ob, itemCounter) {
     boxDiv.appendChild(boxh4);
 
     cartContainer.appendChild(boxContainerDiv);
-    cartContainer.appendChild(totalContainerDiv);
 }
 
 let totalContainerDiv = document.createElement('div');
@@ -165,11 +163,12 @@ function generateOrderId() {
 // BACKEND CALL
 let httpRequest = new XMLHttpRequest();
 let totalAmount = 0;
+let contentTitle = []; // Declare contentTitle globally to store fetched data
 
 httpRequest.onreadystatechange = function() {
     if (this.readyState === 4) {
         if (this.status == 200) {
-            let contentTitle = JSON.parse(this.responseText);
+            contentTitle = JSON.parse(this.responseText); // Store fetched data in contentTitle
             console.log("Current cookies:", document.cookie); // Log current cookies
 
             // Check for cookies
@@ -221,13 +220,10 @@ httpRequest.send();
 // Function to generate PDF invoice
 function generateInvoicePDF(transactionId, amount) {
     const gstRate = 0.18;
-    const deliveryCharge = Math.min(20, 0.10 * amount);
-    const totalGst = amount * gstRate;
-    const grandTotal = amount + totalGst + deliveryCharge;
+    const deliveryCharge = Math.min(20, 0.10 * amount); // Delivery charges (10% of total or Rs 20, whichever is less)
+    const totalGst = amount * gstRate; // Total GST amount
+    const grandTotal = amount + totalGst + deliveryCharge; // Grand total
 
-    const items = getItemDetailsFromCookies(); // Get item details for the invoice
-
-    // Create a PDF document
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
@@ -337,3 +333,6 @@ function getItemDetailsFromCookies() {
     });
     return items; // Return items array
 }
+
+// Ensure to call getItemDetailsFromCookies before generating the invoice
+// Adjust this call in generateInvoicePDF as needed
