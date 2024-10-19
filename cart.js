@@ -201,66 +201,47 @@ function generateInvoicePDF(transactionId, amount) {
     doc.text(`Payment Date: ${new Date().toLocaleDateString('en-IN')}`, 14, 70);
     doc.text("Payment Mode: Razorpay", 14, 75);
 
-    // Table Header
+    // Table header
     doc.setFontSize(12);
-    doc.setFillColor(0, 112, 192); 
-    doc.rect(14, 115, 180, 10, "F"); 
-    doc.setTextColor(255); 
-    doc.text("Description", 14, 120);
-    doc.text("Serial Number", 80, 120);
-    doc.text("Qty", 110, 120);
-    doc.text("Rate", 130, 120);
-    doc.text("Amount", 170, 120);
-    doc.setTextColor(0); 
+    const headerY = 85; // Position for table header
+    doc.text("Description", 14, headerY);
+    doc.text("Serial Number", 80, headerY);
+    doc.text("Qty", 110, headerY);
+    doc.text("Rate", 130, headerY);
+    doc.text("Amount", 160, headerY);
+    
+    // Underline the header
+    doc.setLineWidth(0.5);
+    doc.line(14, headerY + 2, 185, headerY + 2); // Draw line under header
 
-    // Items with consistent background
-    let currentY = 125;
+    // Items
+    let currentY = headerY + 10; // Starting position for items
     items.forEach((item, index) => {
-        const rowHeight = 10; // Row height for table
+        const rowHeight = 10; // Height for each row
         if (index % 2 === 0) {
             doc.setFillColor(240, 240, 240); // Light gray for even rows
             doc.rect(14, currentY, 180, rowHeight, "F"); // Fill rectangle for row
         }
         
         // Adding item details
-        doc.setTextColor(0);
-        doc.text(item.description, 14, currentY);
-        doc.text((index + 1).toString(), 110, currentY); // Serial number
-        doc.text(item.qty.toString(), 130, currentY);
-        doc.text(item.rate.toFixed(2), 150, currentY);
-        doc.text(item.amount.toFixed(2), 170, currentY);
+        doc.setTextColor(0); // Reset text color to black
+        doc.text(item.description, 14, currentY + 7); // Adjust position slightly down
+        doc.text((index + 1).toString(), 80, currentY + 7); // Serial number
+        doc.text(item.qty.toString(), 110, currentY + 7); // Quantity
+        doc.text(item.rate.toFixed(2), 130, currentY + 7); // Rate
+        doc.text(item.amount.toFixed(2), 160, currentY + 7); // Amount
+        
         currentY += rowHeight; // Move down for the next row
     });
 
-    // Add totals to the invoice correctly
-    doc.setFontSize(12);
-    doc.text("Subtotal", 130, currentY);
-    doc.text(subtotal.toFixed(2), 160, currentY);
-    currentY += 5;
+    // Add totals and other information...
+    // Example: Add total amounts
+    doc.text("Total", 130, currentY);
+    doc.text(amount.toFixed(2), 160, currentY);
+    // Continue with other totals as needed...
 
-    doc.text("GST (18%)", 130, currentY);
-    doc.text(totalGst.toFixed(2), 160, currentY);
-    currentY += 5;
-
-    doc.text("Delivery Charges", 130, currentY);
-    doc.text(deliveryCharge.toFixed(2), 160, currentY);
-    currentY += 5;
-
-    doc.setFontSize(14);
-    doc.text("Grand Total", 130, currentY);
-    doc.text(grandTotal.toFixed(2), 160, currentY);
-
-    // Add footer
-    doc.setFontSize(10);
-    doc.text("Thank you for your purchase!", 14, currentY + 15);
-    doc.text("Please keep this invoice for your records.", 14, currentY + 20);
-
-    // Authorized Signatory Section
-    doc.setFontSize(12);
-    doc.setFont("courier", "italic"); // Set font to cursive; adjust as needed
-    const signatoryText = "Authorized Signatory : Anmol Singh";
-    const signatoryX = doc.internal.pageSize.getWidth() - doc.getTextWidth(signatoryText) - 14; // Right aligned
-    doc.text(signatoryText, signatoryX, currentY + 30); // Positioning
+    // Authorised Signatory in the right corner
+    doc.text("Authorised Signatory : Anmol Singh", 160, currentY + 30, { align: "right" });
 
     // Save the PDF
     doc.save(`Invoice_${transactionId}.pdf`);
