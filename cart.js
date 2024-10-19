@@ -225,30 +225,30 @@ function generateInvoicePDF(transactionId, amount) {
         // Adding item details
         doc.setTextColor(0);
         doc.text(item.description, 14, currentY);
-        doc.text((index + 1).toString(), 160, currentY); // Serial number
-        doc.text(item.qty.toString(), 190, currentY);
-        doc.text(item.rate.toFixed(2), 210, currentY);
-        doc.text(item.amount.toFixed(2), 230, currentY);
+        doc.text((index + 1).toString(), 110, currentY); // Serial number
+        doc.text(item.qty.toString(), 130, currentY);
+        doc.text(item.rate.toFixed(2), 150, currentY);
+        doc.text(item.amount.toFixed(2), 170, currentY);
         currentY += rowHeight; // Move down for the next row
     });
 
     // Add totals to the invoice correctly
     doc.setFontSize(12);
-    doc.text("Subtotal", 250, currentY);
-    doc.text(subtotal.toFixed(2), 260, currentY);
+    doc.text("Subtotal", 130, currentY);
+    doc.text(subtotal.toFixed(2), 160, currentY);
     currentY += 5;
 
-    doc.text("GST (18%)", 250, currentY);
+    doc.text("GST (18%)", 130, currentY);
     doc.text(totalGst.toFixed(2), 160, currentY);
     currentY += 5;
 
-    doc.text("Delivery Charges", 250, currentY);
-    doc.text(deliveryCharge.toFixed(2), 260, currentY);
+    doc.text("Delivery Charges", 130, currentY);
+    doc.text(deliveryCharge.toFixed(2), 160, currentY);
     currentY += 5;
 
     doc.setFontSize(14);
-    doc.text("Grand Total", 250, currentY);
-    doc.text(grandTotal.toFixed(2), 260, currentY);
+    doc.text("Grand Total", 130, currentY);
+    doc.text(grandTotal.toFixed(2), 160, currentY);
 
     // Add footer
     doc.setFontSize(10);
