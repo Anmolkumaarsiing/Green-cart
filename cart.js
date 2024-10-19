@@ -257,11 +257,10 @@ function generateInvoicePDF(transactionId, amount) {
 
     // Authorized Signatory Section
     doc.setFontSize(12);
-    const signatore = "Authorized Signatory :";
     doc.setFont("courier", "italic"); // Set font to cursive; adjust as needed
-    const signatoryText = "Anmol Singh";
+    const signatoryText = "Authorized Signatory : Anmol Singh";
     const signatoryX = doc.internal.pageSize.getWidth() - doc.getTextWidth(signatoryText) - 14; // Right aligned
-    doc.text(signatore, signatoryText, signatoryX, currentY + 30); // Positioning
+    doc.text(signatoryText, signatoryX, currentY + 30); // Positioning
 
     // Save the PDF
     doc.save(`Invoice_${transactionId}.pdf`);
