@@ -203,9 +203,6 @@ function generateInvoicePDF(transactionId, amount) {
 
     // Table header
     doc.setFontSize(12);
-    doc.setFillColor(0, 112, 192);
-    doc.rect(14, 115, 180, 10, "F"); 
-    doc.setTextColor(255); 
     const headerY = 85; // Position for table header
     doc.text("Description", 14, headerY);
     doc.text("Serial Number", 80, headerY);
@@ -219,11 +216,14 @@ function generateInvoicePDF(transactionId, amount) {
 
     // Items
     let currentY = headerY + 10; // Starting position for items
-    doc.setFillColor(8, 243, 79); 
     items.forEach((item, index) => {
         const rowHeight = 10; // Height for each row
+
+        // Set alternating colors
         if (index % 2 === 0) {
-            doc.rect(14, currentY, 180, rowHeight, "F"); // Fill rectangle for row
+            doc.setFillColor(8, 243, 79); // Light gray for even rows
+        } else {
+            doc.setFillColor(255, 255, 255); // White for odd rows
         }
         
         // Adding item details
