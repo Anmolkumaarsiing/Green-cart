@@ -167,11 +167,10 @@ function generateOrderId() {
     return `GC${dateString}${randomFourDigit}`; // Format: GCYYYYMMDDXXXX
 }
 
-// Function to generate PDF invoice
 function generateInvoicePDF(transactionId, amount) {
-    const gstRate = 0.18; // GST rate
-    const deliveryChargeRate = 0.10; // Delivery charge rate
-    const deliveryChargeCap = 20; // Maximum delivery charge
+    const gstRate = 0.18; 
+    const deliveryChargeRate = 0.10; 
+    const deliveryChargeCap = 20; 
     const subtotal = amount / (1 + gstRate + Math.min(deliveryChargeRate * amount, deliveryChargeCap) / amount);
     const totalGst = subtotal * gstRate; 
     const deliveryCharge = Math.min(deliveryChargeCap, deliveryChargeRate * subtotal); 
@@ -183,13 +182,23 @@ function generateInvoicePDF(transactionId, amount) {
 
     // Add Header
     doc.setFontSize(22);
-    doc.text("INVOICE", 14, 20);
+    const title = "INVOICE";
+    const titleWidth = doc.getTextWidth(title);
+    const titleX = (doc.internal.pageSize.getWidth() - titleWidth) / 2; // Centering the title
+    doc.text(title, titleX, 20);
+
     doc.setFontSize(12);
     doc.text(`DATE: ${new Date().toLocaleDateString('en-IN')}`, 14, 30);
     doc.text("GREEN CART", 14, 40);
     doc.text("Parul University, Vadodara, Gujarat, 391025", 14, 45);
     doc.text("Email: anmolkumaresiingh@gmail.com", 14, 50);
 
+    // Add Bill To Section
+    doc.setFontSize(14);
+    doc.text("Bill To:", 14, 65);
+    doc.setFontSize(12);
+    doc.text("Customer Name", 14, 75); // Replace with actual customer name
+    doc.text("Customer Address", 14, 80); // Replace with actual customer address
 
     // Payment Details
     doc.setFontSize(14);
@@ -200,25 +209,33 @@ function generateInvoicePDF(transactionId, amount) {
 
     // Table Header
     doc.setFontSize(12);
-    doc.setFillColor(0, 112, 192); // Set header background color
-    doc.rect(14, 115, 180, 10, "F"); // Draw filled rectangle
-    doc.setTextColor(255); // White text
+    doc.setFillColor(0, 112, 192); 
+    doc.rect(14, 115, 180, 10, "F"); 
+    doc.setTextColor(255); 
     doc.text("Description", 14, 120);
-    doc.text("HSN Code", 80, 120);
+    doc.text("Serial Number", 80, 120); // Changed HSN Code to Serial Number
     doc.text("Qty", 110, 120);
     doc.text("Rate", 130, 120);
     doc.text("Amount", 160, 120);
-    doc.setTextColor(0); // Reset text color to black
+    doc.setTextColor(0); 
 
-    // Items
+    // Items with consistent background
     let currentY = 125;
-    items.forEach(item => {
+    items.forEach((item, index) => {
+        const rowHeight = 10; // Row height for table
+        if (index % 2 === 0) {
+            doc.setFillColor(240, 240, 240); // Light gray for even rows
+            doc.rect(14, currentY, 180, rowHeight, "F"); // Fill rectangle for row
+        }
+        
+        // Adding item details
+        doc.setTextColor(0);
         doc.text(item.description, 14, currentY);
-        doc.text(item.hsnCode, 80, currentY);
+        doc.text((index + 1).toString(), 80, currentY); // Serial number
         doc.text(item.qty.toString(), 110, currentY);
         doc.text(item.rate.toFixed(2), 130, currentY);
         doc.text(item.amount.toFixed(2), 160, currentY);
-        currentY += 5;
+        currentY += rowHeight; // Move down for the next row
     });
 
     // Add totals to the invoice correctly
@@ -251,10 +268,10 @@ function generateInvoicePDF(transactionId, amount) {
     const signatoryX = doc.internal.pageSize.getWidth() - doc.getTextWidth(signatoryText) - 14; // Right aligned
     doc.text(signatoryText, signatoryX, currentY + 30); // Positioning
 
-
     // Save the PDF
     doc.save(`Invoice_${transactionId}.pdf`);
 }
+
 
 
 
