@@ -169,14 +169,12 @@ function generateOrderId() {
 
 // Function to generate PDF invoice
 function generateInvoicePDF(transactionId, amount) {
-    // Retrieve the product data
-    const itemDetails = getItemDetailsFromCookies(); // Implement this function to fetch items from cookies
     const gstRate = 0.18;
     const deliveryCharge = Math.min(20, 0.10 * amount);
     const totalGst = amount * gstRate;
     const grandTotal = amount + totalGst + deliveryCharge;
 
-    const { items } = itemDetails; // Destructure to get items
+    const items = getItemDetailsFromCookies(); // Get item details for the invoice
 
     // Create a PDF document
     const { jsPDF } = window.jspdf;
@@ -216,12 +214,11 @@ function generateInvoicePDF(transactionId, amount) {
         currentY += 5;
     });
 
-    // Total Section
+    // Add totals
     doc.text("Total", 130, currentY);
     doc.text(amount.toFixed(2), 160, currentY);
-    currentY += 10;
+    currentY += 5;
 
-    // Add CGST and SGST
     doc.text("CGST (9%)", 130, currentY);
     doc.text((totalGst / 2).toFixed(2), 160, currentY);
     currentY += 5;
@@ -249,7 +246,7 @@ function getItemDetailsFromCookies() {
     const items = [];
     cookieData.forEach((itemIndex) => {
         const index = Number(itemIndex) - 1; // Adjusting for zero-based index
-        if (contentTitle[index]) {
+        if (contentTitle && contentTitle[index]) { // Check if contentTitle is defined and item exists
             items.push({
                 description: contentTitle[index].name,
                 hsnCode: '1234', // Placeholder HSN Code
@@ -259,7 +256,7 @@ function getItemDetailsFromCookies() {
             });
         }
     });
-    return { items };
+    return items; // Return items array
 }
 
 // BACKEND CALL
@@ -269,7 +266,7 @@ let totalAmount = 0;
 httpRequest.onreadystatechange = function() {
     if (this.readyState === 4) {
         if (this.status == 200) {
-            let contentTitle = JSON.parse(this.responseText);
+            contentTitle = JSON.parse(this.responseText); // Declare contentTitle here
             console.log("Current cookies:", document.cookie); // Log current cookies
 
             // Check for cookies
