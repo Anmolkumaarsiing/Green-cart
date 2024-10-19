@@ -32,7 +32,6 @@ function dynamicCartSection(ob, itemCounter) {
     boxDiv.appendChild(boxh4);
 
     cartContainer.appendChild(boxContainerDiv);
-    cartContainer.appendChild(totalContainerDiv);
 }
 
 let totalContainerDiv = document.createElement('div');
@@ -103,7 +102,7 @@ function initializeRazorpay(amount) {
         "image": "https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png", // Optional logo URL
         "handler": function (response) {
             alert("Payment successful: " + response.razorpay_payment_id);
-            postTransaction(response.razorpay_payment_id, amount);
+            postTransaction(response.razorpay_payment_id, amount, response.razorpay_payment_mode); // Pass payment mode
         },
         "theme": {
             "color": "#0d94fb"
@@ -121,7 +120,7 @@ buttonTag.onclick = function() {
 }
 
 // Function to post transaction details to the API
-function postTransaction(transactionId, amount) {
+function postTransaction(transactionId, amount, paymentMode) {
     let httpRequest = new XMLHttpRequest();
     httpRequest.open("POST", "https://669e2f559a1bda368005b99b.mockapi.io/Product/orders", true);
     httpRequest.setRequestHeader("Content-Type", "application/json");
@@ -130,7 +129,7 @@ function postTransaction(transactionId, amount) {
         if (this.readyState === 4) {
             if (this.status == 201) {
                 console.log("Transaction successfully posted:", JSON.parse(this.responseText));
-                generateInvoice(transactionId, amount); // Generate invoice after posting transaction data
+                generateInvoice(transactionId, amount, paymentMode); // Generate invoice after posting transaction data
                 window.location.href = "/orderPlaced.html"; // Redirect after generating invoice
             } else {
                 console.error("Failed to post transaction data:", this.responseText);
@@ -149,7 +148,8 @@ function postTransaction(transactionId, amount) {
         transactionId: transactionId,
         amount: amount,
         createdAt: createdAt,
-        orderId: orderId
+        orderId: orderId,
+        paymentMode: paymentMode // Include payment mode
     };
 
     httpRequest.send(JSON.stringify(cleanOrderData));
@@ -163,8 +163,33 @@ function generateOrderId() {
     return `GC${dateString}${randomFourDigit}`; // Format: GCYYYYMMDDXXXX
 }
 
+// Function to convert number to words
+function numberToWords(num) {
+    const a = [ '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen' ];
+    const b = [ '', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety' ];
+    const words = num.toString().split('.');
+    let n = words[0].length > 3 ? words[0].slice(-3) : words[0]; // Get the last three digits
+    let str = '';
+
+    if (num < 20) {
+        str = a[num];
+    } else if (num < 100) {
+        str = b[Math.floor(num / 10)] + (num % 10 !== 0 ? ' ' + a[num % 10] : '');
+    } else if (num < 1000) {
+        str = a[Math.floor(num / 100)] + ' Hundred' + (num % 100 !== 0 ? ' ' + numberToWords(num % 100) : '');
+    } else if (num < 1000000) {
+        str = numberToWords(Math.floor(num / 1000)) + ' Thousand' + (num % 1000 !== 0 ? ' ' + numberToWords(num % 1000) : '');
+    }
+
+    if (words.length > 1) {
+        str += ' and ' + words[1] + ' Paise';
+    }
+
+    return str || 'Zero';
+}
+
 // Function to generate invoice PDF
-function generateInvoice(transactionId, amount) {
+function generateInvoice(transactionId, amount, paymentMode) {
     const { jsPDF } = window.jspdf; // Access jsPDF
 
     const doc = new jsPDF();
@@ -177,52 +202,79 @@ function generateInvoice(transactionId, amount) {
     doc.text('GREEN CART', 14, 40);
     doc.text('Parul university, Vadodara, Gujarat, 391025', 14, 50);
     doc.text('Email ID: anmolkumaarsiingh@gmail.com', 14, 60);
-
+    
     // Bill of Section
-    doc.text('Bill of:', 14, 70);
-    doc.text('Grocery items from Green cart', 14, 80);
-    doc.text('Payment Date:', 14, 90);
-    doc.text('Payment Mode:', 14, 100);
+    doc.text('Bill of:', 14, 80);
+    doc.text('Grocery items from Green cart', 14, 90);
+    doc.text('Payment Date: ' + date, 14, 100);
+    doc.text('Payment Mode: ' + paymentMode, 14, 110); // Add payment mode
 
-    // Table Header
-    doc.setFontSize(12);
-    doc.text('Description', 14, 110);
-    doc.text('HSN Code', 80, 110);
-    doc.text('Qty', 100, 110);
-    doc.text('Rate', 120, 110);
-    doc.text('Amount', 140, 110);
+    // Table Headers
+    const headers = ["Description", "HSN Code", "Qty", "Rate", "Amount"];
+    doc.autoTable({
+        head: [headers],
+        startY: 120,
+        styles: { fontSize: 10 }
+    });
 
-    // Add a line for each item in the cart
-    // Here you would need to get the item details again if needed or pass them while generating the invoice
-    // For demonstration, I'll just create a placeholder
-    const items = ["Tomato", "Potato"]; // Replace this with actual items
-    const prices = [25, 30]; // Replace this with actual prices
-    const quantities = [1, 2]; // Replace this with actual quantities
-    let y = 120;
-
-    for (let i = 0; i < items.length; i++) {
-        doc.text(items[i], 14, y);
-        doc.text('HSN123', 80, y); // Example HSN code
-        doc.text(quantities[i].toString(), 100, y);
-        doc.text(prices[i].toString(), 120, y);
-        doc.text((prices[i] * quantities[i]).toString(), 140, y);
-        y += 10; // Adjust the position for the next row
+    // Get order items from cookies
+    let items = []; // Store item details
+    if (document.cookie.indexOf(',counter=') >= 0) {
+        let counter = Number(document.cookie.split(',')[1].split('=')[1]);
+        let itemParts = document.cookie.split(',')[0].split('=');
+        
+        if (itemParts.length > 1) {
+            let item = itemParts[1].trim().split(" ");
+            for (let i = 0; i < counter; i++) {
+                items.push(item[i]);
+            }
+        }
     }
 
+    let totalAmount = 0;
+    items.forEach((itemId, index) => {
+        const product = JSON.parse(httpRequest.responseText).find(prod => prod.id === itemId);
+        const quantity = 1; // Assuming 1 for now; adjust as needed
+        const amount = product.price * quantity;
+
+        // Populate table rows
+        doc.autoTable({
+            body: [[
+                product.name, // Description
+                'HSN123', // Example HSN code
+                quantity.toString(), // Quantity
+                product.price.toFixed(2), // Rate
+                amount.toFixed(2) // Amount
+            ]],
+            startY: doc.autoTable.previous.finalY,
+            styles: { fontSize: 10 }
+        });
+
+        totalAmount += amount;
+    });
+
     // Total Section
-    doc.text('Total', 14, y + 10);
-    doc.text('Terms & conditions', 14, y + 20);
-    doc.text('1.', 14, y + 30);
-    doc.text('2.', 14, y + 40);
-    doc.text('3.', 14, y + 50);
-    doc.text('4.', 14, y + 60);
-    doc.text('5.', 14, y + 70);
-    doc.text('Add: CGST @ 9%', 14, y + 80);
-    doc.text('Balance Received:', 14, y + 90);
-    doc.text('Balance Due:', 14, y + 100);
-    doc.text('Grand Total:', 14, y + 110);
-    doc.text('Total Amount (₹ - In Words):', 14, y + 120);
-    doc.text('authorised signature: Anmol kumar singh', 14, y + 130);
+    const gst = totalAmount * 0.18; // 18% GST
+    const deliveryCharge = Math.min(20, 0.10 * totalAmount); // Delivery charges
+    const finalAmount = totalAmount + gst + deliveryCharge;
+
+    doc.text('Total Amount: Rs ' + totalAmount.toFixed(2), 14, doc.autoTable.previous.finalY + 10);
+    doc.text('Add: CGST @ 9%: Rs ' + (gst / 2).toFixed(2), 14, doc.autoTable.previous.finalY + 20);
+    doc.text('Add: SGST @ 9%: Rs ' + (gst / 2).toFixed(2), 14, doc.autoTable.previous.finalY + 30);
+    doc.text('Balance Received: Rs ' + finalAmount.toFixed(2), 14, doc.autoTable.previous.finalY + 40);
+    doc.text('Total Amount (₹ - In Words): ' + numberToWords(finalAmount).toUpperCase(), 14, doc.autoTable.previous.finalY + 50);
+    
+    // Terms and Conditions
+    doc.text('Terms & Conditions:', 14, doc.autoTable.previous.finalY + 70);
+    doc.text('1. No refunds after 30 days.', 14, doc.autoTable.previous.finalY + 80);
+    doc.text('2. Keep your invoice for future reference.', 14, doc.autoTable.previous.finalY + 90);
+    doc.text('3. Delivery charges are applicable on all orders.', 14, doc.autoTable.previous.finalY + 100);
+    doc.text('4. Prices are subject to change.', 14, doc.autoTable.previous.finalY + 110);
+    doc.text('5. Contact us for any disputes.', 14, doc.autoTable.previous.finalY + 120);
+
+    // Authorised Signature
+    doc.setFont("courier", "italic");
+    doc.text('Authorised signature: Anmol Kumar Singh', 14, doc.autoTable.previous.finalY + 140);
 
     // Save the PDF
     doc.save(`Invoice_${transactionId}.pdf`);
