@@ -208,7 +208,7 @@ function generateInvoicePDF(transactionId, amount) {
     doc.text("Serial Number", 80, headerY);
     doc.text("Qty", 110, headerY);
     doc.text("Rate", 130, headerY);
-    doc.text("Amount", 160, headerY);
+    doc.text("Amount", 180, headerY);
     
     // Underline the header
     doc.setLineWidth(0.5);
@@ -221,9 +221,9 @@ function generateInvoicePDF(transactionId, amount) {
 
         // Set alternating colors
         if (index % 2 === 0) {
-            doc.setFillColor(8, 243, 79); // Light gray for even rows
+            doc.setFillColor(8, 243, 79);
         } else {
-            doc.setFillColor(255, 255, 255); // White for odd rows
+            doc.setFillColor(0, 243, 175);
         }
         
         // Adding item details
@@ -233,28 +233,28 @@ function generateInvoicePDF(transactionId, amount) {
         doc.text((index + 1).toString(), 80, currentY + 7); // Serial number
         doc.text(item.qty.toString(), 110, currentY + 7); // Quantity
         doc.text(item.rate.toFixed(2), 130, currentY + 7); // Rate
-        doc.text(item.amount.toFixed(2), 160, currentY + 7); // Amount
+        doc.text(item.amount.toFixed(2), 180, currentY + 7); // Amount
         
         currentY += rowHeight; // Move down for the next row
     });
 
     // Add totals to the invoice correctly
     doc.setFontSize(12);
-    doc.text("Subtotal", 130, currentY);
-    doc.text(subtotal.toFixed(2), 160, currentY);
+    doc.text("Subtotal", 160, currentY);
+    doc.text(subtotal.toFixed(2), 180, currentY);
     currentY += 5;
 
-    doc.text("GST (18%)", 130, currentY);
-    doc.text(totalGst.toFixed(2), 160, currentY);
+    doc.text("GST (18%)", 160, currentY);
+    doc.text(totalGst.toFixed(2), 180, currentY);
     currentY += 5;
 
-    doc.text("Delivery Charges", 130, currentY);
-    doc.text(deliveryCharge.toFixed(2), 160, currentY);
+    doc.text("Delivery Charges", 160, currentY);
+    doc.text(deliveryCharge.toFixed(2), 180, currentY);
     currentY += 5;
 
     doc.setFontSize(14);
-    doc.text("Grand Total", 130, currentY);
-    doc.text(grandTotal.toFixed(2), 160, currentY);
+    doc.text("Grand Total", 160, currentY);
+    doc.text(grandTotal.toFixed(2), 180, currentY);
 
     // Add footer
     doc.setFontSize(10);
