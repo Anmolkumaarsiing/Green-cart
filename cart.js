@@ -1,5 +1,6 @@
 console.clear();
 
+// Display item count from cookies
 if (document.cookie.indexOf(',counter=') >= 0) {
     let counter = document.cookie.split(',')[1].split('=')[1];
     document.getElementById("badge").innerHTML = counter;
@@ -9,9 +10,6 @@ let cartContainer = document.getElementById('cartContainer');
 
 let boxContainerDiv = document.createElement('div');
 boxContainerDiv.id = 'boxContainer';
-
-// Store previously generated order IDs
-let generatedOrderIds = new Set();
 
 // DYNAMIC CODE TO SHOW THE SELECTED ITEMS IN YOUR CART
 function dynamicCartSection(ob, itemCounter) {
@@ -50,42 +48,30 @@ totalh2.appendChild(h2Text);
 totalDiv.appendChild(totalh2);
 
 // TO UPDATE THE TOTAL AMOUNT
-function amountUpdate(subtotal) {
-    let gst = subtotal * 0.18; // GST at 18%
-    let deliveryCharge = Math.min(subtotal * 0.1, 20); // Delivery charge 10% or Rs 20, whichever is less
-    let finalAmount = subtotal + gst + deliveryCharge;
+function amountUpdate(amount) {
+    let gst = amount * 0.18; // Calculate GST (18%)
+    let deliveryCharge = Math.min(20, 0.10 * amount); // Delivery charges (10% of total or Rs 20, whichever is less)
+    let finalAmount = amount + gst + deliveryCharge; // Calculate final amount
 
-    // Subtotal display
-    let subtotalh4 = document.createElement('h4');
-    let subtotalh4Text = document.createTextNode('Subtotal: Rs ' + subtotal.toFixed(2));
-    subtotalh4.appendChild(subtotalh4Text);
-    totalDiv.appendChild(subtotalh4);
+    let totalh4 = document.createElement('h4');
+    let totalh4Text = document.createTextNode('Subtotal: Rs ' + amount.toFixed(2));
+    totalh4.appendChild(totalh4Text);
+    totalDiv.appendChild(totalh4);
 
-    // GST display
     let gsth4 = document.createElement('h4');
-    let gsth4Text = document.createTextNode('GST (18%): Rs ' + gst.toFixed(2));
-    gsth4.appendChild(gsth4Text);
+    let gstText = document.createTextNode('GST (18%): Rs ' + gst.toFixed(2));
+    gsth4.appendChild(gstText);
     totalDiv.appendChild(gsth4);
 
-    // Delivery charge display
     let deliveryh4 = document.createElement('h4');
-    let deliveryh4Text = document.createTextNode('Delivery Charges: Rs ' + deliveryCharge.toFixed(2));
-    deliveryh4.appendChild(deliveryh4Text);
+    let deliveryText = document.createTextNode('Delivery Charges: Rs ' + deliveryCharge.toFixed(2));
+    deliveryh4.appendChild(deliveryText);
     totalDiv.appendChild(deliveryh4);
 
-    // Final amount display
     let finalh4 = document.createElement('h4');
-    let finalh4Text = document.createTextNode('Final Amount: Rs ' + finalAmount.toFixed(2));
-    finalh4.appendChild(finalh4Text);
+    let finalText = document.createTextNode('Final Amount: Rs ' + finalAmount.toFixed(2));
+    finalh4.appendChild(finalText);
     totalDiv.appendChild(finalh4);
-
-    // Update button click event to send final amount to Razorpay
-    buttonTag.onclick = function() {
-        console.log("clicked");
-        initializeRazorpay(finalAmount); // Use the calculated final amount here
-    };
-
-    // Attach the button div for Razorpay
     totalDiv.appendChild(buttonDiv);
 }
 
@@ -104,28 +90,17 @@ let buttonText = document.createTextNode('Place Order');
 buttonTag.appendChild(buttonText);
 
 // Function to initialize Razorpay
-function initializeRazorpay(finalAmount) {
+function initializeRazorpay(amount) {
     var options = {
         "key": "rzp_test_4sMuXigiNls8Jr", // Your Razorpay API key
-        "amount": Math.round(finalAmount * 100), // Convert rupees to paise and ensure it's an integer
+        "amount": Math.round(amount * 100), // Convert rupees to paise and ensure it's an integer
         "currency": "INR",
         "name": "CARTER",
         "description": "Payment for Selected items",
         "image": "https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png", // Optional logo URL
         "handler": function (response) {
-            // Payment successful
             alert("Payment successful: " + response.razorpay_payment_id);
-
-            // Prepare data for the API request
-            let orderData = {
-                transactionId: response.razorpay_payment_id, // Razorpay transaction ID
-                amount: finalAmount, // Final payment amount
-                createdAt: getISTDateTime(), // Get current time in IST
-                orderId: generateUniqueOrderId() // Generate unique order ID
-            };
-
-            // Send transaction data to the API
-            postTransaction(orderData);
+            postTransaction(response.razorpay_payment_id, amount);
         },
         "theme": {
             "color": "#0d94fb"
@@ -136,39 +111,14 @@ function initializeRazorpay(finalAmount) {
     paymentObject.open();
 }
 
-// Function to generate a unique Order ID
-function generateUniqueOrderId() {
-    let orderId;
-    do {
-        orderId = generateOrderId();
-    } while (generatedOrderIds.has(orderId)); // Keep generating until we find a unique one
-    generatedOrderIds.add(orderId); // Add to the set of generated IDs
-    return orderId;
+// Modify button click event to call initializeRazorpay
+buttonTag.onclick = function() {
+    console.log("clicked");
+    initializeRazorpay(totalAmount); // Ensure totalAmount is in rupees
 }
 
-// Helper function to generate the basic order ID format
-function generateOrderId() {
-    let date = new Date();
-    let year = date.getFullYear();
-    let month = String(date.getMonth() + 1).padStart(2, '0'); // Pad month to 2 digits
-    let day = String(date.getDate()).padStart(2, '0'); // Pad day to 2 digits
-    let randomNum = Math.floor(1000 + Math.random() * 9000); // Generate random 4-digit number
-    return `GC${year}${month}${day}${randomNum}`; // Removed hyphen
-}
-
-// Function to get current IST date and time in ISO format
-function getISTDateTime() {
-    let date = new Date();
-
-    // Convert UTC to IST (IST is UTC+5:30)
-    date.setHours(date.getUTCHours() + 5);
-    date.setMinutes(date.getUTCMinutes() + 30);
-
-    return date.toISOString(); // Keep the ISO format
-}
-
-// Function to post transaction details to the provided API
-function postTransaction(orderData) {
+// Function to post transaction details to the API
+function postTransaction(transactionId, amount) {
     let httpRequest = new XMLHttpRequest();
     httpRequest.open("POST", "https://669e2f559a1bda368005b99b.mockapi.io/Product/orders", true);
     httpRequest.setRequestHeader("Content-Type", "application/json");
@@ -185,43 +135,71 @@ function postTransaction(orderData) {
         }
     };
 
+    // Generate the order ID
+    const orderId = generateOrderId();
+    
+    // Get current date in IST format
+    const createdAt = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
+
     // Send only the necessary fields as JSON string
     let cleanOrderData = {
-        transactionId: orderData.transactionId,
-        amount: orderData.amount,
-        createdAt: orderData.createdAt, // Ensure this is in IST format
-        orderId: orderData.orderId
+        transactionId: transactionId,
+        amount: amount,
+        createdAt: createdAt,
+        orderId: orderId
     };
 
     httpRequest.send(JSON.stringify(cleanOrderData));
 }
 
-// Load cart items when the document is ready
-document.addEventListener("DOMContentLoaded", function () {
-    loadCartItems();
-});
+// Generate unique Order ID
+function generateOrderId() {
+    const today = new Date();
+    const dateString = today.toISOString().slice(0, 10).replace(/-/g, ""); // Format: YYYYMMDD
+    const randomFourDigit = Math.floor(1000 + Math.random() * 9000); // Random 4 digit number
+    return `GC${dateString}${randomFourDigit}`; // Format: GCYYYYMMDDXXXX
+}
 
-// Function to load cart items from API
-function loadCartItems() {
-    let httpRequest = new XMLHttpRequest();
-    httpRequest.onreadystatechange = function () {
-        if (this.readyState === 4) {
-            if (this.status === 200) {
-                let contentTitle = JSON.parse(this.responseText);
-                let cookieData = document.cookie.split(',')[0].split('=');
+// BACKEND CALL
+let httpRequest = new XMLHttpRequest();
+let totalAmount = 0;
 
-                if (cookieData.length == 2) {
-                    let item = cookieData[1].split(';');
-                    let totalAmount = 0;
-                    for (let i = 0; i < item.length; i++) {
-                        let itemCounter = 0;
-                        for (let j = 0; j < item.length; j++) {
+httpRequest.onreadystatechange = function() {
+    if (this.readyState === 4) {
+        if (this.status == 200) {
+            let contentTitle = JSON.parse(this.responseText);
+            console.log("Current cookies:", document.cookie); // Log current cookies
+
+            // Check for cookies
+            if (document.cookie.indexOf(',counter=') >= 0) {
+                let counter = Number(document.cookie.split(',')[1].split('=')[1]);
+                document.getElementById("totalItem").innerHTML = ('Total Items: ' + counter);
+                
+                // Split cookies safely
+                let itemParts = document.cookie.split(',')[0].split('=');
+                if (itemParts.length > 1) {
+                    let item = itemParts[1].trim().split(" ");
+                    console.log("Items from cookie:", item);
+
+                    // Calculate totalAmount and dynamically show items
+                    let i;
+                    totalAmount = 0; // Reset totalAmount before calculating
+                    for (i = 0; i < counter; i++) {
+                        let itemCounter = 1;
+                        for (let j = i + 1; j < counter; j++) {   
                             if (Number(item[j]) == Number(item[i])) {
                                 itemCounter += 1;
                             }
                         }
-                        totalAmount += Number(contentTitle[item[i] - 1].price) * itemCounter;
-                        dynamicCartSection(contentTitle[item[i] - 1], itemCounter);
+                        
+                        // Ensure the item index is valid
+                        let itemIndex = item[i] - 1; // Adjust for zero-based index
+                        if (itemIndex >= 0 && itemIndex < contentTitle.length) {
+                            totalAmount += Number(contentTitle[itemIndex].price) * itemCounter;
+                            dynamicCartSection(contentTitle[itemIndex], itemCounter);
+                        } else {
+                            console.error("Item index out of bounds:", itemIndex);
+                        }
                         i += (itemCounter - 1);
                     }
                     amountUpdate(totalAmount);
@@ -232,8 +210,8 @@ function loadCartItems() {
         } else {
             console.log('call failed!');
         }
-    };
-
-    httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
-    httpRequest.send();
+    }
 }
+
+httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
+httpRequest.send();
