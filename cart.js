@@ -101,7 +101,7 @@ let buttonText = document.createTextNode('Place Order');
 buttonTag.appendChild(buttonText);
 
 // Function to initialize Razorpay
-function initializeRazorpay(finalAmount) {  // Use finalAmount instead of subtotal
+function initializeRazorpay(finalAmount) {
     var options = {
         "key": "rzp_test_4sMuXigiNls8Jr", // Your Razorpay API key
         "amount": Math.round(finalAmount * 100), // Convert rupees to paise and ensure it's an integer
@@ -110,8 +110,18 @@ function initializeRazorpay(finalAmount) {  // Use finalAmount instead of subtot
         "description": "Payment for Selected items",
         "image": "https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png", // Optional logo URL
         "handler": function (response) {
+            // Payment successful
             alert("Payment successful: " + response.razorpay_payment_id);
-            window.location.href = "/orderPlaced.html";
+
+            // Prepare data for the API request
+            let orderData = {
+                transactionId: response.razorpay_payment_id, // Razorpay transaction ID
+                amount: finalAmount, // Final payment amount
+                timestamp: new Date().toISOString() // Add a timestamp for record-keeping
+            };
+
+            // Send transaction data to the API
+            postTransaction(orderData);
         },
         "theme": {
             "color": "#0d94fb"
@@ -120,6 +130,28 @@ function initializeRazorpay(finalAmount) {  // Use finalAmount instead of subtot
 
     var paymentObject = new Razorpay(options);
     paymentObject.open();
+}
+
+// Function to post transaction details to the provided API
+function postTransaction(orderData) {
+    let httpRequest = new XMLHttpRequest();
+    httpRequest.open("POST", "https://669e2f559a1bda368005b99b.mockapi.io/Product/orders", true);
+    httpRequest.setRequestHeader("Content-Type", "application/json");
+
+    httpRequest.onreadystatechange = function() {
+        if (this.readyState === 4) {
+            if (this.status == 201) {
+                console.log("Transaction successfully posted:", JSON.parse(this.responseText));
+                // Redirect to order placed page after successfully posting transaction data
+                window.location.href = "/orderPlaced.html";
+            } else {
+                console.error("Failed to post transaction data:", this.responseText);
+            }
+        }
+    };
+
+    // Send orderData as JSON string
+    httpRequest.send(JSON.stringify(orderData));
 }
 
 // BACKEND CALL
