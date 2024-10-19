@@ -130,8 +130,8 @@ function postTransaction(transactionId, amount) {
         if (this.readyState === 4) {
             if (this.status == 201) {
                 console.log("Transaction successfully posted:", JSON.parse(this.responseText));
-                // Redirect to order placed page after successfully posting transaction data
-                window.location.href = "/orderPlaced.html";
+                generateInvoice(transactionId, amount); // Generate invoice after posting transaction data
+                window.location.href = "/orderPlaced.html"; // Redirect after generating invoice
             } else {
                 console.error("Failed to post transaction data:", this.responseText);
             }
@@ -161,6 +161,71 @@ function generateOrderId() {
     const dateString = today.toISOString().slice(0, 10).replace(/-/g, ""); // Format: YYYYMMDD
     const randomFourDigit = Math.floor(1000 + Math.random() * 9000); // Random 4 digit number
     return `GC${dateString}${randomFourDigit}`; // Format: GCYYYYMMDDXXXX
+}
+
+// Function to generate invoice PDF
+function generateInvoice(transactionId, amount) {
+    const { jsPDF } = window.jspdf; // Access jsPDF
+
+    const doc = new jsPDF();
+    const date = new Date().toLocaleDateString("en-IN");
+    
+    // Header
+    doc.setFontSize(14);
+    doc.text('TAX INVOICE', 14, 20);
+    doc.text('DATE: ' + date, 14, 30);
+    doc.text('GREEN CART', 14, 40);
+    doc.text('Parul university, Vadodara, Gujarat, 391025', 14, 50);
+    doc.text('Email ID: anmolkumaarsiingh@gmail.com', 14, 60);
+
+    // Bill of Section
+    doc.text('Bill of:', 14, 70);
+    doc.text('Grocery items from Green cart', 14, 80);
+    doc.text('Payment Date:', 14, 90);
+    doc.text('Payment Mode:', 14, 100);
+
+    // Table Header
+    doc.setFontSize(12);
+    doc.text('Description', 14, 110);
+    doc.text('HSN Code', 80, 110);
+    doc.text('Qty', 100, 110);
+    doc.text('Rate', 120, 110);
+    doc.text('Amount', 140, 110);
+
+    // Add a line for each item in the cart
+    // Here you would need to get the item details again if needed or pass them while generating the invoice
+    // For demonstration, I'll just create a placeholder
+    const items = ["Tomato", "Potato"]; // Replace this with actual items
+    const prices = [25, 30]; // Replace this with actual prices
+    const quantities = [1, 2]; // Replace this with actual quantities
+    let y = 120;
+
+    for (let i = 0; i < items.length; i++) {
+        doc.text(items[i], 14, y);
+        doc.text('HSN123', 80, y); // Example HSN code
+        doc.text(quantities[i].toString(), 100, y);
+        doc.text(prices[i].toString(), 120, y);
+        doc.text((prices[i] * quantities[i]).toString(), 140, y);
+        y += 10; // Adjust the position for the next row
+    }
+
+    // Total Section
+    doc.text('Total', 14, y + 10);
+    doc.text('Terms & conditions', 14, y + 20);
+    doc.text('1.', 14, y + 30);
+    doc.text('2.', 14, y + 40);
+    doc.text('3.', 14, y + 50);
+    doc.text('4.', 14, y + 60);
+    doc.text('5.', 14, y + 70);
+    doc.text('Add: CGST @ 9%', 14, y + 80);
+    doc.text('Balance Received:', 14, y + 90);
+    doc.text('Balance Due:', 14, y + 100);
+    doc.text('Grand Total:', 14, y + 110);
+    doc.text('Total Amount (₹ - In Words):', 14, y + 120);
+    doc.text('authorised signature: Anmol kumar singh', 14, y + 130);
+
+    // Save the PDF
+    doc.save(`Invoice_${transactionId}.pdf`);
 }
 
 // BACKEND CALL
@@ -205,7 +270,7 @@ httpRequest.onreadystatechange = function() {
                         }
                         i += (itemCounter - 1);
                     }
-                    amountUpdate(totalAmount); // Call amountUpdate with totalAmount
+                    amountUpdate(totalAmount);
                 } else {
                     console.error("Expected cookie format not found!");
                 }
