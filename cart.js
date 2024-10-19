@@ -213,12 +213,11 @@ function generateInvoicePDF(transactionId, amount) {
         doc.text(item.amount.toFixed(2), 160, currentY);
         currentY += 5;
     });
- // Prepare for total calculation display
-        let currentY = doc.autoTable.previous.finalY + 10; // Starting point for totals
+
     // Add totals
     doc.text("Total", 130, currentY);
-        doc.text(totalAmount.toFixed(2), 160, currentY);
-        currentY += 5;
+    doc.text(amount.toFixed(2), 160, currentY);
+    currentY += 5;
 
     doc.text("CGST (9%)", 130, currentY);
     doc.text((totalGst / 2).toFixed(2), 160, currentY);
