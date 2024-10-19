@@ -34,10 +34,10 @@ img
     background-color: white;
     box-shadow: 1px 2px 6px 2px rgb(219, 219, 219);
     border-radius: 10px;
-    width: 80%;
-    height: 150px; /* Set a fixed height or adjust as needed */
+    width: 80%; /* Keep it responsive */
     padding: 20px 10px;
     box-shadow: 0px 5px 10px 0px rgba(0,255,255,0.7);  
+    /* Removed fixed height */
 }
 
 #box:hover {
@@ -49,14 +49,13 @@ img
     display: flex; /* Use flexbox for centering */
     justify-content: center; /* Center horizontally */
     align-items: center; /* Center vertically */
-    width: 50%;
+    width: 50%; /* Keep it as a percentage for responsiveness */
     padding: 20px;
     margin: auto;
     background-color: white;
     border-radius: 10px;
-    box-shadow: 1px 2px 6px 2px rgb(219, 219, 219);
-    height: 150px; /* Match this with the box height */
-    box-shadow: 0px 5px 10px 0px rgba(0,255,255,0.7);   
+    box-shadow: 0px 5px 10px 0px rgba(0,255,255,0.7); 
+    /* Removed fixed height */
 }
 #totalContainer:hover
 {
