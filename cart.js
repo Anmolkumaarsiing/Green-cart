@@ -207,7 +207,7 @@ doc.text("Parul University, Vadodara, Gujarat, 391025", 105, 50, null, null, 'ce
 doc.text("Email: anmolkumaresiingh@gmail.com", 105, 55, null, null, 'center');
 
 // Move down to the next section with a gap
-let currentY = 60 + gap; // Adding height of Section 2 and the gap
+let currentY = 30 + gap; // Adding height of Section 2 and the gap
 
 // Section 3: Bill of and Payment Details
 doc.setFontSize(12);
