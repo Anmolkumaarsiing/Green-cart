@@ -7,7 +7,6 @@ if (document.cookie.indexOf(',counter=') >= 0) {
 }
 
 let cartContainer = document.getElementById('cartContainer');
-
 let boxContainerDiv = document.createElement('div');
 boxContainerDiv.id = 'boxContainer';
 
@@ -167,17 +166,17 @@ function generateOrderId() {
     return `GC${dateString}${randomFourDigit}`; // Format: GCYYYYMMDDXXXX
 }
 
-//function to generate pdf
+// Function to generate the PDF invoice
 function generateInvoicePDF(transactionId, amount) {
-    const gstRate = 0.18; 
-    const deliveryChargeRate = 0.10; 
-    const deliveryChargeCap = 20; 
+    const gstRate = 0.18;
+    const deliveryChargeRate = 0.10;
+    const deliveryChargeCap = 20;
     const subtotal = amount / (1 + gstRate + Math.min(deliveryChargeRate * amount, deliveryChargeCap) / amount);
-    const totalGst = subtotal * gstRate; 
-    const deliveryCharge = Math.min(deliveryChargeCap, deliveryChargeRate * subtotal); 
-    const grandTotal = subtotal + totalGst + deliveryCharge; 
+    const totalGst = subtotal * gstRate;
+    const deliveryCharge = Math.min(deliveryChargeCap, deliveryChargeRate * subtotal);
+    const grandTotal = subtotal + totalGst + deliveryCharge;
 
-    const items = getItemDetailsFromCookies(); 
+    const items = getItemDetailsFromCookies();
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
@@ -205,144 +204,69 @@ function generateInvoicePDF(transactionId, amount) {
     doc.setFontSize(12);
     const headerY = 85; // Position for table header
     doc.text("Description", 14, headerY);
-    doc.text("Serial Number", 80, headerY);
+    doc.text("Serial Number", 80, headerY); // Changed HSN Code to Serial Number
     doc.text("Qty", 110, headerY);
     doc.text("Rate", 130, headerY);
     doc.text("Amount", 180, headerY);
-    
-    // Underline the header
-    doc.setLineWidth(0.5);
-    doc.line(14, headerY + 2, 185, headerY + 2); // Draw line under header
 
-    // Items
-    let currentY = headerY + 10; // Starting position for items
+    // Alternating background color for table rows
+    const startY = 95;
     items.forEach((item, index) => {
-        const rowHeight = 10; // Height for each row
-
-        // Set alternating colors
+        const rowY = startY + index * 10;
         if (index % 2 === 0) {
-            doc.setFillColor(8, 243, 79);
-        } else {
-            doc.setFillColor(0, 243, 175);
+            doc.setFillColor(240, 240, 240); // Light gray background
+            doc.rect(10, rowY - 6, 190, 10, 'F'); // Draw filled rectangle for background
         }
-        
-        // Adding item details
-        doc.setTextColor(0); // Reset text color to black
-        
-        doc.text(item.description, 14, currentY + 7); // Adjust position slightly down
-        doc.text((index + 1).toString(), 80, currentY + 7); // Serial number
-        doc.text(item.qty.toString(), 110, currentY + 7); // Quantity
-        doc.text(item.rate.toFixed(2), 130, currentY + 7); // Rate
-        doc.text(item.amount.toFixed(2), 180, currentY + 7); // Amount
-        
-        currentY += rowHeight; // Move down for the next row
+
+        doc.text(item.name, 14, rowY);
+        doc.text((index + 1).toString(), 80, rowY); // Serial Number
+        doc.text(item.quantity.toString(), 110, rowY);
+        doc.text(`Rs ${item.price.toFixed(2)}`, 130, rowY);
+        doc.text(`Rs ${(item.quantity * item.price).toFixed(2)}`, 180, rowY);
     });
 
-    // Add totals to the invoice correctly
+    // Billing Details section as table
     doc.setFontSize(12);
-    doc.text("Subtotal", 160, currentY);
-    doc.text(subtotal.toFixed(2), 180, currentY);
-    currentY += 5;
+    const billingY = startY + items.length * 10 + 10;
+    doc.text("Billed to:", 14, billingY);
+    doc.text("Anmol Kumar Singh", 14, billingY + 5);
+    doc.text("Parul University, Vadodara, Gujarat, 391025", 14, billingY + 10);
 
-    doc.text("GST (18%)", 160, currentY);
-    doc.text(totalGst.toFixed(2), 180, currentY);
-    currentY += 5;
+    // Display subtotal, GST, delivery charges, and grand total
+    doc.text(`Subtotal: Rs ${subtotal.toFixed(2)}`, 130, billingY);
+    doc.text(`GST (18%): Rs ${totalGst.toFixed(2)}`, 130, billingY + 5);
+    doc.text(`Delivery Charges: Rs ${deliveryCharge.toFixed(2)}`, 130, billingY + 10);
+    doc.text(`Grand Total: Rs ${grandTotal.toFixed(2)}`, 130, billingY + 15);
 
-    doc.text("Delivery Charges", 160, currentY);
-    doc.text(deliveryCharge.toFixed(2), 180, currentY);
-    currentY += 5;
-
-    doc.setFontSize(14);
-    doc.text("Grand Total", 160, currentY);
-    doc.text(grandTotal.toFixed(2), 180, currentY);
-
-    // Add footer
-    doc.setFontSize(10);
-    doc.text("Thank you for your purchase!", 14, currentY + 15);
-    doc.text("Please keep this invoice for your records.", 14, currentY + 20);
-
-     // Authorized Signatory Section
+    // Signature (Right-aligned and cursive style)
     doc.setFontSize(12);
-    doc.setFont("courier", "italic"); // Set font to cursive; adjust as needed
-    const signatoryText = "Authorized Signatory: Anmol Singh";
-    const signatoryX = doc.internal.pageSize.getWidth() - doc.getTextWidth(signatoryText) - 14; // Right aligned
-    doc.text(signatoryText, signatoryX, currentY + 30); // Positioning
-
-    // Save the PDF
-    doc.save(`Invoice_${transactionId}.pdf`);
+    doc.setFont('cursive');
+    doc.text("Authorized Signatory: Anmol Singh", 130, billingY + 30); // Right-aligned
+    doc.save(`invoice_${transactionId}.pdf`);
 }
 
-// Get item details from cookies
+// Retrieve item details from cookies
 function getItemDetailsFromCookies() {
-    const cookieData = document.cookie.split(',')[0].split('=')[1].trim().split(" ");
-    const items = [];
-    cookieData.forEach((itemIndex) => {
-        const index = Number(itemIndex) - 1; // Adjusting for zero-based index
-        if (contentTitle && contentTitle[index]) { // Check if contentTitle is defined and item exists
-            items.push({
-                description: contentTitle[index].name,
-                hsnCode: '1234', // Placeholder HSN Code
-                qty: 1, // Assuming quantity is 1 for simplicity
-                rate: contentTitle[index].price,
-                amount: contentTitle[index].price
-            });
+    let items = [];
+    document.cookie.split(',').forEach(cookie => {
+        if (cookie.indexOf(':') >= 0) {
+            let [id, count] = cookie.split(':');
+            count = parseInt(count);
+            let itemDetails = getProductDetails(id.trim());
+            itemDetails['quantity'] = count;
+            items.push(itemDetails);
         }
     });
-    return items; // Return items array
+    return items;
 }
 
-// BACKEND CALL
-let httpRequest = new XMLHttpRequest();
-let totalAmount = 0;
-
-httpRequest.onreadystatechange = function() {
-    if (this.readyState === 4) {
-        if (this.status == 200) {
-            contentTitle = JSON.parse(this.responseText); // Declare contentTitle here
-            console.log("Current cookies:", document.cookie); // Log current cookies
-
-            // Check for cookies
-            if (document.cookie.indexOf(',counter=') >= 0) {
-                let counter = Number(document.cookie.split(',')[1].split('=')[1]);
-                document.getElementById("totalItem").innerHTML = ('Total Items: ' + counter);
-                
-                // Split cookies safely
-                let itemParts = document.cookie.split(',')[0].split('=');
-                if (itemParts.length > 1) {
-                    let item = itemParts[1].trim().split(" ");
-                    console.log("Items from cookie:", item);
-
-                    // Calculate totalAmount and dynamically show items
-                    let i;
-                    totalAmount = 0; // Reset totalAmount before calculating
-                    for (i = 0; i < counter; i++) {
-                        let itemCounter = 1;
-                        for (let j = i + 1; j < counter; j++) {   
-                            if (Number(item[j]) == Number(item[i])) {
-                                itemCounter += 1;
-                            }
-                        }
-                        
-                        // Ensure the item index is valid
-                        let itemIndex = item[i] - 1; // Adjust for zero-based index
-                        if (itemIndex >= 0 && itemIndex < contentTitle.length) {
-                            totalAmount += Number(contentTitle[itemIndex].price) * itemCounter;
-                            dynamicCartSection(contentTitle[itemIndex], itemCounter);
-                        } else {
-                            console.error("Item index out of bounds:", itemIndex);
-                        }
-                        i += (itemCounter - 1);
-                    }
-                    amountUpdate(totalAmount); // Call amountUpdate with totalAmount
-                } else {
-                    console.error("Expected cookie format not found!");
-                }
-            }
-        } else {
-            console.log('call failed!');
-        }
-    }
+// Function to get product details based on product ID (mock implementation)
+function getProductDetails(productId) {
+    const products = {
+        1: { name: "Product A", price: 500, preview: "img/a.jpg" },
+        2: { name: "Product B", price: 700, preview: "img/b.jpg" },
+        3: { name: "Product C", price: 1200, preview: "img/c.jpg" },
+        // Add more product details here
+    };
+    return products[productId];
 }
-
-httpRequest.open('GET', 'https://669e2f559a1bda368005b99b.mockapi.io/Product/ProducData', true);
-httpRequest.send();
