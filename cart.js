@@ -167,7 +167,6 @@ function generateOrderId() {
     return `GC${dateString}${randomFourDigit}`; // Format: GCYYYYMMDDXXXX
 }
 
-//function to generate pdf
 // Function to generate PDF
 function generateInvoicePDF(orderId, transactionId, amount) {
     const gstRate = 0.18; 
@@ -219,7 +218,7 @@ function generateInvoicePDF(orderId, transactionId, amount) {
     doc.text("Grocery items from Green Cart", 14, currentY + 15);  // Adjust text position within the new Y
 
     // Add Order ID on the left side
-doc.text("Order ID: " + orderId, 14, currentY + 25);  // Order ID on the left side
+    doc.text("Order ID: " + orderId, 14, currentY + 25);  // Order ID on the left side
 
     // Right-side table content in Section 3
     doc.text("Payment Date: " + new Date().toLocaleDateString('en-IN'), 130, currentY + 10);  // Payment Date on the right side
@@ -306,6 +305,7 @@ doc.text("Order ID: " + orderId, 14, currentY + 25);  // Order ID on the left si
     // Save the PDF
     doc.save(`Invoice_${transactionId}.pdf`);
 }
+
 
 // Helper function to convert numbers to words (supports rupees and paise)
 function convertNumberToWords(amount) {
