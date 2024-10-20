@@ -1,4 +1,4 @@
-/* PARINDA + RISHIKA */
+
 
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,400;0,600;0,700;0,900;1,500;1,600;1,900&display=swap");
 
@@ -151,7 +151,7 @@ a {
 }
 .image {
 	position: absolute;
-	right: 10px;
-	top: 10px;
+	right: 40px;
+	top: 130px;
 	height: 80%;
 }
