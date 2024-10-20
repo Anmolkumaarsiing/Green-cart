@@ -1,0 +1,157 @@
+/* PARINDA + RISHIKA */
+
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,400;0,600;0,700;0,900;1,500;1,600;1,900&display=swap");
+
+* {
+	margin: 0;
+	padding: 0;
+	font-family: "Montserrat", Sans-Serif;
+	box-sizing: border-box;
+}
+
+nav {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 4em;
+	background-color: #000000;
+}
+#shopName 
+{
+    font-size: 30px; 
+    font-family: 'Lato', sans-serif;
+}
+#shopName a
+{
+    text-decoration: none;
+    color: #fff;
+}
+
+.logo,
+.translate {
+	color: azure;
+	padding: 0.1em;
+	margin: 2em;
+	letter-spacing: 1px;
+}
+
+/* Multiple languages using translate */
+#google_translate_element img,
+.goog-te-banner {
+	display: none;
+	color: #d21212;
+}
+
+select.goog-te-combo {
+	height: 25px;
+	border-radius: 30px;
+}
+
+.goog-logo-link {
+	height: 1px;
+}
+.heading {
+  font-family: 'Lato', sans-serif;
+  text-align: center;
+  font-size: 2em;
+  color: #14213d;
+  margin-top: 1em;
+}
+
+label,
+input {
+  display: inline-block;
+}
+
+select {
+  display: inline-block;
+  width: 200px; /* Adjust the width to match your input fields */
+  padding: 8px; /* Adjust padding for desired height */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  outline: none;
+  box-sizing: border-box;
+  background-color: #fff; /* Background color of the select element */
+  appearance: none; /* Remove default dropdown arrow */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: url('data:image/svg+xml;charset=US-ASCII,<svg%20xmlns="http://www.w3.org/2000/svg"%20viewBox="0%200%204%205"><path%20fill="none"%20stroke="black"%20stroke-width=".5"%20d="M0%201%20L2%204%20L4%201z"/></svg>') no-repeat right 10px center;
+  background-size: 8px 10px; /* Adjust size of the dropdown arrow */
+  padding-right: 30px; /* Space for the dropdown arrow */
+}
+
+select:focus {
+  border-color: #007bff; /* Adjust the focus color as needed */
+}
+
+.register {
+  color: #14213d;
+  width: 90vw;
+  height: 75vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #f4f4f4;
+  margin: auto;
+  margin-top: 4%;
+  position: relative;
+  padding: 0.2em;
+  border-radius: 20px;
+}
+
+.button {
+	color: azure;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 14%;
+	margin-top: 20px;
+}
+Button {
+	width: 20%;
+	height: 100%;
+	background-color: transparent;
+	border: 0;
+	margin: auto;
+	background-color: #14213d;
+	border-radius: 10px;
+	color: #fff;
+	letter-spacing: 2px;
+	font-size: 1em;
+}
+
+Button:hover {
+    cursor: pointer;
+    transition: 0.3s all ease;
+    background-color: #0d1a36ec;
+}
+.register > div {
+	margin-left: 5%;
+	padding: 10px 30px 10px 0px;
+}
+.shopname {
+	margin-top: 3%;
+}
+input {
+	border: none;
+	border-bottom: 1px solid black;
+	background-color: transparent;
+	outline: none;
+	width: 50%;
+	/* margin: 1em; */
+}
+input:hover {
+	border-bottom: 1px solid black;
+}
+a {
+	text-decoration: none;
+	color: azure;
+}
+.image {
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	height: 80%;
+}

@@ -1,0 +1,365 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,400;0,600;0,700;0,900;1,500;1,600;1,900&display=swap");
+
+* {
+	margin: 0;
+	padding: 0;
+	font-family: "Montserrat", Sans-Serif;
+}
+
+a {
+	text-decoration: none;
+}
+
+nav {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 4em;
+	background-color: #000000;
+}
+#shopName 
+{
+    font-size: 30px; 
+    font-family: 'Lato', sans-serif;
+}
+#shopName a
+{
+    text-decoration: none;
+    color: #fff;
+}
+.addedToCart
+{
+    font-size: 1.5em;
+    margin-right: 25px;
+    color: #fff;
+}
+#user
+{
+    display: flex;
+    /* float: right; */
+    align-items: center;
+}
+
+.userIcon
+{
+    font-size: 45px;
+    color: #fff;
+}
+.profile-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-icon {
+    color: #000; /* Change as needed */
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Dropdown content */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 4px;
+}
+
+.dropdown-content a {
+    font-family: 'Lato', sans-serif;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    white-space: nowrap; /* Prevents text wrapping */
+}
+.profile-menu:hover .dropdown-content {
+    display: block;
+}
+.dropdown-content.show {
+    display: block;
+}
+
+ul {
+	display: flex;
+  align-items: center;
+
+}
+
+li {
+  text-decoration: none;
+  display: inline-block;
+  margin: 0 2em;
+}
+
+.logout {
+  /* margin-bottom: 1em; */
+  margin-right: 1px;
+  background: #fff;
+	font-size: 1em;
+	border-radius: 15px;
+	padding: 0.25em 0.5em;
+  transition: all 0.4s ease;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.logout:hover {
+  background: #1a1a1a;
+  color: white;
+  cursor: pointer;
+}
+
+.logo,
+.translate {
+	color: azure;
+	padding: 0.1em;
+	margin: 2em;
+	letter-spacing: 1px;
+}
+
+/* Multiple languages using translate */
+#google_translate_element img,
+.goog-te-banner {
+	display: none;
+}
+
+select.goog-te-combo {
+	height: 25px;
+	border-radius: 30px;
+}
+
+.goog-logo-link {
+	height: 1px;
+}
+
+
+.stars {
+	/* width : 20%; */
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	padding-top: 2.5%;
+	padding-left: 2.5%;
+}
+
+img {
+	display: inline-block;
+	size: 20em;
+}
+
+.star {
+	width: 35px;
+	height: 37px;
+	padding: 0 2px;
+}
+
+.heading {
+	display: flex;
+}
+
+.heading > .name {
+	color: #ffcf40;
+	font-size: 280%;
+	font-weight: bold;
+	margin-top: 2%;
+	margin-left: 2%;
+}
+
+.second-part {
+	width: 100vw;
+	height: 80vh;
+	display: flex;
+}
+
+.left-part {
+	width: 50%;
+	padding: 3em;
+}
+
+.category {
+	font-size: 2.5em;
+	font-weight: bold;
+  margin: 0.5em 0;
+  
+}
+
+.owner-name {
+	font-size: 1.75em;
+  margin: 0.75em 0;
+}
+
+.contact {
+  font-size: 1.85em;
+	font-weight: bold;
+  margin: 0.75em 0;
+  margin-top: 2em;
+}
+
+.address {
+  font-size: 1.75em;
+	font-weight: bold;
+  margin: 0.75em 0;
+}
+
+.shop-timings {
+  font-size: 1.75em;
+  font-weight: bold;
+  margin: 0.75em 0;
+}
+
+span.attr {
+  margin: 0 1em;
+}
+
+
+/*
+.vaccancy{ 
+  right: 13%;
+  align-items: right;
+  margin-bottom: 5%;
+} */
+
+/* adding tags css here */
+
+.right-part {
+	width: 50%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: center;
+}
+
+.tags {
+	display: flex;
+	width: 60%;
+	justify-content: center;
+	align-items: center;
+	background: #f9f2de;
+	flex-wrap: wrap;
+	border-radius: 10px;
+	padding: 1em;
+}
+
+.tag {
+	font-size: 20px;
+	padding: 0 10px;
+	display: flex;
+	color: #ffcf40;
+	border: 3px solid #ffcf40;
+	background: #f9f2de;
+	border-radius: 12px;
+	margin: 10px;
+}
+
+
+.add-tag {
+	background: #263238;
+	font-size: 24px;
+	font-weight: bold;
+	border-radius: 10px;
+	padding: 7px 10px;
+    cursor: pointer;
+}
+
+.add-tag:hover {
+    background: #1a1a1a; /* Darker background on hover */
+    color: #ffcf40; /* Keep text color same on hover or adjust if needed */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: Add shadow for a more pronounced hover effect */
+}
+
+.add-tag {
+	color: #ffcf40;
+	margin-top: 10px;
+}
+
+
+form.upload-form {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    width: 100%;
+    max-width: 500px; /* Adjust based on desired width */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Adds a shadow for better visibility */
+}
+
+/* Styles for the form label */
+form.upload-form label {
+    display: block;
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #333;
+    font-size: 18px;
+}
+
+/* Styles for the file input */
+form.upload-form input[type="file"] {
+    display: block;
+    margin-bottom: 15px;
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 2px solid #263238;
+    background-color: #fff;
+    color: #000;
+}
+
+/* Styles for the upload button */
+form.upload-form button {
+    padding: 10px 20px;
+    background-color: #263238;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect for the upload button */
+form.upload-form button:hover {
+    background-color: #000;
+}
+
+/* Ensure the file input and button are full width */
+form.upload-form input[type="file"],
+form.upload-form button {
+    width: 100%;
+}
+
+/* Additional styling for better layout */
+form.upload-form .form-group {
+    margin-bottom: 15px;
+}
+
+form.upload-form input[type="file"] {
+    border: 1px solid #ddd;
+}
+
+form.upload-form button {
+    text-align: center;
+}
+
+/* css for add tag form */
+
+form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+input[type="text"] {
+	font-size: 20px;
+	padding: 5px;
+	border-radius: 10px;
+	border: 3px solid #263238;
+	color: #ffcf40;
+	font-weight: bold;
+}
