@@ -205,7 +205,7 @@ function generateInvoicePDF(transactionId, amount) {
 
     // Section 3: Bill of and Payment Details
     doc.setFontSize(12);
-    doc.rect(10, 60, 200, 35);  // Section 3 border (Increased width)
+    doc.rect(10, 60, 190, 35);  // Section 3 border (Increased width)
     doc.setFont('Helvetica', 'bold');
     doc.text("Bill of:", 14, 70);
     doc.setFont('Helvetica', 'normal');
@@ -219,7 +219,7 @@ function generateInvoicePDF(transactionId, amount) {
     doc.setFontSize(12);
     doc.setFillColor(100, 150, 255);  // Light blue for table header
     doc.setTextColor(255, 255, 255);  // White text for header
-    doc.rect(10, 95, 200, 10, 'F');  // Section 4 header border (Increased width)
+    doc.rect(10, 95, 190, 10, 'F');  // Section 4 header border (Increased width)
     doc.text("Description", 14, 101);
     doc.text("Serial no.", 80, 101);
     doc.text("Qty", 110, 101);
@@ -230,7 +230,7 @@ function generateInvoicePDF(transactionId, amount) {
     doc.setTextColor(0, 0, 0);  // Reset text color to black for content
     let currentY = 110;
     items.forEach((item, index) => {
-        doc.rect(10, currentY - 5, 200, 10);  // Border for each row (Increased width)
+        doc.rect(10, currentY - 5, 190, 10);  // Border for each row (Increased width)
         doc.text(item.description, 14, currentY);
         doc.text((index + 1).toString(), 80, currentY);
         doc.text(item.qty.toString(), 110, currentY);
@@ -241,7 +241,7 @@ function generateInvoicePDF(transactionId, amount) {
 
     // Section 5: T&C and Amount Calculation
     currentY += 10;
-    doc.rect(10, currentY, 200, 30);  // Section 5 border (Increased width)
+    doc.rect(10, currentY, 190, 40);  // Section 5 border (Increased width)
     doc.setFontSize(10);
     doc.text("Terms & Conditions", 14, currentY + 10);
     doc.text("1. Goods once sold will not be returned.", 14, currentY + 15);
@@ -272,13 +272,13 @@ function generateInvoicePDF(transactionId, amount) {
     // Section 6: Amount in Words (Fixed to match Grand Total)
     currentY += 40;
     doc.setFontSize(12);
-    doc.rect(10, currentY, 200, 10);  // Section 6 border (Increased width)
+    doc.rect(10, currentY, 190, 10);  // Section 6 border (Increased width)
     const amountInWords = convertNumberToWords(grandTotal);  // Convert the Grand Total to words
     doc.text(`Amount in Words: ${amountInWords} Only`, 14, currentY + 7);
 
     // Section 7: Footer with Thank You and Signature
     currentY += 20;
-    doc.rect(10, currentY, 200, 20);  // Section 7 border (Increased width)
+    doc.rect(10, currentY, 190, 20);  // Section 7 border (Increased width)
     doc.setFontSize(10);
     doc.text("Thank you for your purchase!", 14, currentY + 7);
     doc.text("Please keep this invoice for your records.", 14, currentY + 12);
