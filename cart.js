@@ -164,11 +164,11 @@ function generateOrderId() {
     const today = new Date();
     const dateString = today.toISOString().slice(0, 10).replace(/-/g, ""); // Format: YYYYMMDD
     const randomFourDigit = Math.floor(1000 + Math.random() * 9000); // Random 4 digit number
-    return `GC${dateString}${randomFourDigit}`; // Format: GCYYYYMMDDXXXX
+    return `GC${dateString}${randomFourDigit}`; // Format: ODGCYYYYMMDDXXXX
 }
 
 //function to generate pdf
-function generateInvoicePDF(transactionId, amount, orderId) {
+function generateInvoicePDF(transactionId, amount) {
     const gstRate = 0.18; 
     const deliveryChargeRate = 0.10; 
     const deliveryChargeCap = 20; 
@@ -217,7 +217,6 @@ doc.text("Bill of:", 14, currentY + 10);  // Adjust text position within the new
 doc.setFont('Helvetica', 'normal');
 doc.text("Grocery items from Green Cart", 14, currentY + 15);  // Adjust text position within the new Y
 doc.text("Transaction Id: " + transactionId, 14, currentY + 25);
-doc.text("Order Id: " + orderId, 14, currentY + 30);
     
 // Left-side table in Section 3
 doc.text("Payment Date: " + new Date().toLocaleDateString('en-IN'), 130, currentY + 10);  // Right side table content
