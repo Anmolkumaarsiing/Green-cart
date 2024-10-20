@@ -13,6 +13,32 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <script type="module" src="seller-register.js" defer></script>
+    <style>
+        /* Loader overlay styles */
+        #loader {
+          display: none; /* Initially hidden */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
+            z-index: 9999; /* High z-index to cover other elements */
+            justify-content: center; /* Center loader */
+            align-items: center; /* Center loader */
+        }
+        .spinner {
+          border: 10px solid #f3f3f3;
+            border-top: 10px solid #3498db;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
     <nav id="navbar">
@@ -21,7 +47,7 @@
     </nav>
     <h1 class="heading">APPLY AS A SELLER</h1>
 
-    <form action="" method="POST">
+    <form id="sellerForm" action="" method="POST">
         <div class="register">
             <div class="shopname">
                 <label for="shopname">SHOP NAME: </label>
@@ -69,8 +95,21 @@
             </div>
         </div>
     </form>
+    
     <div>
         <img src="img/cart.png" class="image">
     </div>
+
+    <!-- Loader HTML -->
+    <div id="loader">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        // Show loader on form submission
+        document.getElementById('sellerForm').addEventListener('submit', function() {
+            document.getElementById('loader').style.display = 'flex';
+        });
+    </script>
 </body>
 </html>
