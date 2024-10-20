@@ -168,7 +168,8 @@ function generateOrderId() {
 }
 
 //function to generate pdf
-function generateInvoicePDF(transactionId, amount, orderId) {
+// Function to generate PDF
+function generateInvoicePDF(orderId, transactionId, amount) {
     const gstRate = 0.18; 
     const deliveryChargeRate = 0.10; 
     const deliveryChargeCap = 20; 
@@ -192,67 +193,69 @@ function generateInvoicePDF(transactionId, amount, orderId) {
     doc.rect(10, 10, 190, 15, 'F');  // Section 1 border
     doc.text("TAX INVOICE", 105, 20, null, null, 'center');  // Centered text
 
-   // Define a gap size
-const gap = 10; // 10 units gap
+    // Define a gap size
+    const gap = 10; // 10 units gap
 
-// Section 2: Green Cart Details (Increased width)
-doc.setTextColor(0, 0, 0);  // Reset text color to black
-doc.setFontSize(16);
-doc.setFont('Helvetica', 'bold');
-doc.rect(10, 30, 190, 30);  // Increased width for Section 2 border
-doc.text("GREEN CART", 105, 40, null, null, 'center');  // Centered title
-doc.setFontSize(12);
-doc.setFont('Helvetica', 'normal');
-doc.text("Parul University, Vadodara, Gujarat, 391025", 105, 50, null, null, 'center');
-doc.text("Email: anmolkumaresiingh@gmail.com", 105, 55, null, null, 'center');
+    // Section 2: Green Cart Details (Increased width)
+    doc.setTextColor(0, 0, 0);  // Reset text color to black
+    doc.setFontSize(16);
+    doc.setFont('Helvetica', 'bold');
+    doc.rect(10, 30, 190, 30);  // Increased width for Section 2 border
+    doc.text("GREEN CART", 105, 40, null, null, 'center');  // Centered title
+    doc.setFontSize(12);
+    doc.setFont('Helvetica', 'normal');
+    doc.text("Parul University, Vadodara, Gujarat, 391025", 105, 50, null, null, 'center');
+    doc.text("Email: anmolkumaresiingh@gmail.com", 105, 55, null, null, 'center');
 
-// Move down to the next section with a gap
-let currentY = 60 + gap; // Adding height of Section 2 and the gap
+    // Move down to the next section with a gap
+    let currentY = 60 + gap; // Adding height of Section 2 and the gap
 
-// Section 3: Bill of and Payment Details
-doc.setFontSize(12);
-doc.rect(10, currentY, 190, 35);  // Section 3 border (Increased width)
-doc.setFont('Helvetica', 'bold');
-doc.text("Bill of:", 14, currentY + 10);  // Adjust text position within the new Y
-doc.setFont('Helvetica', 'normal');
-doc.text("Grocery items from Green Cart", 14, currentY + 15);  // Adjust text position within the new Y
+    // Section 3: Bill of and Payment Details (Including Order ID and Transaction ID)
+    doc.setFontSize(12);
+    doc.rect(10, currentY, 190, 35);  // Section 3 border (Increased width)
+    doc.setFont('Helvetica', 'bold');
+    doc.text("Bill of:", 14, currentY + 10);  // Adjust text position within the new Y
+    doc.setFont('Helvetica', 'normal');
+    doc.text("Grocery items from Green Cart", 14, currentY + 15);  // Adjust text position within the new Y
 
-// Left-side content in Section 3
-doc.text("Order ID: " + orderId, 14, currentY + 25);  // Order ID on the left side
+    // Add Order ID on the left side
+    doc.text("Order ID: " + orderId, 14, currentY + 25);  // Order ID on the left side
 
-// Right-side content in Section 3
-doc.text("Transaction ID: " + transactionId, 130, currentY + 25);  // Transaction ID on the right side
-doc.text("Payment Date: " + new Date().toLocaleDateString('en-IN'), 130, currentY + 10);  // Payment Date on the right side
-doc.text("Payment Mode: Razorpay", 130, currentY + 15);  // Payment Mode on the right side
+    // Add Transaction ID on the right side
+    doc.text("Transaction ID: " + transactionId, 130, currentY + 25);  // Transaction ID on the right side
 
-// Move down to the next section with a gap
-currentY += 35 + gap; // Adding height of Section 3 and the gap
+    // Right-side table content in Section 3
+    doc.text("Payment Date: " + new Date().toLocaleDateString('en-IN'), 130, currentY + 10);  // Payment Date on the right side
+    doc.text("Payment Mode: Razorpay", 130, currentY + 15);  // Payment Mode on the right side
 
-// Section 4: Table Header for Items
-doc.setFontSize(12);
-doc.setFillColor(100, 150, 255);  // Light blue for table header
-doc.setTextColor(255, 255, 255);  // White text for header
-doc.rect(10, currentY, 190, 10, 'F');  // Section 4 header border (Increased width)
-doc.text("Description", 14, currentY + 6);
-doc.text("Serial no.", 80, currentY + 6);
-doc.text("Qty", 110, currentY + 6);
-doc.text("Rate", 140, currentY + 6);
-doc.text("Amount", 180, currentY + 6);
+    // Move down to the next section with a gap
+    currentY += 35 + gap; // Adding height of Section 3 and the gap
 
-// Move down to the next section with a gap
-currentY += 10 + gap; // Adding height of Section 4 header and the gap
+    // Section 4: Table Header for Items
+    doc.setFontSize(12);
+    doc.setFillColor(100, 150, 255);  // Light blue for table header
+    doc.setTextColor(255, 255, 255);  // White text for header
+    doc.rect(10, currentY, 190, 10, 'F');  // Section 4 header border (Increased width)
+    doc.text("Description", 14, currentY + 6);
+    doc.text("Serial no.", 80, currentY + 6);
+    doc.text("Qty", 110, currentY + 6);
+    doc.text("Rate", 140, currentY + 6);
+    doc.text("Amount", 180, currentY + 6);
 
-// Section 4: Table Content
-doc.setTextColor(0, 0, 0);  // Reset text color to black for content
-items.forEach((item, index) => {
-    doc.rect(10, currentY - 5, 190, 10);  // Border for each row (Increased width)
-    doc.text(item.description, 14, currentY);
-    doc.text((index + 1).toString(), 80, currentY);
-    doc.text(item.qty.toString(), 110, currentY);
-    doc.text(item.rate.toFixed(2), 140, currentY);
-    doc.text(item.amount.toFixed(2), 180, currentY);
-    currentY += 10;  // Move down for the next row
-});
+    // Move down to the next section with a gap
+    currentY += 10 + gap; // Adding height of Section 4 header and the gap
+
+    // Section 4: Table Content
+    doc.setTextColor(0, 0, 0);  // Reset text color to black for content
+    items.forEach((item, index) => {
+        doc.rect(10, currentY - 5, 190, 10);  // Border for each row (Increased width)
+        doc.text(item.description, 14, currentY);
+        doc.text((index + 1).toString(), 80, currentY);
+        doc.text(item.qty.toString(), 110, currentY);
+        doc.text(item.rate.toFixed(2), 140, currentY);
+        doc.text(item.amount.toFixed(2), 180, currentY);
+        currentY += 10;  // Move down for the next row
+    });
 
     // Section 5: T&C and Amount Calculation
     currentY += 10;
@@ -322,6 +325,7 @@ function convertNumberToWords(amount) {
     
     return words;
 }
+
 
 // Basic number-to-words converter for Indian numbering system (simplified)
 function numToWords(num) {
