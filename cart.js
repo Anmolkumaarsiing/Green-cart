@@ -168,7 +168,7 @@ function generateOrderId() {
 }
 
 //function to generate pdf
-function generateInvoicePDF(transactionId, amount) {
+function generateInvoicePDF(transactionId, amount, orderId) {
     const gstRate = 0.18; 
     const deliveryChargeRate = 0.10; 
     const deliveryChargeCap = 20; 
