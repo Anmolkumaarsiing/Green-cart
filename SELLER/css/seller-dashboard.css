@@ -311,23 +311,6 @@ form.upload-form input[type="file"] {
     color: #000;
 }
 
-/* Styles for the upload button */
-form.upload-form button {
-    padding: 10px 20px;
-    background-color: #263238;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 18px;
-    transition: background-color 0.3s ease;
-}
-
-/* Hover effect for the upload button */
-form.upload-form button:hover {
-    background-color: #000;
-}
-
 /* Ensure the file input and button are full width */
 form.upload-form input[type="file"],
 form.upload-form button {
@@ -345,6 +328,22 @@ form.upload-form input[type="file"] {
 
 form.upload-form button {
     text-align: center;
+}
+
+/* Style for the 'Add product' button */
+.add-product-button {
+  padding: 10px 20px;
+    background-color: #263238;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+}
+
+.add-product-button:hover {
+  background-color: #000;
 }
 
 /* css for add tag form */
