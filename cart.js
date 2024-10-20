@@ -196,7 +196,7 @@ function generateInvoicePDF(transactionId, amount) {
     doc.setTextColor(0, 0, 0);  // Reset text color to black
     doc.setFontSize(16);
     doc.setFont('Helvetica', 'bold');
-    doc.rect(10, 30, 230, 25);  // Increased width for Section 2 border
+    doc.rect(10, 30, 190, 30);  // Increased width for Section 2 border
     doc.text("GREEN CART", 105, 40, null, null, 'center');  // Centered title
     doc.setFontSize(12);
     doc.setFont('Helvetica', 'normal');
@@ -205,7 +205,7 @@ function generateInvoicePDF(transactionId, amount) {
 
     // Section 3: Bill of and Payment Details
     doc.setFontSize(12);
-    doc.rect(10, 60, 200, 30);  // Section 3 border (Increased width)
+    doc.rect(10, 60, 200, 35);  // Section 3 border (Increased width)
     doc.setFont('Helvetica', 'bold');
     doc.text("Bill of:", 14, 70);
     doc.setFont('Helvetica', 'normal');
