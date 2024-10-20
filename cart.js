@@ -181,92 +181,112 @@ function generateInvoicePDF(transactionId, amount) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    // Add Header with background color
-    doc.setFillColor(200, 200, 200);  // Light gray background
-    doc.rect(10, 10, 190, 20, 'F');  // Rectangle for header background
-    doc.setFontSize(18);
-    doc.text("TAX INVOICE", 105, 25, null, null, 'center'); // Center aligned
+    // Section 1: Tax Invoice Header
+    doc.setFillColor(0, 102, 204);  // Blue background
+    doc.setTextColor(255, 255, 255);  // White text
+    doc.setFontSize(20);
+    doc.setFont('Helvetica', 'bold');
+    doc.rect(10, 10, 190, 15, 'F');  // Section 1 border
+    doc.text("TAX INVOICE", 105, 20, null, null, 'center');  // Centered text
 
-    // Date and Company Information
+    // Section 2: Green Cart Details
+    doc.setTextColor(0, 0, 0);  // Reset text color to black
+    doc.setFontSize(16);
+    doc.setFont('Helvetica', 'bold');
+    doc.rect(10, 30, 190, 20);  // Section 2 border
+    doc.text("GREEN CART", 105, 40, null, null, 'center');  // Centered title
     doc.setFontSize(12);
-    doc.text(`DATE: ${new Date().toLocaleDateString('en-IN')}`, 150, 40);
-    doc.text("GREEN CART", 14, 40);
-    doc.text("Parul University, Vadodara, Gujarat, 391025", 14, 45);
-    doc.text("Email: anmolkumaresiingh@gmail.com", 14, 50);
+    doc.setFont('Helvetica', 'normal');
+    doc.text("Parul University, Vadodara, Gujarat, 391025", 105, 50, null, null, 'center');
+    doc.text("Email: anmolkumaresiingh@gmail.com", 105, 55, null, null, 'center');
 
-    // Customer Information
-    doc.text("Bill of:", 14, 60);
-    doc.text("Grocery items from Green Cart", 14, 65);
+    // Section 3: Bill of and Payment Details
+    doc.setFontSize(12);
+    doc.rect(10, 60, 190, 30);  // Section 3 border
+    doc.setFont('Helvetica', 'bold');
+    doc.text("Bill of:", 14, 70);
+    doc.setFont('Helvetica', 'normal');
+    doc.text("Grocery items from Green Cart", 14, 75);
 
-    doc.text("Payment Date: " + new Date().toLocaleDateString('en-IN'), 14, 75);
-    doc.text("Payment Mode: Razorpay", 14, 80);
+    // Left-side table in Section 3
+    doc.text("Payment Date: " + new Date().toLocaleDateString('en-IN'), 130, 70);  // Right side table content
+    doc.text("Payment Mode: Razorpay", 130, 75);
 
-    // Add Table Header with color
-    doc.setFillColor(100, 150, 255);  // Light blue for header
-    doc.rect(10, 90, 190, 10, 'F');  // Table header background
+    // Section 4: Table Header for Items
+    doc.setFontSize(12);
+    doc.setFillColor(100, 150, 255);  // Light blue for table header
     doc.setTextColor(255, 255, 255);  // White text for header
-    doc.text("Description", 14, 97);
-    doc.text("HSN Code", 80, 97);
-    doc.text("Qty", 110, 97);
-    doc.text("Rate", 140, 97);
-    doc.text("Amount", 180, 97);
+    doc.rect(10, 95, 190, 10, 'F');  // Section 4 header border
+    doc.text("Description", 14, 101);
+    doc.text("Serial no.", 80, 101);
+    doc.text("Qty", 110, 101);
+    doc.text("Rate", 140, 101);
+    doc.text("Amount", 180, 101);
 
-    // Reset text color to black for table content
-    doc.setTextColor(0, 0, 0);
-
-    // Items section with alternating row colors
+    // Section 4: Table Content
+    doc.setTextColor(0, 0, 0);  // Reset text color to black for content
     let currentY = 110;
     items.forEach((item, index) => {
-        if (index % 2 === 0) {
-            doc.setFillColor(240);  // Light gray
-        } else {
-            doc.setFillColor(255);  // White
-        }
-        doc.rect(10, currentY - 5, 190, 10, 'F');  // Apply fill to the row background
+        doc.rect(10, currentY - 5, 190, 10);  // Border for each row
         doc.text(item.description, 14, currentY);
-        doc.text("1234", 80, currentY); // Example HSN Code, replace with actual
+        doc.text((index + 1).toString(), 80, currentY);
         doc.text(item.qty.toString(), 110, currentY);
         doc.text(item.rate.toFixed(2), 140, currentY);
         doc.text(item.amount.toFixed(2), 180, currentY);
         currentY += 10;
     });
 
-    // Totals Section
+    // Section 5: T&C and Amount Calculation
     currentY += 10;
-    doc.text("Total", 140, currentY);
-    doc.text(subtotal.toFixed(2), 180, currentY);
-    currentY += 5;
-    doc.text("CGST (9%)", 140, currentY);
-    doc.text((totalGst / 2).toFixed(2), 180, currentY);
-    currentY += 5;
-    doc.text("SGST (9%)", 140, currentY);
-    doc.text((totalGst / 2).toFixed(2), 180, currentY);
-    currentY += 5;
-    doc.text("Delivery Charges", 140, currentY);
-    doc.text(deliveryCharge.toFixed(2), 180, currentY);
+    doc.rect(10, currentY, 190, 30);  // Section 5 border
+    doc.setFontSize(10);
+    doc.text("Terms & Conditions", 14, currentY + 10);
+    doc.text("1. Goods once sold will not be returned.", 14, currentY + 15);
+    doc.text("2. Please handle goods carefully.", 14, currentY + 20);
+
+    // Right-side for amount calculation
+    doc.setFontSize(12);
+    let totalY = currentY + 5;
+    doc.text("Subtotal:", 130, totalY);
+    doc.text(subtotal.toFixed(2), 180, totalY);
+    totalY += 5;
+    doc.text("CGST (9%):", 130, totalY);
+    doc.text((totalGst / 2).toFixed(2), 180, totalY);
+    totalY += 5;
+    doc.text("SGST (9%):", 130, totalY);
+    doc.text((totalGst / 2).toFixed(2), 180, totalY);
+    totalY += 5;
+    doc.text("Delivery Charges:", 130, totalY);
+    doc.text(deliveryCharge.toFixed(2), 180, totalY);
 
     // Grand Total
-    currentY += 10;
+    totalY += 10;
     doc.setFontSize(14);
-    doc.text("Grand Total", 140, currentY);
-    doc.text(grandTotal.toFixed(2), 180, currentY);
+    doc.setFont('Helvetica', 'bold');
+    doc.text("Grand Total:", 130, totalY);
+    doc.text(grandTotal.toFixed(2), 180, totalY);
 
-    // Footer
-    currentY += 20;
-    doc.setFontSize(10);
-    doc.text("Thank you for your purchase!", 14, currentY);
-    doc.text("Please keep this invoice for your records.", 14, currentY + 5);
-
-    // Authorized Signatory Section
+    // Section 6: Amount in Words
+    currentY += 40;
     doc.setFontSize(12);
-    doc.setFont("courier", "italic");
-    const signatoryText = "Authorized Signatory: Anmol Singh";
-    const signatoryX = doc.internal.pageSize.getWidth() - doc.getTextWidth(signatoryText) - 14;
-    doc.text(signatoryText, signatoryX, currentY + 20);
+    doc.rect(10, currentY, 190, 10);  // Section 6 border
+    doc.text("Amount in Words: Ninety-Eight Rupees and Thirty Paise Only", 14, currentY + 7);
+
+    // Section 7: Footer with Thank You and Signature
+    currentY += 20;
+    doc.rect(10, currentY, 190, 20);  // Section 7 border
+    doc.setFontSize(10);
+    doc.text("Thank you for your purchase!", 14, currentY + 7);
+    doc.text("Please keep this invoice for your records.", 14, currentY + 12);
+
+    // Authorized Signatory on the right
+    doc.setFont('Helvetica', 'italic');
+    doc.text("Authorized Signatory: Anmol Singh", 130, currentY + 12);
 
     // Save the PDF
     doc.save(`Invoice_${transactionId}.pdf`);
 }
+
 
 
 
