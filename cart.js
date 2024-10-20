@@ -217,13 +217,10 @@ function generateInvoicePDF(orderId, transactionId, amount) {
     doc.setFont('Helvetica', 'normal');
     doc.text("Grocery items from Green Cart", 14, currentY + 15);  // Adjust text position within the new Y
 
-    // Add Order ID on the left side
-    doc.text("orderId: " + orderId, 14, currentY + 25);  // Order ID on the left side
-
     // Right-side table content in Section 3
     doc.text("Payment Date: " + new Date().toLocaleDateString('en-IN'), 130, currentY + 10);  // Payment Date on the right side
     doc.text("Payment Mode: Razorpay", 130, currentY + 15);  // Payment Mode on the right side
-    doc.text("transactionId: " + transactionId, 130, currentY + 25);  // Transaction ID on the right side
+    doc.text("Transaction Id: " + orderId, 130, currentY + 25);  // Transaction ID on the right side
 
     // Move down to the next section with a gap
     currentY += 35 + gap; // Adding height of Section 3 and the gap
