@@ -300,7 +300,7 @@ function generateInvoicePDF(orderId, transactionId, amount) {
     doc.text("Authorized Signatory: Anmol Singh", 130, currentY + 12);
 
     // Save the PDF
-    doc.save(`Invoice_${transactionId}.pdf`);
+    doc.save(`Invoice_${orderid}.pdf`);
 }
 
 
