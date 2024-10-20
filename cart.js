@@ -181,6 +181,9 @@ function generateInvoicePDF(transactionId, amount) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
+    // Outer Border for the whole content
+    doc.rect(5, 5, 200, 287);  // Outer border covering the entire content
+
     // Section 1: Tax Invoice Header
     doc.setFillColor(0, 102, 204);  // Blue background
     doc.setTextColor(255, 255, 255);  // White text
@@ -193,7 +196,7 @@ function generateInvoicePDF(transactionId, amount) {
     doc.setTextColor(0, 0, 0);  // Reset text color to black
     doc.setFontSize(16);
     doc.setFont('Helvetica', 'bold');
-    doc.rect(10, 30, 190, 20);  // Section 2 border
+    doc.rect(10, 30, 190, 25);  // Increased width for Section 2 border
     doc.text("GREEN CART", 105, 40, null, null, 'center');  // Centered title
     doc.setFontSize(12);
     doc.setFont('Helvetica', 'normal');
@@ -266,11 +269,11 @@ function generateInvoicePDF(transactionId, amount) {
     doc.text("Grand Total:", 130, totalY);
     doc.text(grandTotal.toFixed(2), 180, totalY);
 
-    // Section 6: Amount in Words
+    // Section 6: Amount in Words (Updated to match Grand Total)
     currentY += 40;
     doc.setFontSize(12);
     doc.rect(10, currentY, 190, 10);  // Section 6 border
-    doc.text("Amount in Words: Ninety-Eight Rupees and Thirty Paise Only", 14, currentY + 7);
+    doc.text(`Amount in Words: ${convertNumberToWords(grandTotal)} Only`, 14, currentY + 7);
 
     // Section 7: Footer with Thank You and Signature
     currentY += 20;
@@ -285,6 +288,14 @@ function generateInvoicePDF(transactionId, amount) {
 
     // Save the PDF
     doc.save(`Invoice_${transactionId}.pdf`);
+}
+
+// Helper function to convert numbers to words
+function convertNumberToWords(amount) {
+    // Implementation for number-to-word conversion (e.g., using a library or custom logic)
+    // Example: return "Ninety-Eight Rupees and Thirty Paise"
+    // Simplified here for example purposes:
+    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(amount);
 }
 
 
