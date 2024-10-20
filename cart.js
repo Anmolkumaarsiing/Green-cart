@@ -192,11 +192,11 @@ function generateInvoicePDF(transactionId, amount) {
     doc.rect(10, 10, 190, 15, 'F');  // Section 1 border
     doc.text("TAX INVOICE", 105, 20, null, null, 'center');  // Centered text
 
-    // Section 2: Green Cart Details
+    // Section 2: Green Cart Details (Increased width)
     doc.setTextColor(0, 0, 0);  // Reset text color to black
     doc.setFontSize(16);
     doc.setFont('Helvetica', 'bold');
-    doc.rect(10, 30, 190, 25);  // Increased width for Section 2 border
+    doc.rect(10, 30, 200, 25);  // Increased width for Section 2 border
     doc.text("GREEN CART", 105, 40, null, null, 'center');  // Centered title
     doc.setFontSize(12);
     doc.setFont('Helvetica', 'normal');
@@ -205,7 +205,7 @@ function generateInvoicePDF(transactionId, amount) {
 
     // Section 3: Bill of and Payment Details
     doc.setFontSize(12);
-    doc.rect(10, 60, 190, 30);  // Section 3 border
+    doc.rect(10, 60, 200, 30);  // Section 3 border (Increased width)
     doc.setFont('Helvetica', 'bold');
     doc.text("Bill of:", 14, 70);
     doc.setFont('Helvetica', 'normal');
@@ -219,7 +219,7 @@ function generateInvoicePDF(transactionId, amount) {
     doc.setFontSize(12);
     doc.setFillColor(100, 150, 255);  // Light blue for table header
     doc.setTextColor(255, 255, 255);  // White text for header
-    doc.rect(10, 95, 190, 10, 'F');  // Section 4 header border
+    doc.rect(10, 95, 200, 10, 'F');  // Section 4 header border (Increased width)
     doc.text("Description", 14, 101);
     doc.text("Serial no.", 80, 101);
     doc.text("Qty", 110, 101);
@@ -230,7 +230,7 @@ function generateInvoicePDF(transactionId, amount) {
     doc.setTextColor(0, 0, 0);  // Reset text color to black for content
     let currentY = 110;
     items.forEach((item, index) => {
-        doc.rect(10, currentY - 5, 190, 10);  // Border for each row
+        doc.rect(10, currentY - 5, 200, 10);  // Border for each row (Increased width)
         doc.text(item.description, 14, currentY);
         doc.text((index + 1).toString(), 80, currentY);
         doc.text(item.qty.toString(), 110, currentY);
@@ -241,7 +241,7 @@ function generateInvoicePDF(transactionId, amount) {
 
     // Section 5: T&C and Amount Calculation
     currentY += 10;
-    doc.rect(10, currentY, 190, 30);  // Section 5 border
+    doc.rect(10, currentY, 200, 30);  // Section 5 border (Increased width)
     doc.setFontSize(10);
     doc.text("Terms & Conditions", 14, currentY + 10);
     doc.text("1. Goods once sold will not be returned.", 14, currentY + 15);
@@ -262,22 +262,23 @@ function generateInvoicePDF(transactionId, amount) {
     doc.text("Delivery Charges:", 130, totalY);
     doc.text(deliveryCharge.toFixed(2), 180, totalY);
 
-    // Grand Total
+    // Grand Total (Increased width)
     totalY += 10;
     doc.setFontSize(14);
     doc.setFont('Helvetica', 'bold');
     doc.text("Grand Total:", 130, totalY);
     doc.text(grandTotal.toFixed(2), 180, totalY);
 
-    // Section 6: Amount in Words (Updated to match Grand Total)
+    // Section 6: Amount in Words (Fixed to match Grand Total)
     currentY += 40;
     doc.setFontSize(12);
-    doc.rect(10, currentY, 190, 10);  // Section 6 border
-    doc.text(`Amount in Words: ${convertNumberToWords(grandTotal)} Only`, 14, currentY + 7);
+    doc.rect(10, currentY, 200, 10);  // Section 6 border (Increased width)
+    const amountInWords = convertNumberToWords(grandTotal);  // Convert the Grand Total to words
+    doc.text(`Amount in Words: ${amountInWords} Only`, 14, currentY + 7);
 
     // Section 7: Footer with Thank You and Signature
     currentY += 20;
-    doc.rect(10, currentY, 190, 20);  // Section 7 border
+    doc.rect(10, currentY, 200, 20);  // Section 7 border (Increased width)
     doc.setFontSize(10);
     doc.text("Thank you for your purchase!", 14, currentY + 7);
     doc.text("Please keep this invoice for your records.", 14, currentY + 12);
@@ -290,13 +291,38 @@ function generateInvoicePDF(transactionId, amount) {
     doc.save(`Invoice_${transactionId}.pdf`);
 }
 
-// Helper function to convert numbers to words
+// Helper function to convert numbers to words (supports rupees and paise)
 function convertNumberToWords(amount) {
-    // Implementation for number-to-word conversion (e.g., using a library or custom logic)
-    // Example: return "Ninety-Eight Rupees and Thirty Paise"
-    // Simplified here for example purposes:
-    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(amount);
+    let words = "";
+    const rupees = Math.floor(amount);
+    const paise = Math.round((amount - rupees) * 100);
+    
+    // Convert rupees to words
+    words += `${numToWords(rupees)} Rupees`;
+    
+    // Convert paise to words if any
+    if (paise > 0) {
+        words += ` and ${numToWords(paise)} Paise`;
+    }
+    
+    return words;
 }
+
+// Basic number-to-words converter for Indian numbering system (simplified)
+function numToWords(num) {
+    const a = [
+        '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen',
+        'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'
+    ];
+    const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+    const c = ['Hundred', 'Thousand', 'Lakh', 'Crore'];
+    
+    if (num < 20) return a[num];
+    if (num < 100) return b[Math.floor(num / 10)] + (num % 10 !== 0 ? ' ' + a[num % 10] : '');
+    
+    return num; // Simplified for demonstration; extend for higher numbers if needed
+}
+
 
 
 
