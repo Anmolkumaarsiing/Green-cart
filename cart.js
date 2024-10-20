@@ -217,8 +217,12 @@ function generateInvoicePDF(transactionId, amount) {
     // Items section with alternating row colors
     let currentY = 110;
     items.forEach((item, index) => {
-        doc.setFillColor(index % 2 === 0 ? 240 : 255);  // Alternating row color
-        doc.rect(10, currentY - 5, 190, 10, 'F');
+        if (index % 2 === 0) {
+            doc.setFillColor(240);  // Light gray
+        } else {
+            doc.setFillColor(255);  // White
+        }
+        doc.rect(10, currentY - 5, 190, 10, 'F');  // Apply fill to the row background
         doc.text(item.description, 14, currentY);
         doc.text("1234", 80, currentY); // Example HSN Code, replace with actual
         doc.text(item.qty.toString(), 110, currentY);
@@ -263,6 +267,7 @@ function generateInvoicePDF(transactionId, amount) {
     // Save the PDF
     doc.save(`Invoice_${transactionId}.pdf`);
 }
+
 
 
 // Get item details from cookies
