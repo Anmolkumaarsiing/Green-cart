@@ -217,9 +217,13 @@ doc.text("Bill of:", 14, currentY + 10);  // Adjust text position within the new
 doc.setFont('Helvetica', 'normal');
 doc.text("Grocery items from Green Cart", 14, currentY + 15);  // Adjust text position within the new Y
 
-// Left-side table in Section 3
-doc.text("Payment Date: " + new Date().toLocaleDateString('en-IN'), 130, currentY + 10);  // Right side table content
-doc.text("Payment Mode: Razorpay", 130, currentY + 15);  // Right side table content
+// Left-side content in Section 3
+doc.text("Order ID: " + orderId, 14, currentY + 25);  // Order ID on the left side
+
+// Right-side content in Section 3
+doc.text("Transaction ID: " + transactionId, 130, currentY + 25);  // Transaction ID on the right side
+doc.text("Payment Date: " + new Date().toLocaleDateString('en-IN'), 130, currentY + 10);  // Payment Date on the right side
+doc.text("Payment Mode: Razorpay", 130, currentY + 15);  // Payment Mode on the right side
 
 // Move down to the next section with a gap
 currentY += 35 + gap; // Adding height of Section 3 and the gap
