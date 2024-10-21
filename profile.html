@@ -3,98 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
-    <link rel="icon" href="https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png" type="image/gif" sizes="16x16">
+    <title>My Profile</title>
+    <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * {
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #c9d6ff, #e2e2e2);
-            color: #333;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            background-color: #f4f4f9;
         }
-        .container {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            padding: 30px;
+
+        .profile-container {
             width: 400px;
+            background-color: white;
+            padding: 30px 40px; /* Increased padding */
+            border-radius: 15px; /* Softer corners */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* More pronounced shadow */
             text-align: center;
         }
-        h1 {
-            font-size: 2rem;
-            color: #4A90E2;
-            margin-bottom: 20px;
+
+        .profile-picture {
+            width: 150px; /* Larger picture */
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 25px; /* More bottom margin */
+            position: relative;
+            border: 4px solid #fff; /* Added border */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Picture shadow */
         }
-        .user-details {
-            margin: 20px 0;
-        }
-        .user-details div {
-            margin: 10px 0;
-            font-size: 1.2rem;
-        }
-        .user-details input {
+
+        .profile-picture img {
             width: 100%;
-            padding: 8px;
-            margin: 5px 0;
-            font-size: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease; /* Add transition for hover effect */
         }
-        .user-details input:disabled {
-            background-color: #f0f0f0;
+
+        .profile-picture:hover img {
+            transform: scale(1.1); /* Zoom effect on hover */
         }
-        button {
-            background-color: #4A90E2;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 15px;
-        }
-        button:hover {
-            background-color: #357ABD;
-        }
-        .hidden {
+
+        .profile-picture input[type="file"] {
             display: none;
         }
-        #message {
-            color: green;
-            font-size: 1rem;
-            margin-top: 10px;
+
+        .profile-picture label {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7); /* Darker background */
+            color: white;
+            padding: 10px 14px; /* Larger icon */
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px; 
+            display: none;
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+
+        .profile-picture:hover label {
+            display: block;
+        }
+
+        .profile-picture label:hover {
+            background-color: rgba(0, 0, 0, 0.9); /* Even darker on hover */
+        }
+
+        .profile-container h2 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 28px; /* Larger heading */
+        }
+
+        .profile-field {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+
+        .profile-field label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 16px; 
+        }
+
+        .profile-field span, 
+        .profile-field input {
+            display: block;
+            width: 100%;
+            padding: 12px; /* More padding */
+            border: 1px solid #ddd;
+            border-radius: 8px; /* Softer input fields */
+            font-size: 16px;
+        }
+
+        .profile-field input {
+            display: none;
+        }
+
+        .profile-field.edit-mode input {
+            display: block;
+        }
+
+        .profile-field.edit-mode span {
+            display: none;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+
+        .buttons button {
+            margin-left: 10px;
+            padding: 12px 20px; /* Larger buttons */
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+        }
+
+        .buttons .edit-btn {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .buttons .save-btn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .buttons .cancel-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .buttons button:hover {
+            opacity: 0.9;
         }
     </style>
-    <script type="module" src="profile.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Profile</h1>
-        <div class="user-details">
-            <div>
-                First Name: <input type="text" id="loggedUserFName" disabled>
-            </div>
-            <div>
-                Last Name: <input type="text" id="loggedUserLName" disabled>
-            </div>
-            <div>
-                Email: <input type="email" id="loggedUserEmail" disabled>
-            </div>
-        </div>
-        <button id="edit">Edit</button>
-        <button id="save" class="hidden">Save</button>
-        <button id="cancel" class="hidden">Cancel</button>
-        <button id="logout">Logout</button>
-        <div id="message" class="hidden">Details have been updated</div>
+
+<div class="profile-container">
+    <div class="profile-picture">
+        <img id="profile-image" src="https://via.placeholder.com/150" alt="Profile Picture">
+        <input type="file" id="image-upload" accept="image/*">
+        <label for="image-upload" class="upload-icon">
+            <i class="fas fa-camera"></i>
+        </label>
     </div>
+    <h2 id="name-display">John Doe</h2>
+    <div class="profile-field">
+        <label for="name">Name:</label>
+        <span id="name-display">John Doe</span>
+        <input type="text" id="name-input" value="John Doe">
+    </div>
+    <div class="profile-field">
+        <label for="email">Email:</label>
+        <span id="email-display">john.doe@example.com</span>
+        <input type="email" id="email-input" value="john.doe@example.com">
+    </div>
+    <div class="profile-field">
+        <label for="phone">Phone Number:</label>
+        <span id="phone-display">123-456-7890</span>
+        <input type="text" id="phone-input" value="123-456-7890">
+    </div>
+    <div class="profile-field">
+        <label for="age">Age:</label>
+        <span id="age-display">30</span>
+        <input type="number" id="age-input" value="30">
+    </div>
+    <div class="profile-field">
+        <label for="address">Address:</label>
+        <span id="address-display">123 Main St, Suite 100, Springfield, 54321</span>
+        <input type="text" id="address-input" value="123 Main St, Suite 100, Springfield, 54321">
+    </div>
+    <div class="buttons">
+        <button class="edit-btn"><i class="fas fa-edit"></i> Edit</button>
+        <button class="save-btn" style="display: none;"><i class="fas fa-save"></i> Save</button>
+        <button class="cancel-btn" style="display: none;"><i class="fas fa-times"></i> Cancel</button>
+        
+    </div>
+</div>
+<!-- Add Firebase SDKs before your script -->
+<script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+<script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+<script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+
+<!-- Your custom script -->
+<script type="module" src="profile.js"></script>
+
+
+
+
 </body>
 </html>
