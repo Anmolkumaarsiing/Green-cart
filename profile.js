@@ -1,8 +1,8 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
-import { getFirestore, getDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { getFirestore, collection, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-// Firebase configuration
+// Your Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyCrSBQoJDG9Cn5t2vsWNvDDkDQJm1UxTgk",
     authDomain: "green--cart.firebaseapp.com",
@@ -16,108 +16,126 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth();
-const db = getFirestore();
+const firestore = getFirestore(app);
+const auth = getAuth(app);
 
-const firstNameInput = document.getElementById('loggedUserFName');
-const lastNameInput = document.getElementById('loggedUserLName');
-const emailInput = document.getElementById('loggedUserEmail');
-const editButton = document.getElementById('edit');
-const saveButton = document.getElementById('save');
-const cancelButton = document.getElementById('cancel');
-const messageDiv = document.getElementById('message');
-const logoutButton = document.getElementById('logout');
-
-// Redirect to login if user is not logged in
-onAuthStateChanged(auth, (user) => {
-    const loggedInUserId = localStorage.getItem('loggedInUserId');
-    if (!user || !loggedInUserId) {
-        window.location.href = '/login/login.html'; // Redirect to the login page
+// Get current logged-in user
+auth.onAuthStateChanged(function(user) {
+    if (user) {
+        const userId = user.uid;
+        loadUserData(userId);
     } else {
-        const docRef = doc(db, "users", loggedInUserId);
-        getDoc(docRef)
-            .then((docSnap) => {
-                if (docSnap.exists()) {
-                    const userData = docSnap.data();
-                    firstNameInput.value = userData.firstName;
-                    lastNameInput.value = userData.lastName;
-                    emailInput.value = userData.email;
-                    logoutButton.classList.remove('hidden'); // Show logout button when user details are fetched
-                } else {
-                    console.log("No document found matching ID");
-                }
-            })
-            .catch((error) => {
-                console.log("Error getting document:", error);
-            });
+        // Redirect to login if not logged in
+        window.location.href = "login.html";
     }
 });
 
-// Enable editing when "Edit" is clicked
-editButton.addEventListener('click', () => {
-    toggleEditMode(true);
-});
+// Load user data from Firestore
+async function loadUserData(userId) {
+    const userRef = doc(firestore, 'users', userId);
+    const docSnap = await getDoc(userRef);
 
-// Cancel editing
-cancelButton.addEventListener('click', () => {
-    toggleEditMode(false);
-    messageDiv.classList.add('hidden'); // Hide any previous success message
-});
+    if (docSnap.exists()) {
+        const userData = docSnap.data();
+        // Display real name in h2
+        document.getElementById('name-display').textContent = userData.name;
+        // Set real name in input field
+        document.getElementById('name-input').value = userData.name;
 
-// Save button logic to update user details in Firestore
-saveButton.addEventListener('click', () => {
-    const loggedInUserId = localStorage.getItem('loggedInUserId');
-    const updatedFirstName = firstNameInput.value;
-    const updatedLastName = lastNameInput.value;
-    const updatedEmail = emailInput.value;
+        document.getElementById('email-display').textContent = userData.email;
+        document.getElementById('email-input').value = userData.email;
+        document.getElementById('phone-display').textContent = userData.phone;
+        document.getElementById('phone-input').value = userData.phone;
+        document.getElementById('age-display').textContent = userData.age;
+        document.getElementById('age-input').value = userData.age;
+        document.getElementById('address-display').textContent = userData.address;
+        document.getElementById('address-input').value = userData.address;
 
-    if (loggedInUserId) {
-        const docRef = doc(db, "users", loggedInUserId);
-        updateDoc(docRef, {
-            firstName: updatedFirstName,
-            lastName: updatedLastName,
-            email: updatedEmail
-        })
-        .then(() => {
-            messageDiv.innerText = "Details have been updated";
-            messageDiv.classList.remove('hidden'); // Show success message
-            toggleEditMode(false);
-        })
-        .catch((error) => {
-            console.error("Error updating profile:", error);
-        });
-    }
-});
-
-// Toggle between edit and view modes
-function toggleEditMode(isEditing) {
-    firstNameInput.disabled = !isEditing;
-    lastNameInput.disabled = !isEditing;
-    emailInput.disabled = !isEditing;
-
-    editButton.classList.toggle('hidden', isEditing);
-    saveButton.classList.toggle('hidden', !isEditing);
-    cancelButton.classList.toggle('hidden', !isEditing);
-    
-    // Hide/show logout button based on editing mode
-    if (isEditing) {
-        logoutButton.classList.add('hidden'); // Hide logout button while editing
+        // Set profile image
+        if (userData.profileImage) {
+            document.getElementById('profile-image').src = userData.profileImage;
+        }
     } else {
-        logoutButton.classList.remove('hidden'); // Show logout button when not editing
+        console.log("No user data found!");
     }
 }
 
-// Logout button logic
-logoutButton.addEventListener('click', () => {
-    const confirmation = confirm("Do you want to logout?");
-    if (confirmation) {
-        localStorage.removeItem('loggedInUserId');
-        signOut(auth)
-            .then(() => {
-                window.location.href = 'index.html'; // Redirect to index page after logout
-            })
-            .catch((error) => {
-                console.error('Error signing out:', error);
-            });
+
+// Save changes to Firestore
+async function saveChanges() {
+    const userId = auth.currentUser.uid;
+    const userRef = doc(firestore, 'users', userId);
+
+    const updatedData = {
+        name: document.getElementById('name-input').value,
+        email: document.getElementById('email-input').value,
+        phone: document.getElementById('phone-input').value,
+        age: document.getElementById('age-input').value,
+        address: document.getElementById('address-input').value
+    };
+
+    // Update profile image if a new one is selected
+    const imageInput = document.getElementById('image-upload');
+    if (imageInput.files && imageInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = async function (e) {
+            const profileImageUrl = e.target.result;
+            updatedData.profileImage = profileImageUrl; // Save image URL to Firestore
+            document.getElementById('profile-image').src = profileImageUrl;
+
+            try {
+                await updateDoc(userRef, updatedData); // Update document in Firestore
+                console.log("User data successfully updated!");
+                toggleEditMode(); // Exit edit mode after saving
+            } catch (error) {
+                console.error("Error updating user data: ", error);
+            }
+        };
+        reader.readAsDataURL(imageInput.files[0]);
+    } else {
+        // If no new image, update Firestore without changing the profileImage
+        try {
+            await updateDoc(userRef, updatedData); // Update document in Firestore
+            console.log("User data successfully updated!");
+            toggleEditMode(); // Exit edit mode after saving
+        } catch (error) {
+            console.error("Error updating user data: ", error);
+        }
     }
+
+    // Update displayed fields without waiting for image loading
+    document.getElementById('name-display').textContent = updatedData.name;
+    document.getElementById('email-display').textContent = updatedData.email;
+    document.getElementById('phone-display').textContent = updatedData.phone;
+    document.getElementById('age-display').textContent = updatedData.age;
+    document.getElementById('address-display').textContent = updatedData.address;
+}
+
+// Toggle between edit and view modes
+let isEditMode = false;
+
+function toggleEditMode() {
+    isEditMode = !isEditMode;
+    const fields = document.querySelectorAll('.profile-field');
+    fields.forEach(field => {
+        field.classList.toggle('edit-mode', isEditMode);
+    });
+
+    document.querySelector('.edit-btn').style.display = isEditMode ? 'none' : 'block';
+    document.querySelector('.save-btn').style.display = isEditMode ? 'block' : 'none';
+    document.querySelector('.cancel-btn').style.display = isEditMode ? 'block' : 'none';
+}
+
+// Event listeners for buttons
+document.querySelector('.edit-btn').addEventListener('click', toggleEditMode);
+document.querySelector('.save-btn').addEventListener('click', saveChanges);
+document.querySelector('.cancel-btn').addEventListener('click', toggleEditMode);
+
+
+// Event listener for image upload
+document.getElementById('image-upload').addEventListener('change', function() {
+    saveChanges();
 });
+// At the end of profile.js
+window.toggleEditMode = toggleEditMode;
+window.saveChanges = saveChanges;
