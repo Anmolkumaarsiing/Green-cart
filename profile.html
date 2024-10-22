@@ -151,13 +151,25 @@
         .buttons button:hover {
             opacity: 0.9;
         }
+        .buttons .logout-btn {
+    background-color: #dc3545; /* Red background */
+    color: white;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition */
+}
+
+.buttons .logout-btn:hover {
+    background-color: #c82333; /* Darker red on hover */
+    transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
     </style>
 </head>
 <body>
 
 <div class="profile-container">
     <div class="profile-picture">
-        <img id="profile-image" src="https://via.placeholder.com/150" alt="Profile Picture">
+        <img id="profile-image" src="https://i.ibb.co/s6D8jGY/3d-illustration-person-with-sunglasses-23-2149436188.jpg" alt="Profile Picture">
         <input type="file" id="image-upload" accept="image/*">
         <label for="image-upload" class="upload-icon">
             <i class="fas fa-camera"></i>
@@ -167,7 +179,7 @@
     <div class="profile-field">
         <label for="name">Name:</label>
         <span id="name-display">John Doe</span>
-        <input type="text" id="name-input" value="John Doe">
+        <input type="text" id="name-input" value="John Doe" />
     </div>
     <div class="profile-field">
         <label for="email">Email:</label>
@@ -193,8 +205,9 @@
         <button class="edit-btn"><i class="fas fa-edit"></i> Edit</button>
         <button class="save-btn" style="display: none;"><i class="fas fa-save"></i> Save</button>
         <button class="cancel-btn" style="display: none;"><i class="fas fa-times"></i> Cancel</button>
-        
+        <button class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button> <!-- New Logout Button -->
     </div>
+    
 </div>
 <!-- Add Firebase SDKs before your script -->
 <script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
