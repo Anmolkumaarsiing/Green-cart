@@ -24,7 +24,7 @@ console.log("Logged In User ID:", loggedInUserId); // Debugging log
 
 if (!loggedInUserId) {
     console.log("No user is logged in, redirecting to login.html");
-    window.location.href = 'login.html'; // Redirect to login page if not logged in
+    window.location.href = '/login/login.html'; // Redirect to login page if not logged in
 } else {
     console.log("User is logged in, proceeding to dashboard.");
           window.location.href = '../homepage.html';
