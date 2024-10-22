@@ -73,18 +73,17 @@ async function loadUserData(userId) {
       userData = docSnap.data();
 
       // Display the user data in the input fields
-      
-      document.getElementById("fullname-display").textContent = `${userData.firstname || 'First Name'} ${userData.lastname || 'Last Name'}`;
-      document.getElementById("firstname-input").value = userData.firstname || "First Name";
-      document.getElementById("lastname-input").value = userData.lastname || "Last Name";
+      document.getElementById("fullname-display").textContent = `${userData.firstName || 'First Name'} ${userData.lastName || 'Last Name'}`;
+      document.getElementById("firstname-input").value = userData.firstName || "First Name";
+      document.getElementById("lastname-input").value = userData.lastName || "Last Name";
       document.getElementById("email-input").value = userData.email || "Email";
       document.getElementById("phone-input").value = userData.phone || "Phone Number";
       document.getElementById("age-input").value = userData.age || "Age";
       document.getElementById("address-input").value = userData.address || "Address";
 
       // Update display (span) fields
-      document.getElementById("firstname-display").textContent = userData.firstname || "John";
-      document.getElementById("lastname-display").textContent = userData.lastname || "Doe";
+      document.getElementById("firstname-display").textContent = userData.firstName || "John";
+      document.getElementById("lastname-display").textContent = userData.lastName || "Doe";
       document.getElementById("email-display").textContent = userData.email || "john.doe@Greencart.com";
       document.getElementById("phone-display").textContent = userData.phone || "123-456-7890";
       document.getElementById("age-display").textContent = userData.age || "N/A";
@@ -117,8 +116,8 @@ async function saveChanges() {
   const userRef = doc(firestore, "users", userId);
 
   const updatedData = {
-    firstname: document.getElementById("firstname-input").value,
-    lastname: document.getElementById("lastname-input").value,
+    firstName: document.getElementById("firstname-input").value,
+    lastName: document.getElementById("lastname-input").value,
     email: document.getElementById("email-input").value,
     phone: document.getElementById("phone-input").value,
     age: document.getElementById("age-input").value,
@@ -174,8 +173,8 @@ async function saveChanges() {
 
 // Update the UI display fields
 function updateDisplayFields(updatedData) {
-  document.getElementById("firstname-display").textContent = updatedData.firstname;
-  document.getElementById("lastname-display").textContent = updatedData.lastname;
+  document.getElementById("firstname-display").textContent = updatedData.firstName;
+  document.getElementById("lastname-display").textContent = updatedData.lastName;
   document.getElementById("email-display").textContent = updatedData.email;
   document.getElementById("phone-display").textContent = formatPhoneNumber(updatedData.phone);
   document.getElementById("age-display").textContent = updatedData.age;
@@ -205,8 +204,8 @@ function toggleEditMode() {
   logoutButton.style.cursor = isEditMode ? "not-allowed" : "pointer";
 
   if (isEditMode) {
-    document.getElementById("firstname-input").value = userData.firstname || "";
-    document.getElementById("lastname-input").value = userData.lastname || "";
+    document.getElementById("firstname-input").value = userData.firstName || "";
+    document.getElementById("lastname-input").value = userData.lastName || "";
     document.getElementById("email-input").value = userData.email || "";
     document.getElementById("phone-input").value = userData.phone || "";
     document.getElementById("age-input").value = userData.age || "";
