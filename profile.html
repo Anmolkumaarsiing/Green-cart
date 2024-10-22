@@ -18,6 +18,7 @@
             background-color: #f4f4f9;
         }
 
+        
         .profile-container {
             width: 400px;
             background-color: white;
@@ -76,10 +77,31 @@
         }
 
         .profile-container h2 {
-            margin-bottom: 20px;
-            color: #333;
-            font-size: 28px; /* Larger heading */
-        }
+    font-size: 8vw;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1;
+    font-size: 28px;
+    position: relative;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.profile-container h2::after {
+    --deco-height: 0.3125em;
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--deco-height) * -0.625);
+    height: var(--deco-height);
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='64' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23a)'%3E%3Cpath d='M-17 30.5C-1 22 72-4 54 13 37.9 28.2-2.5 57.5 16 55.5s72-29 104-40' stroke='%2300FDCF' stroke-width='10'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='a'%3E%3Cpath fill='%23fff' d='M0 0h100v64H0z'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E%0A");
+    background-size: auto 100%;
+    background-repeat: round;
+    background-position: 0em;
+}
+
+
 
         .profile-field {
             margin-bottom: 18px;
@@ -170,38 +192,46 @@
 </head>
 <body>
 
-<div class="profile-container">
-    <div class="profile-picture">
-        <img id="profile-image" src="https://i.ibb.co/s6D8jGY/3d-illustration-person-with-sunglasses-23-2149436188.jpg" alt="Profile Picture">
-        <input type="file" id="image-upload" accept="image/*">
-        <label for="image-upload" class="upload-icon">
+    <div class="profile-container">
+        <div class="profile-picture">
+          <img id="profile-image" src="https://i.ibb.co/s6D8jGY/3d-illustration-person-with-sunglasses-23-2149436188.jpg" alt="Profile Picture">
+          <input type="file" id="image-upload" accept="image/*">
+          <label for="image-upload" class="upload-icon">
             <i class="fas fa-camera"></i>
-        </label>
-    </div>
-    <h2 id="name-display">John Doe</h2>
-    <div class="profile-field">
-        <label for="name">Name:</label>
-        <span id="name-display">John Doe</span>
-        <input type="text" id="name-input" value="John Doe" />
-    </div>
+          </label>
+        </div>
+
+        <h2 id="fullname-display"></h2> 
+      
+        <div class="profile-field">
+          <label for="firstname">First Name:</label>
+          <span id="firstname-display"></span>
+          <input type="text" id="firstname-input" value="First Name" />
+        </div>
+      
+        <div class="profile-field">
+          <label for="lastname">Last Name:</label>
+          <span id="lastname-display"></span>
+          <input type="text" id="lastname-input" value="Last Name" />
+        </div>
     <div class="profile-field">
         <label for="email">Email:</label>
-        <span id="email-display">john.doe@example.com</span>
-        <input type="email" id="email-input" value="john.doe@example.com">
+        <span id="email-display"></span>
+        <input type="email" id="email-input" value="john.doe@example.com" >
     </div>
     <div class="profile-field">
         <label for="phone">Phone Number:</label>
-        <span id="phone-display">123-456-7890</span>
+        <span id="phone-display"></span>
         <input type="text" id="phone-input" value="123-456-7890">
     </div>
     <div class="profile-field">
         <label for="age">Age:</label>
-        <span id="age-display">30</span>
+        <span id="age-display"></span>
         <input type="number" id="age-input" value="30">
     </div>
     <div class="profile-field">
         <label for="address">Address:</label>
-        <span id="address-display">123 Main St, Suite 100, Springfield, 54321</span>
+        <span id="address-display"></span>
         <input type="text" id="address-input" value="123 Main St, Suite 100, Springfield, 54321">
     </div>
     <div class="buttons">
