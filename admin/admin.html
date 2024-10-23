@@ -3,67 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Green cart admin</title>
-    <link rel="icon" href="https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png" type="image/gif" sizes="16x16">
+    <title>Greencart Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+    <!-- Chart.js and Firebase handled in the script.js -->
+    <script type="module" src="script.js"></script>
+       <!-- Chart.js Global Script -->
+       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="container">
-        <div id="shopName"><a> <b>GREEN</b>CART <b>ADMIN</b></a></div><br><br>
-
-        <!-- Logout button -->
-        <button id="logoutBtn" class="btn btn-danger">Logout</button>
-
-        <!-- Home section showing total users count -->
-        <div id="home-section">
-            <h2>Total Registered users on Greencart</h2>
-            <p id="totalUsers">Loading...</p>
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-shopping-cart"></i> Greencart Admin
         </div>
-
-        <!-- User Management section with search and edit functionality -->
-        <div id="user-management-section">
-            <h2>Search User</h2>
-            <div class="input-group mb-3">
-                <input type="text" id="searchInput" class="form-control" placeholder="Enter user name or email">
-                <div class="input-group-append">
-                    <button class="btn btn-primary" id="searchBtn">Search</button>
-                </div>
-            </div>
-
-            <table class="table table-bordered" id="userTable">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Edit</th>
-                    </tr>
-                </thead>
-                <tbody id="userTableBody">
-                    <!-- Dynamic rows will be appended here -->
-                </tbody>
-            </table>
-        </div>
-
-        <!-- User Edit Form -->
-        <div id="edit-user-section" style="display:none;">
-            <h2>Edit User</h2>
-            <form id="editUserForm">
-                <div class="form-group">
-                    <label for="editName">Name</label>
-                    <input type="text" class="form-control" id="editName">
-                </div>
-                <div class="form-group">
-                    <label for="editEmail">Email</label>
-                    <input type="text" class="form-control" id="editEmail" disabled>
-                </div>
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-            </form>
-            <button id="cancelEditButton" class="btn btn-secondary">Cancel</button> <!-- Added cancel button -->
-        </div>
+        <ul>
+            <li><a href="#dashboard" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="users.html"><i class="fas fa-users"></i> Users</a></li>
+            <li><a href="sellers_request.html"><i class="fas fa-user-plus"></i> Seller Requests</a></li>
+            <li><a href="sellers.html"><i class="fas fa-store"></i> Sellers</a></li>
+            <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+            <li><a href="products.html"><i class="fas fa-seedling"></i> Products</a></li>
+        </ul>
     </div>
 
-    <script type="module" src="admin_users.js"></script>
+    <div class="main-content">
+        <header>
+            <div class="search-bar">
+                <input type="text" placeholder="Search...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            <div class="user-info">
+                <span>Welcome, Admin</span>
+                <button class="logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </header>
+
+        <div class="content">
+            <section id="dashboard" class="active-section">
+                <h2>Dashboard</h2>
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                    <div class="card">
+                        <canvas id="ageDistributionChart"></canvas>
+                    </div>
+                </div>                
+            </section>
+
+            <section id="users">
+                <h2>Users</h2>
+            </section>
+
+            <section id="sellers_request">
+                <h2>Seller Requests</h2>
+            </section>
+
+            <section id="sellers">
+                <h2>Sellers</h2>
+            </section>
+
+            <section id="orders">
+                <h2>Orders</h2>
+            </section>
+
+            <section id="products">
+                <h2>Products</h2>
+            </section>
+        </div>
+    </div>
+    
 </body>
 </html>
