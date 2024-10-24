@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Sellers</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="styles.css"> 
+  <script type="module" src="sellers_script.js"></script> 
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <i class="fas fa-shopping-cart"></i> Admin Dashboard
+    </div>
+    <ul>
+      <li><a href="dashboard_layout.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+      <li><a href="users.html"><i class="fas fa-users"></i> Users</a></li>
+      <li><a href="sellers_request.html"><i class="fas fa-user-plus"></i> Seller Requests</a></li>
+      <li><a href="sellers.html" class="active"><i class="fas fa-store"></i> Sellers</a></li>
+      <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+      <li><a href="products.html"><i class="fas fa-seedling"></i> Products</a></li>
+    </ul>
+  </div>
+
+  <div class="main-content">
+    <header>
+        <div class="search-bar">
+          <input type="text" placeholder="Search sellers..." id="sellerSearch">
+          <button><i class="fas fa-search"></i></button>
+        </div>
+        <div class="user-info">
+          <span>Welcome, Admin</span>
+          <button class="logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+      </header>
+
+    <div class="content">
+      <section id="sellers" class="active-section">
+        <h2>Sellers</h2>
+        <div class="table-container"> 
+          <table id="sellersTable">
+            <thead>
+              <tr>
+                <th>Shop Name</th>
+                <th>Owner Name</th>
+                <th>Category</th>
+                <th>Email</th>
+                <th>Contact</th>
+                <th>Address</th>
+                <th>Pincode</th>
+                <th>Actions</th> 
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Seller data will be loaded here -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Modal for viewing/editing seller details -->
+  <div id="sellerModal" class="modal">
+    <div class="modal-content">
+      <span id="closeModalBtn" class="close">&times;</span>
+      <h2 id="modalTitle">Seller Details</h2>
+      <label for="shopName">Shop Name:</label>
+      <input type="text" id="shopName" />
+      <label for="ownerName">Owner Name:</label>
+      <input type="text" id="ownerName" />
+      <label for="category">Category:</label>
+      <input type="text" id="category" />
+      <label for="email">Email:</label>
+      <input type="email" id="email" />
+      <label for="contact">Contact:</label>
+      <input type="text" id="contact" />
+      <label for="address">Address:</label>
+      <input type="text" id="address" />
+      <label for="pincode">Pincode:</label>
+      <input type="text" id="pincode" />
+      <button id="saveChangesBtn">Save Changes</button>
+    </div>
+  </div>
+
+  <style>
+/* Modal styles */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1000; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.5); /* Black with transparency */
+  padding: 20px; /* Padding around modal */
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 5% auto; /* 5% from the top and centered */
+  padding: 20px;
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  width: 100%; /* Full width */
+  max-width: 600px; /* Maximum width */
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Label styles */
+.modal-content label {
+  display: block;
+  margin: 10px 0 5px;
+}
+
+/* Input field styles */
+.modal-content input[type="text"],
+.modal-content input[type="email"] {
+  width: 99%;
+  padding: 10px; /* Increased padding for comfort */
+  margin-bottom: 15px; /* Spacing between fields */
+  border: 1px solid #ccc; /* Light gray border */
+  border-radius: 4px; /* Rounded corners */
+  transition: border-color 0.3s; /* Smooth transition for border color */
+}
+
+.modal-content input[type="text"]:focus,
+.modal-content input[type="email"]:focus {
+  border-color: #45a049; /* Green border on focus */
+  outline: none; /* Remove outline */
+}
+
+/* Button styles */
+.modal-content button {
+  background-color: #45a049;
+  color: white; /* Text color */
+  padding: 10px 15px;
+  border: none; /* Remove border */
+  border-radius: 4px; /* Rounded corners */
+  cursor: pointer; /* Pointer on hover */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.modal-content button:hover {
+  background-color: #388e3c; /* Darker green on hover */
+}
+
+  </style>
+</body>
+</html>

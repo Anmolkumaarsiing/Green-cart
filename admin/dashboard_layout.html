@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+
+    <script type="module" src="dashboard.js"></script>
+    <script type="module" src="auth.js"></script>
+    <!-- Chart.js Global Script -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-shopping-cart"></i> Admin Dashboard
+        </div>
+        <ul>
+            <li><a href="dashboard_layout.html" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="users.html"><i class="fas fa-users"></i> Users</a></li>
+            <li><a href="sellers_request.html"><i class="fas fa-user-plus"></i> Seller Requests</a></li>
+            <li><a href="sellers.html"><i class="fas fa-store"></i> Sellers</a></li>
+            <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+            <li><a href="products.html"><i class="fas fa-seedling"></i> Products</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <div class="search-bar">
+                <input type="text" placeholder="Search...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            <div class="user-info">
+                <span>Welcome, Admin</span>
+                <button class="logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </header>
+
+        <div class="content">
+            <section id="dashboard" class="active-section">
+                <h2>Dashboard</h2>
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                    <div class="card">
+                        <canvas id="ageDistributionChart"></canvas>
+                    </div>
+                </div>                
+            </section>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,596 @@
+/* Basic Styling */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* Sidebar */
+.sidebar {
+    background-color: #2c3e50;
+    color: white;
+    width: 250px;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.logo {
+    padding: 20px;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+.logo i {
+    margin-right: 10px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li a {
+    display: block;
+    color: white;
+    padding: 15px 20px;
+    transition: background-color 0.3s;
+}
+
+.sidebar li a:hover,
+.sidebar li a.active {
+    background-color: #34495e;
+}
+
+.sidebar i {
+    margin-right: 10px;
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 250px; 
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f0f0f0;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+.search-bar {
+    display: flex;
+}
+
+.search-bar input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px;
+}
+
+.search-bar button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+.user-info span {
+    margin-right: 15px;
+}
+
+.logout {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.logout:hover {
+    background-color: #c0392b;
+}
+
+.content {
+    padding-top: 20px;
+}
+
+.content section {
+    display: none;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.content section.active-section {
+    display: block;
+}
+
+/* Dashboard Styling */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-gap: 20px;
+}
+
+.card {
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+.card p {
+    font-size: 2em;
+    font-weight: bold;
+    color: #27ae60; 
+}
+
+.card i {
+    font-size: 1.5em;
+    margin-right: 5px;
+}
+ 
+.user-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-info span {
+    margin-right: 15px;
+    color: #495057;
+  }
+  
+  .logout {
+    background-color: #dc3545; 
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .logout:hover {
+    background-color: #c82333;
+  }
+  
+  .content {
+    padding-top: 20px;
+  }
+  
+  .content section {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+  }
+  
+  /* Table Styling */
+  #usersTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  #usersTable th,
+  #usersTable td {
+    border: 1px solid #dee2e6; /* Light border */
+    padding: 12px; 
+    text-align: left;
+  }
+  
+  #usersTable th {
+    background-color: #f8f9fa; /* Match body background */
+    font-weight: 600;
+  }
+  
+  /* Stylish Action Buttons */
+  .edit-btn,
+  .delete-btn {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 4px;
+    margin-right: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s;
+  }
+  
+  .edit-btn {
+    background-color: #ffc107; 
+    color: white;
+  }
+  
+  .edit-btn:hover {
+    background-color: #d39e00; /* Darker yellow */
+  }
+  
+  .delete-btn {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .delete-btn:hover {
+    background-color: #bd2130; /* Darker red */
+  }
+  
+  /* Add User Button */
+  #addUserBtn {
+    background-color: #28a745; 
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 15px; 
+    font-weight: 500;
+    transition: background-color 0.3s;
+  }
+  
+  #addUserBtn:hover {
+    background-color: #218838;
+  }
+  
+  /* Modal Styles */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; 
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%; 
+    max-width: 500px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    position: relative; /* For close button positioning */
+  }
+  
+  .close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 25px;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  
+  .close-modal:hover {
+    color: black;
+  }
+  
+  #userForm input,
+  #userForm textarea {
+    width: calc(100% - 18px);
+    padding: 8px;
+    margin: 8px 0; 
+    box-sizing: border-box;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+  }
+  
+  #userForm button {
+    background-color: #28a745; 
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s;
+  }
+  
+  #userForm button:hover {
+    background-color: #218838; 
+  }
+  
+  
+  /* Table Styling */
+  .table-container {
+    overflow-x: auto; /* Enable horizontal scrolling if table content is too wide */
+  }
+  
+  #requestsTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  #requestsTable th,
+  #requestsTable td {
+    border: 1px solid #dee2e6; /* Light border */
+    padding: 12px;
+    text-align: left;
+  }
+  
+  #requestsTable th {
+    background-color: #f8f9fa; /* Match body background */
+    font-weight: 600;
+  }
+  
+  /* Action Buttons */
+  .actions-cell button {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 4px;
+    margin-right: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s;
+  }
+  
+  .accept-btn {
+    background-color: #28a745; /* Green for accept */
+    color: white;
+  }
+  
+  .accept-btn:hover {
+    background-color: #218838; /* Darker green */
+  }
+  
+  .reject-btn {
+    background-color: #dc3545; /* Red for reject */
+    color: white;
+  }
+  
+  .reject-btn:hover {
+    background-color: #bd2130; /* Darker red */
+  }
+
+/* Table Styling */
+.table-container {
+  overflow-x: auto; 
+}
+
+#productsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+#productsTable th,
+#productsTable td {
+  border: 1px solid #dee2e6; 
+  padding: 12px;
+  text-align: left;
+}
+
+#productsTable th {
+  background-color: #f8f9fa; 
+  font-weight: 600;
+}
+
+/* Action Buttons */
+.actions-cell button {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  margin-right: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.view-details-btn {
+  background-color: #007bff; /* Blue for view details */
+  color: white;
+}
+
+.view-details-btn:hover {
+  background-color: #0056b3; /* Darker blue */
+}
+
+.edit-btn {
+  background-color: #ffc107; /* Yellow for edit */
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #d39e00; /* Darker yellow */
+}
+
+.delete-btn {
+  background-color: #dc3545; /* Red for delete */
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #bd2130; /* Darker red */
+}
+
+/* Table Styling */
+.table-container {
+  overflow-x: auto; 
+}
+
+#ordersTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+#ordersTable th,
+#ordersTable td {
+  border: 1px solid #dee2e6; 
+  padding: 12px;
+  text-align: left;
+}
+
+#ordersTable th {
+  background-color: #f8f9fa; 
+  font-weight: 600;
+}
+
+/* Action Buttons */
+.actions-cell button {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  margin-right: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.view-details-btn {
+  background-color: #007bff; /* Blue for view details */
+  color: white;
+}
+
+.view-details-btn:hover {
+  background-color: #0056b3; /* Darker blue */
+}
+
+.mark-complete-btn {
+  background-color: #28a745; /* Green for mark complete */
+  color: white;
+}
+
+.mark-complete-btn:hover {
+  background-color: #218838; /* Darker green */
+}
+
+
+/* Table Styling */
+.table-container {
+  overflow-x: auto; 
+}
+
+#sellersTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+#sellersTable th,
+#sellersTable td {
+  border: 1px solid #dee2e6; 
+  padding: 12px;
+  text-align: left;
+}
+
+#sellersTable th {
+  background-color: #f8f9fa; 
+  font-weight: 600;
+}
+
+/* Action Buttons */
+.actions-cell button {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  margin-right: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.view-details-btn {
+  background-color: #007bff; /* Blue for view details */
+  color: white;
+}
+
+.view-details-btn:hover {
+  background-color: #0056b3; /* Darker blue */
+}
+
+.edit-btn {
+  background-color: #ffc107; /* Yellow for edit */
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #d39e00; /* Darker yellow */
+}
+
+.delete-btn {
+  background-color: #dc3545; /* Red for delete */
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #bd2130; /* Darker red */
+}
+
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 70px; 
+    }
+  
+    .sidebar:hover {
+      width: 200px; 
+    }
+  
+    .sidebar .logo {
+      font-size: 1.2em;
+    }
+  
+    .sidebar li a {
+      text-align: center; 
+      padding: 12px 8px; 
+    }
+  
+    .main-content {
+      margin-left: 70px; 
+    }
+  
+    #usersTable th, #usersTable td {
+      font-size: 14px;
+      padding: 8px;
+    }
+  
+    #usersTable th:nth-child(4), /* Hide Age column on small screens */
+    #usersTable td:nth-child(4) {
+      display: none;
+    }
+  
+    #usersTable th:nth-child(5), /* Hide Phone column on small screens */
+    #usersTable td:nth-child(5) {
+      display: none;
+    }
+  
+    #usersTable th:nth-child(6), /* Hide Address column on small screens */
+    #usersTable td:nth-child(6) {
+      display: none;
+    }
+  }
+  
+  .table-container {
+    overflow-x: auto; /* Add horizontal scroll for small screens */
+  }
+  

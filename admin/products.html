@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Products</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css"> 
+    <script type="module" src="products_script.js" defer></script> 
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-shopping-cart"></i> Admin Dashboard
+        </div>
+        <ul>
+            <li><a href="dashboard_layout.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="users.html"><i class="fas fa-users"></i> Users</a></li>
+            <li><a href="sellers_request.html"><i class="fas fa-user-plus"></i> Seller Requests</a></li>
+            <li><a href="sellers.html"><i class="fas fa-store"></i> Sellers</a></li>
+            <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+            <li><a href="products.html" class="active"><i class="fas fa-seedling"></i> Products</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <div class="search-bar">
+                <input type="text" placeholder="Search products..." id="productSearch">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            <div class="user-info">
+                <span>Welcome, Admin</span>
+                <button class="logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </header>
+
+        <div class="content">
+          <section id="products" class="active-section">
+              <h2>Products</h2>
+              <button id="addProductBtn" type="button">
+                <span class="button__text">Add Product</span>
+                <span class="button__icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="svg">
+                    <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+                  </svg>
+                </span>
+              </button>
+              <div class="table-container"> 
+                  <table id="productsTable">
+                      <thead>
+                          <tr>
+                              <th class="product_id">Product ID</th>
+                              <th class="product_name">Name</th>
+                              <th class="product_brand">Brand</th>
+                              <th class="product_price">Price</th>
+                              <th class="Product_isscrap">isScrap</th>
+                              <th class="Product_pincode">Pincode</th>
+                              <th class="Product_actions">Actions</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <!-- Product data will be loaded here -->
+                      </tbody>
+                  </table>
+              </div>
+          </section>
+      </div>
+      
+
+    <!-- Modal for Adding/Viewing Products -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Product Details</h2> <form id="productForm">
+                <label for="productId">Product ID</label>
+                <input type="text" id="productId" readonly> 
+
+                <label for="productName">Name</label>
+                <input type="text" id="productName" readonly>
+
+                <label for="productBrand">Brand</label>
+                <input type="text" id="productBrand" readonly>
+
+                <label for="productDescription">Description</label>
+                <textarea id="productDescription" readonly></textarea>
+
+                <label for="productPrice">Price</label>
+                <input type="number" id="productPrice" step="0.01" readonly>
+
+                <label for="isproductScrap">isScrap</label>
+                <input type="checkbox" id="isproductScrap" disabled> 
+
+                <label for="productphotos">photos</label>
+                <input type="text" id="productphotos" readonly>
+
+                <label for="productpincode">pincode</label>
+                <input type="number" id="productpincode" readonly>
+
+                <label for="productpreview">preview</label>
+                <input type="text" id="productpreview" readonly>
+
+                <button type="submit" id="addBtn">Add Product</button>
+                <button type="button" id="editBtn">Edit Product</button> 
+            </form>
+        </div>
+    </div>
+    <style>
+      #addProductBtn {
+        position: relative;
+        width: 150px;
+        height: 40px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        border: 1px solid #17795E;
+        background-color: #209978;
+        overflow: hidden;
+        transition: all 0.3s;
+      }
+    
+      #addProductBtn .button__text {
+        transform: translateX(22px);
+        color: #fff;
+        font-weight: 600;
+        transition: all 0.3s;
+      }
+    
+      #addProductBtn .button__icon {
+        position: absolute;
+        transform: translateX(109px);
+        height: 100%;
+        width: 39px;
+        background-color: #17795E;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+      }
+    
+      #addProductBtn .svg {
+        width: 20px;
+        fill: #fff;
+      }
+    
+      #addProductBtn:hover {
+        background: #17795E;
+      }
+    
+      #addProductBtn:hover .button__text {
+        color: transparent;
+      }
+    
+      #addProductBtn:hover .button__icon {
+        width: 148px;
+        transform: translateX(0);
+      }
+    
+      #addProductBtn:active .button__icon {
+        background-color: #146c54;
+      }
+    
+      #addProductBtn:active {
+        border: 1px solid #146c54;
+      }
+      /* Modal Background */
+#productModal.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+    transition: opacity 0.3s ease;
+}
+
+/* Modal Content */
+#productModal .modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 50%; /* Adjust width as necessary */
+    max-width: 600px; /* Ensure it doesn't get too wide */
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+/* Close Button */
+#productModal .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#productModal .close:hover,
+#productModal .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Modal Title */
+#productModal #modalTitle {
+    font-size: 24px;
+    margin-bottom: 15px;
+    text-align: center;
+    color: #333;
+}
+
+/* Modal Form */
+#productModal form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Input and Textarea Styling */
+#productModal input[type="text"],
+#productModal input[type="number"],
+#productModal textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+/* Textarea */
+#productModal textarea {
+    height: 80px;
+    resize: none; /* Disable resizing */
+}
+
+/* Checkbox Styling */
+#productModal input[type="checkbox"] {
+    transform: scale(1.2); /* Make it slightly larger */
+    margin-left: 10px;
+}
+
+/* Labels */
+#productModal label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #555;
+}
+
+/* Buttons */
+#productModal button {
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Add Button */
+#productModal #addBtn {
+    background-color: #28a745;
+    color: white;
+}
+
+#productModal #addBtn:hover {
+    background-color: #218838;
+}
+
+/* Edit Button */
+#productModal #editBtn {
+    background-color: #007bff;
+    color: white;
+}
+
+#productModal #editBtn:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive Modal */
+@media (max-width: 768px) {
+    #productModal .modal-content {
+        width: 90%; /* Make modal full width on smaller screens */
+    }
+
+    #productModal form {
+        gap: 10px;
+    }
+
+    #productModal label {
+        font-size: 13px;
+    }
+}
+    </style>
+</body>
+</html>
