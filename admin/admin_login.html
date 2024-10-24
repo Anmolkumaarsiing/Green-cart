@@ -3,15 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Green admin</title>
+    <title>Green Admin</title>
     <link rel="icon" href="https://seeklogo.com/images/C/Carters-logo-DDDD28BA61-seeklogo.com.png" type="image/gif" sizes="16x16">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="login.css">
+
     <!-- Use ES Module scripts -->
     <script type="module">
+        document.addEventListener
+        ('contextmenu', function(e)
+            {
+                e.preventDefault();
+            }
+        );
+        document.addEventListener
+        ('keydown', function(e) 
+            {
+                if (e.ctrlKey && (e.key === 's' || e.key === 'u' || e.key === 'I'))
+                {
+                    e.preventDefault();
+                }
+            }
+        );
+
         // Import Firebase scripts
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js';
-        import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-auth.js';
         import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js';
 
         // Your web app's Firebase configuration
@@ -28,7 +44,6 @@
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app); // Initialize auth
         const db = getFirestore(app); // Initialize Firestore
 
         // Event listener for the login form
@@ -38,37 +53,27 @@
             const password = document.getElementById("loginPassword").value;
 
             try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                // User logged in successfully
-                const user = userCredential.user;
+                // Get the admin document based on email
+                const adminDocRef = doc(db, 'admin', email);
+                const adminDocSnap = await getDoc(adminDocRef);
 
-                // Check if the user is in the admin collection
-                const adminDoc = await getDoc(doc(db, "admin", user.uid));
+                if (adminDocSnap.exists()) {
+                    const adminData = adminDocSnap.data();
 
-                if (adminDoc.exists()) {
-                    // Check the role of the user
-                    const userRole = adminDoc.data().role; // Assuming 'role' is the field name
-
-                    if (userRole === 'admin') {
-                        // User is an admin, redirect to the admin dashboard
-                        window.location.href = "admin_dashboard.html"; // Adjust as necessary
+                    // Check if password matches
+                    if (adminData.password === password) {
+                        // Successful login, redirect to admin dashboard
+                        window.location.href = "/new_admin/dashboard_layout.html";
                     } else {
-                        // If the role is not admin, sign out and show an error
-                        await auth.signOut();
-                        showError("You don't have admin access. Contact support.");
+                        // Incorrect password
+                        showError("Incorrect password.");
                     }
                 } else {
-                    // If the user document does not exist, sign out and show an error
-                    await auth.signOut();
-                    showError('Account does not exist');
+                    // No admin account found with this email
+                    showError("No admin account found with this email.");
                 }
             } catch (error) {
-                const errorCode = error.code;
-                if (errorCode === 'auth/invalid-credential') {
-                    showError('Incorrect Email or Password');
-                } else {
-                    showError('Account does not exist');
-                }
+                showError("Error logging in: " + error.message);
             }
         });
 
@@ -83,7 +88,6 @@
                 signInMessage.style.opacity = 0; // Fade out
             }, 7000); // Match the fade-out duration in CSS
         }
-
 
     </script>
 </head>
